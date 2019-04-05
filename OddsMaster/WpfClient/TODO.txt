@@ -1,0 +1,46 @@
+﻿TODO
+	[ ] Finish unit tests for Card classes
+	[ ] Create an app model
+	[ ] Create a quiz model
+	[ ] UI to pick number of users
+	[ ] Quiz Process
+		[ ] Show a pair of two random cards
+			[ ] user classifies strength of hand
+					Dominating 95%
+					powerful 85% 
+					Strong 70% 
+					OK 55%
+					Risky 40% 
+					weak 15% 
+					hopeless 0%
+				- allow a little crossover so that guessing near the border is not hazardous
+					eg:  "Powerful/Dominating" cover top third of powerful and lower third of dominating
+			[ ] user picks type of hand most likely to beat (flush, 4oak, full house, etc...)
+			[ ] When picking, allow 3 guesses, then show the numbers
+			[ ] Always show numbers at the and of each step in the process
+		[ ] Show the flop
+			[ ] user classifies strength of hand as Dominating, powerful, OK, weak, hopeless
+			[ ] user picks type of hand most likely to beat (flush, 4oak, full house, etc...)
+		[ ] Show the turn
+			[ ] user classifies strength of hand as Dominating, powerful, OK, weak, hopeless
+			[ ] user picks type of hand most likely to beat (flush, 4oak, full house, etc...)
+		[ ] Show the river
+			[ ] user classifies strength of hand as Dominating, powerful, OK, weak, hopeless
+			[ ] user picks type of hand most likely to beat (flush, 4oak, full house, etc...)
+	[ ] Track progress
+		[ ] Points: 5 for first guess, then 2, then 1
+		[ ] Remember total points for pocket type
+		[ ] Remember performance at each stage
+
+NEW
+	[ ] Calculate win figures and compare to https://github.com/nebosite/PokerStuff.git
+		- Everyone Stays to the end
+		- Show a little status to show # runs and confidence
+	[ ] If calculation is slow, always have a thread doing calculations ahead
+	[ ] Bring in elements of poker play, which will adjust the odds at each stage
+
+SOON
+
+LATER
+
+DONE ================================================================================
