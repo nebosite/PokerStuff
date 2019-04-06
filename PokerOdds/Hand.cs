@@ -56,6 +56,7 @@ namespace PokerOdds
 
             _suitBits[(int)card.Suit] |= (int)card.Rank;
             _rankBits |= (int)card.Rank;
+            // ace is special because it can be the "1" in a strait
             if (card.Rank == Rank.Ace)
             {
                 _suitBits[(int)card.Suit] |= 1;
@@ -120,7 +121,7 @@ namespace PokerOdds
                     }
                 }
 
-                // Straigth flush?
+                // Strait flush?
                 for (int r = (int)Rank.King; r >= (int)Rank._5; r /= 2)
                 {
                     straightMask >>= 1;
@@ -151,7 +152,7 @@ namespace PokerOdds
                 switch (count)
                 {
                     case 1: kickers.Add(Cards[i].Rank); break;
-                    case 2: pairs.Insert(0, Cards[i].Rank); break;
+                    case 2: pairs.Add(Cards[i].Rank); break;
                     case 3:
                         {
                             if (threeOfAKind == Rank.None)
@@ -168,6 +169,7 @@ namespace PokerOdds
                 }
             }
 
+            // Four of a kind?
             if (fourOfAKindRank != Rank.None)
             {
                 _value = HandType.FourOfAKind;
@@ -176,6 +178,7 @@ namespace PokerOdds
                 return;
             }
 
+            // Full house?
             if (threeOfAKind != Rank.None && pairs.Count > 0)
             {
                 _value = HandType.FullHouse;
@@ -184,6 +187,7 @@ namespace PokerOdds
                 return;
             }
 
+            // Flush?
             if (flushSuit != Suit.None)
             {
                 _value = HandType.Flush;
@@ -197,6 +201,58 @@ namespace PokerOdds
 
                 return;
             }
+
+            // Straight?
+            straightMask = 0x3e00;
+            for (int r = (int)Rank.Ace; r >= (int)Rank._5; r /= 2)
+            {
+                if ((_rankBits & straightMask) == straightMask)
+                {
+                    _value = HandType.Straight;
+                    _highCards.Insert(0, (Rank)r);
+                    return;
+                }
+                straightMask >>= 1;
+            }
+
+            // Set?
+            if (threeOfAKind != Rank.None)
+            {
+                _value = HandType.ThreeOfAKind;
+                _highCards.Add(threeOfAKind);
+                return;
+            }
+
+            // Two Pair?
+            if( pairs.Count > 1)
+            {
+                _value = HandType.TwoPair;
+                _highCards.Add(pairs[0]);
+                _highCards.Add(pairs[1]);
+                if(pairs.Count == 3 && pairs[2] > kickers[0])
+                {
+                    _highCards.Add(pairs[2]);
+                }
+                else
+                {
+                    _highCards.Add(kickers[0]);
+                }
+                return;
+            }
+
+            // Pair?
+            if (pairs.Count > 0)
+            {
+                _value = HandType.Pair;
+                _highCards.Add(pairs[0]);
+
+                _highCards.Add(kickers[0]);
+                _highCards.Add(kickers[1]);
+                _highCards.Add(kickers[2]);
+                return;
+            }
+
+
             _value = HandType.HighScard;
             foreach (var card in Cards)
             {

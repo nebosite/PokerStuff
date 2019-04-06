@@ -19,7 +19,7 @@ namespace Tests
             public const string FullHouseKingJack = "Kd,Kh,Kc,Js,Jh";
             public const string FlushSpadesAceHigh = "3s,As,0s,Qs,9s";
             public const string FlushHearts10High = "0h,9h,2h,7h,6h";
-            public const string StraightAceHigh = "As,kh,jc,0c,9c";
+            public const string StraightAceHigh = "As,kh,qh,jc,0c";
             public const string StraightJackHigh = "Js,0h,9c,8c,7c";
             public const string Straight5High = "5h,4d,3d,2c,ac";
             public const string ThreeOfAKindAce = "Ad,Ah,Ac,4s,9h";
@@ -143,7 +143,7 @@ namespace Tests
 
             // Two 3ok's should resolve to the best hand
             var fh9Jack = "9h,9c,9d,jh,jd";
-            TestHands(0, fh9Jack + ",2h", fh9Jack + ",jc");
+            TestHands(-1, fh9Jack + ",2h", fh9Jack + ",jc");
         }
 
         [TestMethod]
@@ -178,6 +178,7 @@ namespace Tests
         [TestMethod]
         public void CompareTo_ScoresStraight_Correctly()
         {
+            AssertHand(HandType.Straight, Rank.Ace, Hands.StraightAceHigh);
             AssertHand(HandType.Straight, Rank._5, Hands.Straight5High);
 
             // Royal Flush - beats everything, ties self
@@ -213,9 +214,10 @@ namespace Tests
             // Tie Breaker is High Card
             TestHands(1, Hands.ThreeOfAKindAce, Hands.ThreeOfAKind4);
 
+            // Kickers don't matter (this is impossible)
             var winner = "0d,0s,0c,6d,5d";
             var loser = "0d,0s,0c,6d,4d";
-            TestHands(1, winner, loser);
+            TestHands(0, winner, loser);
 
             // Community card counts for both
             winner += ",Kd";
@@ -294,6 +296,7 @@ namespace Tests
         [TestMethod]
         public void CompareTo_ScoresHighCard_Correctly()
         {
+            AssertHand(HandType.ThreeOfAKind, Rank._4, "AD,9H,4H,4C,4S");
             AssertHand(HandType.HighScard, Rank.Jack, Hands.HighCardJack);
 
             // Royal Flush - beats everything, ties self
