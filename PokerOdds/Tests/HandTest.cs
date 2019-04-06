@@ -336,15 +336,11 @@ namespace Tests
             Assert.AreEqual(0, losingHand.CompareTo(losingHand),$"comparing {losingHand} to {losingHand}");
         }
 
-        [TestMethod]
-        public void CompareTo_Handles_PocketCards()
-        {
-            Assert.Inconclusive("Pocket cards should be high cards if they are pair");
-
-        }
+        
         [TestMethod]
         public void CompareTo_Handles_FiveCardHands()
         {
+            // Add tests here for 7 card hands where the last two cards must be ignored in high card situation
             Assert.Inconclusive("There should be no more than 5 cards considered");
 
         }
