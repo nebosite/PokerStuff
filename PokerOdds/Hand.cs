@@ -30,8 +30,9 @@ namespace PokerOdds
         int _maxSuitCount;
         int _rankBits;
 
-        public Hand(string[] cards)
+        public Hand(string[] cards = null)
         {
+            if (cards == null) return;
             foreach (var card in cards) AddCard(new Card(card));
         }
 
@@ -274,6 +275,7 @@ namespace PokerOdds
 
             for(int i = 0; i < _highCards.Count; i++)
             {
+                // TODO: Sometimes highcard array lengths dont match
                 if (_highCards[i] > otherHand._highCards[i]) return 1;
                 if (_highCards[i] < otherHand._highCards[i]) return -1;
             }
