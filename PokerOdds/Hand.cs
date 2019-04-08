@@ -9,7 +9,7 @@ namespace PokerOdds
 {
     public enum HandType
     {
-        HighScard,
+        HighCard,
         Pair,
         TwoPair,
         ThreeOfAKind,
@@ -49,7 +49,7 @@ namespace PokerOdds
                 if (card.Rank == Cards[i].Rank
                     && card.Suit == Cards[i].Suit)
                 {
-                    throw new ApplicationException("Duplicate Card!");
+                    throw new ApplicationException("Duplicate Card: " + card);
                 }
             }
             if (!cardAdded) Cards.Add(card);
@@ -253,7 +253,7 @@ namespace PokerOdds
             }
 
 
-            _value = HandType.HighScard;
+            _value = HandType.HighCard;
             foreach (var card in Cards)
             {
                 if (_highCards.Count >= 5) break;
