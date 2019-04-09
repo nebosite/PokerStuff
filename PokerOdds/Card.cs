@@ -36,8 +36,8 @@ namespace PokerOdds
 
     public class Card 
     {
-        public Suit Suit { get; set; }
-        public Rank Rank { get; set; }
+        public Suit Suit;
+        public Rank Rank;
 
         string _originalData;
 
@@ -46,7 +46,18 @@ namespace PokerOdds
             data = data.Trim().ToUpper();
             _originalData = data;
             if (data.Length != 2) throw new ApplicationException("Bad card specifier: " + data);
-            switch (data[0])
+            Init(data[0], data[1]);
+        }
+
+        public Card(char rank, char suit)
+        {
+            Init(rank, suit);
+            if (_originalData == null) _originalData = "" + rank + suit;
+        }
+
+        void Init(char rank, char suit)
+        {
+            switch (rank)
             {
                 case '2': Rank = Rank._2; break;
                 case '3': Rank = Rank._3; break;
@@ -56,21 +67,31 @@ namespace PokerOdds
                 case '7': Rank = Rank._7; break;
                 case '8': Rank = Rank._8; break;
                 case '9': Rank = Rank._9; break;
+                case 't':
                 case 'T':
                 case '0': Rank = Rank._10; break;
+                case 'j':
                 case 'J': Rank = Rank.Jack; break;
+                case 'q':
                 case 'Q': Rank = Rank.Queen; break;
+                case 'k':
                 case 'K': Rank = Rank.King; break;
+                case '1':
+                case 'a':
                 case 'A': Rank = Rank.Ace; break;
-                default: throw new ApplicationException("Bad Rank Specifier: " + data[0]);
+                default: throw new ApplicationException("Bad Rank Specifier: " + rank);
             }
-            switch (data[1])
+            switch (suit)
             {
+                case 'c':
                 case 'C': Suit = Suit.Clubs; break;
+                case 'd':
                 case 'D': Suit = Suit.Diamonds; break;
+                case 'h':
                 case 'H': Suit = Suit.Hearts; break;
+                case 's':
                 case 'S': Suit = Suit.Spades; break;
-                default: throw new ApplicationException("Bad Suit Specifier: " + data[1]);
+                default: throw new ApplicationException("Bad Suit Specifier: " + suit);
             }
         }
 

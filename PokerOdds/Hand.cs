@@ -9,7 +9,7 @@ namespace PokerOdds
 {
     public enum HandType
     {
-        HighScard,
+        HighCard,
         Pair,
         TwoPair,
         ThreeOfAKind,
@@ -23,39 +23,41 @@ namespace PokerOdds
 
     public class Hand
     {
-        private List<Card> Cards { get; set; } = new List<Card>();
+        List<Card> _cards = new List<Card>(7);
 
         int[] _suitBits = new int[4];
         int[] _suitCounts = new int[4];
         int _maxSuitCount;
         int _rankBits;
 
-        public Hand(string[] cards)
+        public Hand(string[] cards = null)
         {
+            if (cards == null) return;
             foreach (var card in cards) AddCard(new Card(card));
         }
 
         public void AddCard(Card card)
         {
             bool cardAdded = false;
-            for (int i = 0; i < Cards.Count; i++)
+            for (int i = 0; i < _cards.Count; i++)
             {
-                if (card.Rank > Cards[i].Rank)
+                var rank = _cards[i].Rank;
+                if (card.Rank > rank)
                 {
-                    Cards.Insert(i, card);
+                    _cards.Insert(i, card);
                     cardAdded = true;
                     break;
                 }
-                if (card.Rank == Cards[i].Rank
-                    && card.Suit == Cards[i].Suit)
+                if (card.Rank == rank && card.Suit == _cards[i].Suit)
                 {
-                    throw new ApplicationException("Duplicate Card!");
+                    throw new ApplicationException("Duplicate Card: " + card);
                 }
             }
-            if (!cardAdded) Cards.Add(card);
+            if (!cardAdded) _cards.Add(card);
 
             _suitBits[(int)card.Suit] |= (int)card.Rank;
             _rankBits |= (int)card.Rank;
+            // ace is special because it can be the "1" in a strait
             if (card.Rank == Rank.Ace)
             {
                 _suitBits[(int)card.Suit] |= 1;
@@ -120,7 +122,7 @@ namespace PokerOdds
                     }
                 }
 
-                // Straigth flush?
+                // Strait flush?
                 for (int r = (int)Rank.King; r >= (int)Rank._5; r /= 2)
                 {
                     straightMask >>= 1;
@@ -134,48 +136,50 @@ namespace PokerOdds
 
             }
 
-            var pairs = new List<Rank>();
+            var pairs = new List<Rank>(3);
             var threeOfAKind = Rank.None;
             var fourOfAKindRank = Rank.None;
-            var kickers = new List<Rank>();
+            var kickers = new List<Rank>(7);
 
             // Find matches
-            for (int i = 0; i < Cards.Count; i++)
+            for (int i = 0; i < _cards.Count; i++)
             {
+                var rank = _cards[i].Rank;
                 int count = 1;
-                while (i < Cards.Count - 1 && Cards[i + 1].Rank == Cards[i].Rank)
+                while (i < _cards.Count - 1 && _cards[i + 1].Rank == rank)
                 {
                     count++;
                     i++;
                 }
                 switch (count)
                 {
-                    case 1: kickers.Add(Cards[i].Rank); break;
-                    case 2: pairs.Insert(0, Cards[i].Rank); break;
+                    case 1: kickers.Add(rank); break;
+                    case 2: pairs.Add(rank); break;
                     case 3:
                         {
                             if (threeOfAKind == Rank.None)
                             {
-                                threeOfAKind = Cards[i].Rank;
+                                threeOfAKind = rank;
                             }
                             else
                             {
-                                pairs.Insert(0, Cards[i].Rank);
+                                pairs.Insert(0, rank);
                             }
                         }
                         break;
-                    case 4: fourOfAKindRank = Cards[i].Rank; break;
+                    case 4: fourOfAKindRank = rank; break;
                 }
             }
 
+            // Four of a kind?
             if (fourOfAKindRank != Rank.None)
             {
                 _value = HandType.FourOfAKind;
                 _highCards.Add(fourOfAKindRank);
-                if (kickers.Count > 0) _highCards.Add(kickers[0]);
                 return;
             }
 
+            // Full house?
             if (threeOfAKind != Rank.None && pairs.Count > 0)
             {
                 _value = HandType.FullHouse;
@@ -184,11 +188,12 @@ namespace PokerOdds
                 return;
             }
 
+            // Flush?
             if (flushSuit != Suit.None)
             {
                 _value = HandType.Flush;
 
-                foreach (var card in Cards)
+                foreach (var card in _cards)
                 {
                     if (_highCards.Count >= 5) break;
                     if (card.Suit != flushSuit) continue;
@@ -197,8 +202,60 @@ namespace PokerOdds
 
                 return;
             }
-            _value = HandType.HighScard;
-            foreach (var card in Cards)
+
+            // Straight?
+            straightMask = 0x3e00;
+            for (int r = (int)Rank.Ace; r >= (int)Rank._5; r /= 2)
+            {
+                if ((_rankBits & straightMask) == straightMask)
+                {
+                    _value = HandType.Straight;
+                    _highCards.Insert(0, (Rank)r);
+                    return;
+                }
+                straightMask >>= 1;
+            }
+
+            // Set?
+            if (threeOfAKind != Rank.None)
+            {
+                _value = HandType.ThreeOfAKind;
+                _highCards.Add(threeOfAKind);
+                return;
+            }
+
+            // Two Pair?
+            if( pairs.Count > 1)
+            {
+                _value = HandType.TwoPair;
+                _highCards.Add(pairs[0]);
+                _highCards.Add(pairs[1]);
+                if(pairs.Count == 3 && pairs[2] > kickers[0])
+                {
+                    _highCards.Add(pairs[2]);
+                }
+                else
+                {
+                    _highCards.Add(kickers[0]);
+                }
+                return;
+            }
+
+            // Pair?
+            if (pairs.Count > 0)
+            {
+                _value = HandType.Pair;
+                _highCards.Add(pairs[0]);
+
+                _highCards.Add(kickers[0]);
+                _highCards.Add(kickers[1]);
+                _highCards.Add(kickers[2]);
+                return;
+            }
+
+
+            _value = HandType.HighCard;
+            foreach (var card in _cards)
             {
                 if (_highCards.Count >= 5) break;
                 _highCards.Add(card.Rank);
@@ -207,7 +264,7 @@ namespace PokerOdds
 
         public int CompareTo(Hand otherHand)
         {
-            if(Cards.Count != otherHand.Cards.Count)
+            if(_cards.Count != otherHand._cards.Count)
             {
                 throw new ApplicationException("Can't compare hands with different card counts.");
             }
@@ -216,8 +273,13 @@ namespace PokerOdds
             if (this._value > otherHand._value) return 1;
             if (this._value < otherHand._value) return -1;
 
+            if(_highCards.Count != otherHand._highCards.Count)
+            {
+                throw new ApplicationException($"Highcard count mismatch ({_highCards.Count},{otherHand._highCards.Count}) : [{this}][{otherHand}]");
+            }
             for(int i = 0; i < _highCards.Count; i++)
             {
+                // TODO: Sometimes highcard array lengths dont match
                 if (_highCards[i] > otherHand._highCards[i]) return 1;
                 if (_highCards[i] < otherHand._highCards[i]) return -1;
             }
@@ -242,7 +304,7 @@ namespace PokerOdds
         public override string ToString()
         {
             Evaluate();
-            return $"{_value} ({string.Join(",", _highCards)}) [{string.Join(",", Cards)}]";
+            return $"{_value} ({string.Join(",", _highCards)}) [{string.Join(",", _cards)}]";
         }
     }
 }

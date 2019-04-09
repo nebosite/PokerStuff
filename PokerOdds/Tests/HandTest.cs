@@ -19,7 +19,7 @@ namespace Tests
             public const string FullHouseKingJack = "Kd,Kh,Kc,Js,Jh";
             public const string FlushSpadesAceHigh = "3s,As,0s,Qs,9s";
             public const string FlushHearts10High = "0h,9h,2h,7h,6h";
-            public const string StraightAceHigh = "As,kh,jc,0c,9c";
+            public const string StraightAceHigh = "As,kh,qh,jc,0c";
             public const string StraightJackHigh = "Js,0h,9c,8c,7c";
             public const string Straight5High = "5h,4d,3d,2c,ac";
             public const string ThreeOfAKindAce = "Ad,Ah,Ac,4s,9h";
@@ -97,6 +97,11 @@ namespace Tests
         public void CompareTo_ScoresFourOfAKind_Correctly()
         {
             AssertHand(HandType.FourOfAKind, Rank._9, Hands.FourofAKind9);
+            var testHand = new Hand("6D,6C,6S,6H,5S,5H,5C".Split(','));
+            Assert.AreEqual("FourOfAKind (_6) [6D,6C,6S,6H,5S,5H,5C]", testHand.ToString());
+            testHand = new Hand("6D,6C,6S,6H,5S,5H,4C".Split(','));
+            Assert.AreEqual("FourOfAKind (_6) [6D,6C,6S,6H,5S,5H,4C]", testHand.ToString());
+
 
             TestHands(-1, Hands.FourofAKind9, Hands.RoyalFlushHearts);
             TestHands(-1, Hands.FourofAKind9, Hands.StraightFlushDiamondsKing);
@@ -109,12 +114,12 @@ namespace Tests
             TestHands(1, Hands.FourofAKind9, Hands.PairAce);
             TestHands(1, Hands.FourofAKind9, Hands.HighCardAce);
 
-            // Tie Breaker is High Card
+            // It's impossible to have two 4ofaK with the same rank, so
+            // no tie breaking.
             TestHands(1, Hands.FourofAKindAce, Hands.FourofAKind9);
-
             var foakAceWith8Kicker = "8d,Ah,Ad,As,Ac";
             var foakAceWith9Kicker = "Ah,Ad,As,Ac,9c";
-            TestHands(1, foakAceWith9Kicker, foakAceWith8Kicker);
+            TestHands(0, foakAceWith9Kicker, foakAceWith8Kicker);
 
             // Community card counts for both
             foakAceWith8Kicker += ",Kc";
@@ -143,7 +148,7 @@ namespace Tests
 
             // Two 3ok's should resolve to the best hand
             var fh9Jack = "9h,9c,9d,jh,jd";
-            TestHands(0, fh9Jack + ",2h", fh9Jack + ",jc");
+            TestHands(-1, fh9Jack + ",2h", fh9Jack + ",jc");
         }
 
         [TestMethod]
@@ -178,6 +183,7 @@ namespace Tests
         [TestMethod]
         public void CompareTo_ScoresStraight_Correctly()
         {
+            AssertHand(HandType.Straight, Rank.Ace, Hands.StraightAceHigh);
             AssertHand(HandType.Straight, Rank._5, Hands.Straight5High);
 
             // Royal Flush - beats everything, ties self
@@ -213,9 +219,10 @@ namespace Tests
             // Tie Breaker is High Card
             TestHands(1, Hands.ThreeOfAKindAce, Hands.ThreeOfAKind4);
 
+            // Kickers don't matter (this is impossible)
             var winner = "0d,0s,0c,6d,5d";
             var loser = "0d,0s,0c,6d,4d";
-            TestHands(1, winner, loser);
+            TestHands(0, winner, loser);
 
             // Community card counts for both
             winner += ",Kd";
@@ -294,7 +301,8 @@ namespace Tests
         [TestMethod]
         public void CompareTo_ScoresHighCard_Correctly()
         {
-            AssertHand(HandType.HighScard, Rank.Jack, Hands.HighCardJack);
+            AssertHand(HandType.ThreeOfAKind, Rank._4, "AD,9H,4H,4C,4S");
+            AssertHand(HandType.HighCard, Rank.Jack, Hands.HighCardJack);
 
             // Royal Flush - beats everything, ties self
             TestHands(-1, Hands.HighCardAce, Hands.RoyalFlushHearts);
@@ -326,23 +334,89 @@ namespace Tests
         {
             var winningHand = new Hand(winningCards.Split(','));
             var losingHand = new Hand(losingCards.Split(','));
-
-            Assert.AreEqual(expectedValue, winningHand.CompareTo(losingHand), $"comparing {winningHand} to {losingHand}");
-            Assert.AreEqual(-expectedValue, losingHand.CompareTo(winningHand), $"comparing {losingHand} to {winningHand}");
-            Assert.AreEqual(0, winningHand.CompareTo(winningHand),$"comparing {winningHand} to {winningHand}");
-            Assert.AreEqual(0, losingHand.CompareTo(losingHand),$"comparing {losingHand} to {losingHand}");
+            TestHands(expectedValue, winningHand, losingHand);
         }
 
-        [TestMethod]
-        public void CompareTo_Handles_PocketCards()
+        void TestHands(int expectedValue, Hand winningHand, Hand losingHand)
         {
-            Assert.Inconclusive("Pocket cards should be high cards if they are pair");
+            Assert.AreEqual(expectedValue, winningHand.CompareTo(losingHand), $"comparing {winningHand} to {losingHand}");
+            Assert.AreEqual(-expectedValue, losingHand.CompareTo(winningHand), $"comparing {losingHand} to {winningHand}");
+            Assert.AreEqual(0, winningHand.CompareTo(winningHand), $"comparing {winningHand} to {winningHand}");
+            Assert.AreEqual(0, losingHand.CompareTo(losingHand), $"comparing {losingHand} to {losingHand}");
+        }
 
+        class HandDescriptor
+        {
+            public HandType ExpectedHandValue { get; set; }
+            public bool ShouldTieNext { get; set; }
+            public Hand Hand { get; set; }
+
+            public HandDescriptor(string data)
+            {
+                var mainParts = data.Split(new char[] { ',' }, 3);
+                ExpectedHandValue = (HandType)Enum.Parse(typeof(HandType), mainParts[0]);
+                ShouldTieNext = int.Parse(mainParts[1]) == 0;
+                Hand = new Hand(mainParts[2].Split(','));
+                Assert.AreEqual(ExpectedHandValue, Hand.Value);
+            }
         }
         [TestMethod]
         public void CompareTo_Handles_FiveCardHands()
         {
-            Assert.Inconclusive("There should be no more than 5 cards considered");
+            var hands = new string[]
+            {
+                "RoyalFlush,0,AD,AS,AC,0D,JD,QD,KD",
+                "RoyalFlush,1,AD,2D,9D,0D,JD,QD,KD",
+                "StraightFlush,1,5D,2D,9D,0D,JD,QD,KD",
+                "StraightFlush,1,AD,2D,3D,4D,5D,6D,7D",
+                "StraightFlush,0,AD,2D,3D,4D,5D,0C,JS",
+                "StraightFlush,1,AD,2D,3D,4D,5D,7C,9S",
+                "FourOfAKind,1,3c,3s,Ah,Ad,Ac,As,5h",
+                "FourOfAKind,0,3c,3s,3h,5d,5c,5s,5h",
+                "FourOfAKind,1,2c,2s,2h,5d,5c,5s,5h",
+                "FourOfAKind,1,2c,2s,2h,2d,9c,3s,ah",
+                "FullHouse,0,3c,3s,9h,9d,9c,3h,ah",
+                "FullHouse,1,3c,3s,9h,9d,9c,3h,0h",
+                "FullHouse,1,2c,2s,9h,9d,9c,4s,ah",
+                "FullHouse,0,2c,2s,3h,3d,3c,4s,ah",
+                "FullHouse,1,2c,2s,2h,3d,3c,3s,ah",
+                "FullHouse,1,2c,2s,2h,3d,3c,9s,jh",
+                "Flush,1,2h,3h,5h,6h,7h,9h,jh",
+                "Flush,0,2h,3h,5h,6h,7h,3s,3c",
+                "Flush,1,2h,3h,5h,6h,7h,2s,2c",
+                "Straight,1,2d,3h,0c,Jc,Qc,Ks,Ac",
+                "Straight,1,2d,3h,4c,5c,6c,As,Ac",
+                "Straight,0,2d,3h,4c,5c,8c,As,Ac",
+                "Straight,1,2d,3h,4c,5c,8c,9s,Ac",
+                "ThreeOfAKind,0,3d,3h,3c,5c,8c,9s,Ac",
+                "ThreeOfAKind,1,3d,3h,3c,5c,8c,9s,jc",
+                "ThreeOfAKind,1,2d,2h,2c,5c,8c,9s,Ac",
+                "TwoPair,1,2d,2h,4h,5c,8c,As,Ac",
+                "TwoPair,1,2d,2h,4h,5c,8c,4s,3c",
+                "TwoPair,0,2d,2h,6h,7c,8c,3s,3c",
+                "TwoPair,1,2d,2h,4h,5c,8c,3s,3c",
+                "Pair,1,2d,3h,6h,7c,8c,As,Ac",
+                "Pair,0,2d,2h,6h,7c,8c,0s,js",
+                "Pair,1,2d,2h,3h,4c,8c,0s,js",
+                "HighCard,0,2d,6d,8h,9c,0c,js,as",
+                "HighCard,1,2d,3d,8h,9c,0c,js,as",
+                "HighCard,1,2d,3d,4h,9c,0c,qs,ks",
+                "HighCard,1,2d,3d,4h,5c,7c,8s,9s"
+            };
+
+            for(int i = 0; i < hands.Length - 1; i++)
+            {
+                var testHand = new HandDescriptor(hands[i]);
+                var nextHand = new HandDescriptor(hands[i + 1]);
+
+                TestHands(testHand.ShouldTieNext ? 0 : 1, testHand.Hand, nextHand.Hand);
+
+                // Should beat all the hands below the next one
+                for(int j = i + 2; j< hands.Length; j++)
+                {
+                    TestHands(1, testHand.Hand, new HandDescriptor(hands[j]).Hand);
+                }
+            }
 
         }
 
