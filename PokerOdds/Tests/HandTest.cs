@@ -97,6 +97,11 @@ namespace Tests
         public void CompareTo_ScoresFourOfAKind_Correctly()
         {
             AssertHand(HandType.FourOfAKind, Rank._9, Hands.FourofAKind9);
+            var testHand = new Hand("6D,6C,6S,6H,5S,5H,5C".Split(','));
+            Assert.AreEqual("FourOfAKind (_6) [6D,6C,6S,6H,5S,5H,5C]", testHand.ToString());
+            testHand = new Hand("6D,6C,6S,6H,5S,5H,4C".Split(','));
+            Assert.AreEqual("FourOfAKind (_6) [6D,6C,6S,6H,5S,5H,4C]", testHand.ToString());
+
 
             TestHands(-1, Hands.FourofAKind9, Hands.RoyalFlushHearts);
             TestHands(-1, Hands.FourofAKind9, Hands.StraightFlushDiamondsKing);
@@ -109,12 +114,12 @@ namespace Tests
             TestHands(1, Hands.FourofAKind9, Hands.PairAce);
             TestHands(1, Hands.FourofAKind9, Hands.HighCardAce);
 
-            // Tie Breaker is High Card
+            // It's impossible to have two 4ofaK with the same rank, so
+            // no tie breaking.
             TestHands(1, Hands.FourofAKindAce, Hands.FourofAKind9);
-
             var foakAceWith8Kicker = "8d,Ah,Ad,As,Ac";
             var foakAceWith9Kicker = "Ah,Ad,As,Ac,9c";
-            TestHands(1, foakAceWith9Kicker, foakAceWith8Kicker);
+            TestHands(0, foakAceWith9Kicker, foakAceWith8Kicker);
 
             // Community card counts for both
             foakAceWith8Kicker += ",Kc";

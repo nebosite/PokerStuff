@@ -23,7 +23,7 @@ namespace PokerOdds
 
     public class Hand
     {
-        private List<Card> Cards { get; set; } = new List<Card>();
+        List<Card> _cards = new List<Card>(7);
 
         int[] _suitBits = new int[4];
         int[] _suitCounts = new int[4];
@@ -39,21 +39,21 @@ namespace PokerOdds
         public void AddCard(Card card)
         {
             bool cardAdded = false;
-            for (int i = 0; i < Cards.Count; i++)
+            for (int i = 0; i < _cards.Count; i++)
             {
-                if (card.Rank > Cards[i].Rank)
+                var rank = _cards[i].Rank;
+                if (card.Rank > rank)
                 {
-                    Cards.Insert(i, card);
+                    _cards.Insert(i, card);
                     cardAdded = true;
                     break;
                 }
-                if (card.Rank == Cards[i].Rank
-                    && card.Suit == Cards[i].Suit)
+                if (card.Rank == rank && card.Suit == _cards[i].Suit)
                 {
                     throw new ApplicationException("Duplicate Card: " + card);
                 }
             }
-            if (!cardAdded) Cards.Add(card);
+            if (!cardAdded) _cards.Add(card);
 
             _suitBits[(int)card.Suit] |= (int)card.Rank;
             _rankBits |= (int)card.Rank;
@@ -136,37 +136,38 @@ namespace PokerOdds
 
             }
 
-            var pairs = new List<Rank>();
+            var pairs = new List<Rank>(3);
             var threeOfAKind = Rank.None;
             var fourOfAKindRank = Rank.None;
-            var kickers = new List<Rank>();
+            var kickers = new List<Rank>(7);
 
             // Find matches
-            for (int i = 0; i < Cards.Count; i++)
+            for (int i = 0; i < _cards.Count; i++)
             {
+                var rank = _cards[i].Rank;
                 int count = 1;
-                while (i < Cards.Count - 1 && Cards[i + 1].Rank == Cards[i].Rank)
+                while (i < _cards.Count - 1 && _cards[i + 1].Rank == rank)
                 {
                     count++;
                     i++;
                 }
                 switch (count)
                 {
-                    case 1: kickers.Add(Cards[i].Rank); break;
-                    case 2: pairs.Add(Cards[i].Rank); break;
+                    case 1: kickers.Add(rank); break;
+                    case 2: pairs.Add(rank); break;
                     case 3:
                         {
                             if (threeOfAKind == Rank.None)
                             {
-                                threeOfAKind = Cards[i].Rank;
+                                threeOfAKind = rank;
                             }
                             else
                             {
-                                pairs.Insert(0, Cards[i].Rank);
+                                pairs.Insert(0, rank);
                             }
                         }
                         break;
-                    case 4: fourOfAKindRank = Cards[i].Rank; break;
+                    case 4: fourOfAKindRank = rank; break;
                 }
             }
 
@@ -175,7 +176,6 @@ namespace PokerOdds
             {
                 _value = HandType.FourOfAKind;
                 _highCards.Add(fourOfAKindRank);
-                if (kickers.Count > 0) _highCards.Add(kickers[0]);
                 return;
             }
 
@@ -193,7 +193,7 @@ namespace PokerOdds
             {
                 _value = HandType.Flush;
 
-                foreach (var card in Cards)
+                foreach (var card in _cards)
                 {
                     if (_highCards.Count >= 5) break;
                     if (card.Suit != flushSuit) continue;
@@ -255,7 +255,7 @@ namespace PokerOdds
 
 
             _value = HandType.HighCard;
-            foreach (var card in Cards)
+            foreach (var card in _cards)
             {
                 if (_highCards.Count >= 5) break;
                 _highCards.Add(card.Rank);
@@ -264,7 +264,7 @@ namespace PokerOdds
 
         public int CompareTo(Hand otherHand)
         {
-            if(Cards.Count != otherHand.Cards.Count)
+            if(_cards.Count != otherHand._cards.Count)
             {
                 throw new ApplicationException("Can't compare hands with different card counts.");
             }
@@ -273,6 +273,10 @@ namespace PokerOdds
             if (this._value > otherHand._value) return 1;
             if (this._value < otherHand._value) return -1;
 
+            if(_highCards.Count != otherHand._highCards.Count)
+            {
+                throw new ApplicationException($"Highcard count mismatch ({_highCards.Count},{otherHand._highCards.Count}) : [{this}][{otherHand}]");
+            }
             for(int i = 0; i < _highCards.Count; i++)
             {
                 // TODO: Sometimes highcard array lengths dont match
@@ -300,7 +304,7 @@ namespace PokerOdds
         public override string ToString()
         {
             Evaluate();
-            return $"{_value} ({string.Join(",", _highCards)}) [{string.Join(",", Cards)}]";
+            return $"{_value} ({string.Join(",", _highCards)}) [{string.Join(",", _cards)}]";
         }
     }
 }

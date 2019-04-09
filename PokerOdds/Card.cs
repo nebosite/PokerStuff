@@ -36,8 +36,8 @@ namespace PokerOdds
 
     public class Card 
     {
-        public Suit Suit { get; set; }
-        public Rank Rank { get; set; }
+        public Suit Suit;
+        public Rank Rank;
 
         string _originalData;
 
