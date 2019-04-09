@@ -21,11 +21,13 @@ namespace PokerOdds
     /// </summary>
     public partial class MainWindow : Window
     {
+        AppModel _theApp;
+
         public MainWindow()
         {
             InitializeComponent();
 
-
+            DataContext = _theApp = new AppModel();
         }
 
         private void CalculateClick(object sender, RoutedEventArgs e)
@@ -72,6 +74,12 @@ namespace PokerOdds
 
             var elapsed = stopwatch.Elapsed;
             Debug.WriteLine("Elapsed Milliseconds: " + (elapsed.TotalSeconds * 1000).ToString(".00"));
+        }
+
+        private void FlashPlayerCountChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            _theApp.ResetFlashGame();
+
         }
     }
 }

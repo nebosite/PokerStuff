@@ -1,8 +1,8 @@
 ﻿TODO
-	[ ] Finish unit tests for Card classes
-	[ ] Create an app model
-	[ ] Create a quiz model
-	[ ] UI to pick number of users
+	[x] Finish unit tests for Card classes
+	[x] Create an app model
+	[x] Create a quiz model
+	[x] UI to pick number of users
 	[ ] Quiz Process
 		[ ] Show a pair of two random cards
 			[ ] user classifies strength of hand

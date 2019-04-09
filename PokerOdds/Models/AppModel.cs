@@ -9,13 +9,18 @@ namespace PokerOdds
 {
     class AppModel : INotifyPropertyChanged
     {
-       
+        public FlashGameModel FlashGame { get; set; } = new FlashGameModel();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void Notify(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        internal void ResetFlashGame()
+        {
+            FlashGame.Reset();
         }
     }
 }

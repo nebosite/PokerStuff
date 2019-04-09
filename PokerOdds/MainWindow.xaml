@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:local="clr-namespace:PokerOdds"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
@@ -12,7 +13,7 @@
                 <StackPanel Orientation="Vertical">
                     <StackPanel Orientation="Horizontal" Margin="10">
                         <Label Width="100" HorizontalContentAlignment="Right" Content="# Players:" />
-                        <TextBox Width="40" Text="{Binding NumPlayers, Mode=TwoWay}" />
+                        <wpfTool:IntegerUpDown Value="{Binding PlayerCount}" ValueChanged="FlashPlayerCountChanged" Minimum="2" Maximum="9" />
                     </StackPanel>
                     <local:FlashStage />
 
