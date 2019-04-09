@@ -11,7 +11,7 @@ namespace PokerOdds
     {
         Random _random = new Random();
         List<Card> _cards = new List<Card>();
-        List<Card> _drawnCards = new List<Card>();
+        int _cardPointer = 0;
         public Deck()
         {
             var ranks = "234567890jqka";
@@ -23,11 +23,12 @@ namespace PokerOdds
                     _cards.Add(new Card(ranks[j], suits[i]));
                 }
             }
+            _cardPointer = 0;
         }
 
         public void Shuffle()
         {
-            for (int i = 0; i < _cards.Count - 1; i++)
+            for (int i = _cardPointer; i < _cards.Count - 1; i++)
             {
                 var remainingCount = _cards.Count - i - 1;
                 var swapIndex = _random.Next(remainingCount) + i + 1;
@@ -40,16 +41,12 @@ namespace PokerOdds
         public Card Draw()
         {
             if (_cards.Count == 0) throw new ApplicationException("Tried to draw from an empty deck.");
-            var returnMe = _cards.Last();
-            _cards.RemoveAt(_cards.Count - 1);
-            _drawnCards.Add(returnMe);
-            return returnMe;
+            return _cards[_cardPointer++];
         }
 
         public void Reset()
         {
-            _cards.AddRange(_drawnCards);
-            _drawnCards.Clear();
+            _cardPointer = 0;
         }
     }
 }
