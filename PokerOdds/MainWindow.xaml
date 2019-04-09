@@ -7,30 +7,22 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="10">
-                <Label Width="100" HorizontalContentAlignment="Right" Content="# Players:" />
-                <TextBox Width="40" Text="{Binding NumPlayers, Mode=TwoWay}" />
-            </StackPanel>
+        <TabControl TabStripPlacement="Left">
+            <TabItem Header="Flash" DataContext="{Binding FlashGame}" >
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" Margin="10">
+                        <Label Width="100" HorizontalContentAlignment="Right" Content="# Players:" />
+                        <TextBox Width="40" Text="{Binding NumPlayers, Mode=TwoWay}" />
+                    </StackPanel>
+                    <local:FlashStage />
 
-            <StackPanel Orientation="Horizontal" Margin="10">
-                <Label Width="100" HorizontalContentAlignment="Right" Content="Your Hand:" />
-                <TextBox Width="40" Text="{Binding PlayerCard1, Mode=TwoWay}" />
-                <TextBox Width="40" Text="{Binding PlayerCard2, Mode=TwoWay}" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="10">
-                <Label Width="100" HorizontalContentAlignment="Right" Content="Dealer:" />
-                <TextBox Width="40" Text="{Binding DealerCard1, Mode=TwoWay}" />
-                <TextBox Width="40" Text="{Binding DealerCard2, Mode=TwoWay}" />
-                <TextBox Width="40" Text="{Binding DealerCard3, Mode=TwoWay}" />
-                <TextBox Width="40" Text="{Binding DealerCard4, Mode=TwoWay}" />
-                <TextBox Width="40" Text="{Binding DealerCard5, Mode=TwoWay}" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="10">
-                <Button Content="Calculate" Click="CalculateClick" />
-                <Label Margin="20,0,0,0" Content="Wins:" />
-                <Label Content="{Binding WinsText}" />
-            </StackPanel>
+                </StackPanel>
+                
+            </TabItem> 
+        </TabControl>
+        <StackPanel>
+
+
 
         </StackPanel> 
     </Grid>
