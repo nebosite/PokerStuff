@@ -97,10 +97,14 @@ namespace Tests
         public void CompareTo_ScoresFourOfAKind_Correctly()
         {
             AssertHand(HandType.FourOfAKind, Rank._9, Hands.FourofAKind9);
+
+            // Make sure kickerss are drawn from pairs and 3 of a kind
             var testHand = new Hand("6D,6C,6S,6H,5S,5H,5C".Split(','));
-            Assert.AreEqual("FourOfAKind (_6) [6D,6C,6S,6H,5S,5H,5C]", testHand.ToString());
+            Assert.AreEqual("FourOfAKind (_6,_5) [6D,6C,6S,6H,5S,5H,5C]", testHand.ToString());
             testHand = new Hand("6D,6C,6S,6H,5S,5H,4C".Split(','));
-            Assert.AreEqual("FourOfAKind (_6) [6D,6C,6S,6H,5S,5H,4C]", testHand.ToString());
+            Assert.AreEqual("FourOfAKind (_6,_5) [6D,6C,6S,6H,5S,5H,4C]", testHand.ToString());
+            testHand = new Hand("6D,6C,6S,6H,5S,5H,AC".Split(','));
+            Assert.AreEqual("FourOfAKind (_6,Ace) [AC,6D,6C,6S,6H,5S,5H]", testHand.ToString());
 
 
             TestHands(-1, Hands.FourofAKind9, Hands.RoyalFlushHearts);
@@ -114,23 +118,27 @@ namespace Tests
             TestHands(1, Hands.FourofAKind9, Hands.PairAce);
             TestHands(1, Hands.FourofAKind9, Hands.HighCardAce);
 
-            // It's impossible to have two 4ofaK with the same rank, so
-            // no tie breaking.
+            // Tie breaker is the highest kicker
             TestHands(1, Hands.FourofAKindAce, Hands.FourofAKind9);
             var foakAceWith8Kicker = "8d,Ah,Ad,As,Ac";
             var foakAceWith9Kicker = "Ah,Ad,As,Ac,9c";
-            TestHands(0, foakAceWith9Kicker, foakAceWith8Kicker);
+            TestHands(1, foakAceWith9Kicker, foakAceWith8Kicker);
 
-            // Community card counts for both
-            foakAceWith8Kicker += ",Kc";
-            foakAceWith9Kicker += ",Kc";
-            TestHands(0, foakAceWith9Kicker, foakAceWith8Kicker);
+            // Pairs and 3 of a kind should be included in tie breaking
+            foakAceWith8Kicker += ",3c";
+            foakAceWith9Kicker += ",9h";
+            TestHands(1, foakAceWith9Kicker, foakAceWith8Kicker);
+            foakAceWith8Kicker += ",2h";
+            foakAceWith9Kicker += ",9d";
+            TestHands(1, foakAceWith9Kicker, foakAceWith8Kicker);
         }
 
         [TestMethod]
         public void CompareTo_ScoresFullHouse_Correctly()
         {
             AssertHand(HandType.FullHouse, Rank.King, Hands.FullHouseKingJack);
+            AssertHand(HandType.FullHouse, Rank.King, Hands.FullHouseKingJack + ",Jc");
+            AssertHand(HandType.FullHouse, Rank.King, "Js,Jh,Jc,Kd,Kh,Kc");
 
             TestHands(-1, Hands.FullHouseKingJack, Hands.RoyalFlushHearts);
             TestHands(-1, Hands.FullHouseKingJack, Hands.StraightFlushDiamondsKing);
@@ -145,6 +153,11 @@ namespace Tests
 
             // Tie Breaker is High Card
             TestHands(1, Hands.FullHouseAce9, Hands.FullHouseKingJack);
+
+            // Beyond 5 cards don't count for tie breaker
+            var fh1 = "8d,8h,Ad,As,Ac,kh,qd,0s";
+            var fh2 = "8d,8h,Ad,As,Ac,2h,3d,4s";
+            TestHands(0, fh1, fh2);
 
             // Two 3ok's should resolve to the best hand
             var fh9Jack = "9h,9c,9d,jh,jd";
@@ -167,17 +180,17 @@ namespace Tests
             TestHands(1, Hands.FlushSpadesAceHigh, Hands.PairAce);
             TestHands(1, Hands.FlushSpadesAceHigh, Hands.HighCardAce);
 
-            // Tie Breaker is High Cards on down
+            // No tie breakers
             TestHands(1, Hands.FlushSpadesAceHigh, Hands.FlushHearts10High);
 
-            var winner = "0d,8d,7d,6d,5d";
-            var loser =  "0d,8d,7d,6d,4d";
-            TestHands(1, winner, loser);
+            var hand1 = "0d,8d,7d,6d,4d,ac";
+            var hand2 =  "0d,8d,7d,6d,3d,2c";
+            TestHands(1, hand1, hand2);
 
             // Community card counts for both
-            winner += ",Kd";
-            loser += ",Kd";
-            TestHands(0, winner, loser);
+            hand1 += ",Kd";
+            hand2 += ",Kd";
+            TestHands(0, hand1, hand2);
         }
 
         [TestMethod]
@@ -197,6 +210,17 @@ namespace Tests
             TestHands(1, Hands.StraightAceHigh, Hands.TwoPairAce8);
             TestHands(1, Hands.StraightAceHigh, Hands.PairAce);
             TestHands(1, Hands.StraightAceHigh, Hands.HighCardAce);
+
+            // No tie breakers
+            var hand1 = "0h,9s,8d,7d,6d,ac";
+            var hand2 = "jd,0h,9c,8d,7d,2c";
+            TestHands(-1, hand1, hand2);
+
+            // Community card counts for both
+            hand1 += ",js";
+            hand2 += ",js";
+            TestHands(0, hand1, hand2);
+
         }
 
         [TestMethod]
@@ -211,23 +235,21 @@ namespace Tests
             TestHands(-1, Hands.ThreeOfAKindAce, Hands.FullHouseAce9);
             TestHands(-1, Hands.ThreeOfAKindAce, Hands.FlushSpadesAceHigh);
             TestHands(-1, Hands.ThreeOfAKindAce, Hands.StraightAceHigh);
+            TestHands(1, Hands.ThreeOfAKindAce, Hands.ThreeOfAKind4);
             TestHands(0, Hands.ThreeOfAKind4, Hands.ThreeOfAKind4);
             TestHands(1, Hands.ThreeOfAKind4, Hands.TwoPairAce8);
             TestHands(1, Hands.ThreeOfAKind4, Hands.PairAce);
             TestHands(1, Hands.ThreeOfAKind4, Hands.HighCardAce);
 
-            // Tie Breaker is High Card
-            TestHands(1, Hands.ThreeOfAKindAce, Hands.ThreeOfAKind4);
+            // Kickers break ties
+            var hand1 = "2d,2s,2c,6d,5d";
+            var hand2 = "2d,2s,2c,6d,4d";
+            TestHands(1, hand1, hand2);
 
-            // Kickers don't matter (this is impossible)
-            var winner = "0d,0s,0c,6d,5d";
-            var loser = "0d,0s,0c,6d,4d";
-            TestHands(0, winner, loser);
-
-            // Community card counts for both
-            winner += ",Kd";
-            loser += ",Kd";
-            TestHands(0, winner, loser);
+            // community cards count for both
+            hand1 += ",7s";
+            hand2 += ",7s";
+            TestHands(0, hand1, hand2);
         }
 
         [TestMethod]
@@ -372,9 +394,10 @@ namespace Tests
                 "StraightFlush,0,AD,2D,3D,4D,5D,0C,JS",
                 "StraightFlush,1,AD,2D,3D,4D,5D,7C,9S",
                 "FourOfAKind,1,3c,3s,Ah,Ad,Ac,As,5h",
-                "FourOfAKind,0,3c,3s,3h,5d,5c,5s,5h",
+                "FourOfAKind,0,2c,3s,3h,5d,5c,5s,5h",
+                "FourOfAKind,1,3c,3s,3h,5d,5c,5s,5h",
                 "FourOfAKind,1,2c,2s,2h,5d,5c,5s,5h",
-                "FourOfAKind,1,2c,2s,2h,2d,9c,3s,ah",
+                "FourOfAKind,1,2c,2s,2h,2d,3c,3s,4h",
                 "FullHouse,0,3c,3s,9h,9d,9c,3h,ah",
                 "FullHouse,1,3c,3s,9h,9d,9c,3h,0h",
                 "FullHouse,1,2c,2s,9h,9d,9c,4s,ah",
@@ -388,7 +411,8 @@ namespace Tests
                 "Straight,1,2d,3h,4c,5c,6c,As,Ac",
                 "Straight,0,2d,3h,4c,5c,8c,As,Ac",
                 "Straight,1,2d,3h,4c,5c,8c,9s,Ac",
-                "ThreeOfAKind,0,3d,3h,3c,5c,8c,9s,Ac",
+                "ThreeOfAKind,0,3d,3h,3c,5c,8c,js,Ac",
+                "ThreeOfAKind,1,3d,3h,3c,5c,jc,9s,Ac",
                 "ThreeOfAKind,1,3d,3h,3c,5c,8c,9s,jc",
                 "ThreeOfAKind,1,2d,2h,2c,5c,8c,9s,Ac",
                 "TwoPair,1,2d,2h,4h,5c,8c,As,Ac",

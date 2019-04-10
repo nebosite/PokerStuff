@@ -194,6 +194,9 @@ namespace PokerOdds
             {
                 _value = HandType.FourOfAKind;
                 _highCards.Add(fourOfAKindRank);
+                if (threeOfAKind != Rank.None) _highCards.Add(threeOfAKind);
+                else if (pairs.Count > 0 && (kickers.Count == 0 || pairs[0] > kickers[0])) _highCards.Add(pairs[0]);
+                else if (kickers.Count > 0) _highCards.Add(kickers[0]);
                 return;
             }
 
@@ -239,6 +242,8 @@ namespace PokerOdds
             {
                 _value = HandType.ThreeOfAKind;
                 _highCards.Add(threeOfAKind);
+                if (kickers.Count > 0) _highCards.Add(kickers[0]);
+                if (kickers.Count > 1) _highCards.Add(kickers[1]);
                 return;
             }
 
