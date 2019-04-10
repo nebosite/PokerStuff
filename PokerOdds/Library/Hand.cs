@@ -30,6 +30,9 @@ namespace PokerOdds
         int[] _suitCounts = new int[4];
         int _maxSuitCount;
         int _rankBits;
+        HandType _value;
+        List<Rank> _highCards = new List<Rank>(5);
+        bool _evaluated = false;
 
         public Hand(string[] cards = null)
         {
@@ -78,7 +81,6 @@ namespace PokerOdds
 
         }
 
-        HandType _value;
         public HandType Value
         {
             get
@@ -88,7 +90,22 @@ namespace PokerOdds
             }
         }
 
-        List<Rank> _highCards = new List<Rank>(5);
+        internal void ClearAllBut(int keep)
+        {
+            var pocketCards = DealtCards.Take(keep);
+            _cards.Clear();
+            DealtCards.Clear();
+
+            _suitBits = new int[4];
+            _suitCounts = new int[4];
+            _maxSuitCount = _rankBits = 0;
+            _evaluated = false;
+            foreach(var card in pocketCards)
+            {
+                AddCard(card);
+            }
+        }
+
         public Rank HighCard
         {
             get
@@ -99,7 +116,6 @@ namespace PokerOdds
         }
 
 
-        bool _evaluated = false;
         public void Evaluate()
         {
             if (_evaluated) return;

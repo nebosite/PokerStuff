@@ -24,5 +24,13 @@ namespace PokerOdds
         {
             InitializeComponent();
         }
+
+        FlashGameModel Model => DataContext as FlashGameModel;
+
+        private void StrengthClick(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            Model.UserSelectedStrength(button.Content.ToString());
+        }
     }
 }

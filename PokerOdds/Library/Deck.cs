@@ -12,6 +12,8 @@ namespace PokerOdds
         Random _random = new Random();
         List<Card> _cards = new List<Card>();
         int _cardPointer = 0;
+        public int Spot => _cardPointer;
+
         public Deck()
         {
             var ranks = "234567890jqka";
@@ -44,9 +46,9 @@ namespace PokerOdds
             return _cards[_cardPointer++];
         }
 
-        public void Reset()
+        public void Reset(int newSpot = 0)
         {
-            _cardPointer = 0;
+            _cardPointer = newSpot;
         }
     }
 }

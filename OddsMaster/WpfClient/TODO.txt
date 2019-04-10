@@ -6,13 +6,13 @@
 	[ ] Quiz Process
 		[ ] Show a pair of two random cards
 			[ ] user classifies strength of hand
-					Dominating 95%
-					powerful 85% 
-					Strong 70% 
-					OK 55%
-					Risky 40% 
-					weak 15% 
-					hopeless 0%
+					Dominating 95 - 100
+					powerful 85 - 95 
+					Strong 65 - 85
+					OK 35 - 65
+					Risky 15 - 35
+					weak 5 - 15 
+					hopeless 0 - 5
 				- allow a little crossover so that guessing near the border is not hazardous
 					eg:  "Powerful/Dominating" cover top third of powerful and lower third of dominating
 			[ ] user picks type of hand most likely to beat (flush, 4oak, full house, etc...)
