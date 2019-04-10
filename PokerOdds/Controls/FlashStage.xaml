@@ -5,11 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PokerOdds"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="500">
+             d:DesignHeight="200" d:DesignWidth="500">
     <Border CornerRadius="5" Background="White">
         <Grid>
             <StackPanel>
-                <StackPanel Orientation="Horizontal" Height="40">
+                <StackPanel Orientation="Horizontal" Height="40" Margin="5">
                     <Label Content="Your Hand:" />
                     <local:CardControl />
                     <local:CardControl />
@@ -20,7 +20,7 @@
                     <local:CardControl Margin="10,0,0,0" />
                     <local:CardControl Margin="10,0,0,0" />
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" Margin="5">
                     <Label Content="Strength:" />
                     <Button Width="80" Margin="5,0,5,0" Content="Dominating" />
                     <Button Width="80" Margin="5,0,5,0" Content="Dominating" />
@@ -28,6 +28,7 @@
                     <Button Width="80" Margin="5,0,5,0" Content="Dominating" />
                     <Button Width="80" Margin="5,0,5,0" Content="Dominating" />
                 </StackPanel>
+                <TextBlock Text="{Binding Explanation}" Background="LightGray" Height="50" Margin="5" Padding="5"/>
             </StackPanel>
         </Grid>
         

@@ -7,13 +7,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="50" d:DesignWidth="30">
     <Border CornerRadius="5" Background="White" BorderThickness="1" BorderBrush="Black">
-     <Grid>
-            <StackPanel Orientation="Horizontal">
-                <Label Content="A" FontSize="18" FontFamily="Times New Roman" FontWeight="Bold" Foreground="Red" Padding="0" />
-                <Label Content="©" FontSize="22" FontFamily="Symbol" FontWeight="Bold" Foreground="Red" Padding="0" Margin="-4,-6" />
-
-            </StackPanel>
+        <Grid>
+            <Label x:Name ="CardRankLabel" Content="A" FontSize="18" FontFamily="Times New Roman" FontWeight="Bold" Foreground="Red" Padding="0" Margin="7,15,5,10" HorizontalContentAlignment="Center" />
+            <Label x:Name="CardSuitLabel" Content="©" FontSize="18" FontFamily="Symbol" FontWeight="Bold" Foreground="Red" Padding="0" Margin="2,-3,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="19" />
         </Grid>
-       
+
     </Border>
 </UserControl>

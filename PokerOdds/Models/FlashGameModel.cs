@@ -21,8 +21,10 @@ namespace PokerOdds
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public Card PocketCard1 { get; set; }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        
         public void Notify(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
