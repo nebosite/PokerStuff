@@ -6,7 +6,8 @@
         xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:local="clr-namespace:PokerOdds"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        FontSize="20"
+        Title="MainWindow" Height="661" Width="903">
     <Grid>
         <TabControl TabStripPlacement="Left">
             <TabItem Header="Flash" DataContext="{Binding FlashGame}" >
@@ -18,13 +19,13 @@
                     <local:FlashStage />
 
                 </StackPanel>
-                
-            </TabItem> 
+
+            </TabItem>
         </TabControl>
         <StackPanel>
 
 
 
-        </StackPanel> 
+        </StackPanel>
     </Grid>
 </Window>

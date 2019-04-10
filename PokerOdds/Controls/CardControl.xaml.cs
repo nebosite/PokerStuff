@@ -90,6 +90,8 @@ namespace PokerOdds
         {
             InitializeComponent();
             Card = null;
+            CardSuitLabel.Content = "";
+            CardRankLabel.Content = "";
         }
     }
 }

@@ -24,6 +24,7 @@ namespace PokerOdds
     public class Hand
     {
         List<Card> _cards = new List<Card>(7);
+        public List<Card> DealtCards { get; set; } = new List<Card>(7);
 
         int[] _suitBits = new int[4];
         int[] _suitCounts = new int[4];
@@ -38,6 +39,7 @@ namespace PokerOdds
 
         public void AddCard(Card card)
         {
+            DealtCards.Add(card);
             bool cardAdded = false;
             for (int i = 0; i < _cards.Count; i++)
             {
