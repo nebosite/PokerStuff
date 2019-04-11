@@ -22,5 +22,10 @@ namespace PokerOdds
         {
             FlashGame.Reset();
         }
+
+        internal void Recalculate()
+        {
+            FlashGame.Recalculate();
+        }
     }
 }

@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:PokerOdds"
              mc:Ignorable="d" 
              
-             d:DesignHeight="200" d:DesignWidth="800">
+             d:DesignHeight="600" d:DesignWidth="800">
     <Border CornerRadius="5" Background="White">
         <Grid>
             <StackPanel>
@@ -31,7 +31,7 @@
                     <Button Width="70" FontSize="10" FontWeight="Bold" Margin="0,0,5,0" Click="StrengthClick" Content="Weak"  ToolTip="Expected to win less than 15%" />
                     <Button Width="70" FontSize="10" FontWeight="Bold" Margin="0,0,5,0" Click="StrengthClick" Content="Hopeless"  ToolTip="Expected to win less than 5%" />
                 </StackPanel>
-                <TextBlock Text="{Binding Explanation}" Background="LightGray" Height="50" Margin="5" Padding="5"/>
+                <TextBlock Text="{Binding Explanation}" Background="LightGray" Height="350" Margin="5" Padding="5"/>
             </StackPanel>
         </Grid>
         

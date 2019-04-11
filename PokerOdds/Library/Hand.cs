@@ -270,9 +270,9 @@ namespace PokerOdds
                 _value = HandType.Pair;
                 _highCards.Add(pairs[0]);
 
-                _highCards.Add(kickers[0]);
-                _highCards.Add(kickers[1]);
-                _highCards.Add(kickers[2]);
+                if(kickers.Count > 0) _highCards.Add(kickers[0]);
+                if (kickers.Count > 1) _highCards.Add(kickers[1]);
+                if (kickers.Count > 2) _highCards.Add(kickers[2]);
                 return;
             }
 

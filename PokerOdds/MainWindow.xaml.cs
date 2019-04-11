@@ -35,5 +35,15 @@ namespace PokerOdds
             _theApp.ResetFlashGame();
 
         }
+
+        private void RedealClick(object sender, RoutedEventArgs e)
+        {
+            _theApp.ResetFlashGame();
+        }
+
+        private void RecalcClick(object sender, RoutedEventArgs e)
+        {
+            _theApp.Recalculate();
+        }
     }
 }
