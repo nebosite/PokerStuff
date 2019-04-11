@@ -91,7 +91,7 @@ namespace OddsMaster
 
         private void CalculateOdds()
         {
-            var deckSpot = _deck.Spot;
+            var deckSpot = _deck.DrawSpot;
             var stopwatch = Stopwatch.StartNew();
             var hands = new Hand[PlayerCount];
             var street = new List<Card>(7);

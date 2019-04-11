@@ -8,13 +8,26 @@ using System.Threading.Tasks;
 namespace OddsMaster
 {
 
+    //------------------------------------------------------------------------------------
+    /// <summary>
+    /// Deck
+    /// </summary>
+    //------------------------------------------------------------------------------------
     public class Deck
     {
+        /// <summary>
+        /// The current location of the draw
+        /// </summary>
+        public int DrawSpot { get; private set; } = 0;
+
         Random _random = new Random();
         List<Card> _cards = new List<Card>();
-        int _cardPointer = 0;
-        public int Spot => _cardPointer;
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// ctor - creats a fresh, ordered deck
+        /// </summary>
+        //------------------------------------------------------------------------------------
         public Deck()
         {
             var ranks = "234567890jqka";
@@ -26,12 +39,17 @@ namespace OddsMaster
                     _cards.Add(new Card(ranks[j], suits[i]));
                 }
             }
-            _cardPointer = 0;
+            DrawSpot = 0;
         }
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Shuffle the undrawn portion of the deck
+        /// </summary>
+        //------------------------------------------------------------------------------------
         public void Shuffle()
         {
-            for (int i = _cardPointer; i < _cards.Count - 1; i++)
+            for (int i = DrawSpot; i < _cards.Count - 1; i++)
             {
                 var remainingCount = _cards.Count - i - 1;
                 var swapIndex = _random.Next(remainingCount) + i + 1;
@@ -41,15 +59,26 @@ namespace OddsMaster
             }
         }
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Draw the top card from the deck (advances the DrawSpot)
+        /// </summary>
+        //------------------------------------------------------------------------------------
         public Card Draw()
         {
             if (_cards.Count == 0) throw new ApplicationException("Tried to draw from an empty deck.");
-            return _cards[_cardPointer++];
+            return _cards[DrawSpot++];
         }
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Put card back onto the deck in thier original order.  Specifying newspot will
+        /// allow you to put the deck just partially
+        /// </summary>
+        //------------------------------------------------------------------------------------
         public void Reset(int newSpot = 0)
         {
-            _cardPointer = newSpot;
+            DrawSpot = newSpot;
         }
     }
 }

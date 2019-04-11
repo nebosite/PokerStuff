@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 
 namespace PokerParts
 {
+    //------------------------------------------------------------------------------------
+    /// <summary>
+    /// Card Suits
+    /// </summary>
+    //------------------------------------------------------------------------------------
     public enum Suit
     {
         Clubs,
@@ -16,6 +21,11 @@ namespace PokerParts
         None
     }
 
+    //------------------------------------------------------------------------------------
+    /// <summary>
+    /// Card Ranks
+    /// </summary>
+    //------------------------------------------------------------------------------------
     public enum Rank
     {
         None = 0,
@@ -34,6 +44,11 @@ namespace PokerParts
         Ace = 0x2000,
     }
 
+    //------------------------------------------------------------------------------------
+    /// <summary>
+    /// Card 
+    /// </summary>
+    //------------------------------------------------------------------------------------
     public class Card 
     {
         public Suit Suit;
@@ -41,20 +56,37 @@ namespace PokerParts
 
         string _originalData;
 
-        public Card(string data)
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// ctor - Call with two-character card designation.  e.g.:  
+        ///     "JD" = Jack of Diamonds
+        ///     "0s" = 10 of Spaces 
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public Card(string twoCharacterCard)
         {
-            data = data.Trim().ToUpper();
-            _originalData = data;
-            if (data.Length != 2) throw new ApplicationException("Bad card specifier: " + data);
-            Init(data[0], data[1]);
+            twoCharacterCard = twoCharacterCard.Trim().ToUpper();
+            _originalData = twoCharacterCard;
+            if (twoCharacterCard.Length != 2) throw new ApplicationException("Bad card specifier: " + twoCharacterCard);
+            Init(twoCharacterCard[0], twoCharacterCard[1]);
         }
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// ctor
+        /// </summary>
+        //------------------------------------------------------------------------------------
         public Card(char rank, char suit)
         {
             Init(rank, suit);
             if (_originalData == null) _originalData = "" + rank + suit;
         }
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Initialize this card from character designations
+        /// </summary>
+        //------------------------------------------------------------------------------------
         void Init(char rank, char suit)
         {
             switch (rank)
@@ -95,6 +127,11 @@ namespace PokerParts
             }
         }
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// ToString
+        /// </summary>
+        //------------------------------------------------------------------------------------
         public override string ToString()
         {
             return _originalData;

@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 
 namespace PokerParts
 {
+    //------------------------------------------------------------------------------------
+    /// <summary>
+    /// HandType - Standard Poker value types in order lowest value to highest
+    /// </summary>
+    //------------------------------------------------------------------------------------
     public enum HandType
     {
         HighCard,
@@ -21,11 +26,46 @@ namespace PokerParts
         RoyalFlush
     }
 
+    //------------------------------------------------------------------------------------
+    /// <summary>
+    /// Represents a poker hand up to seven cards - Only the best five card 
+    /// combination is used to get the value
+    /// </summary>
+    //------------------------------------------------------------------------------------
     public class Hand
     {
-        List<Card> _cards = new List<Card>(7);
+        /// <summary>
+        /// The cards dealt to this hand in the order they were added
+        /// </summary>
         public List<Card> DealtCards { get; set; } = new List<Card>(7);
 
+        /// <summary>
+        /// The Raw value of this hand - only best five cards are considered
+        /// </summary>
+        public HandType Value
+        {
+            get
+            {
+                Evaluate();
+                return _value;
+            }
+        }
+
+        /// <summary>
+        /// The high card of the hand based on the value.  
+        /// e.g.:  A pair of 3's with an Ace kicker will show "3" as high card
+        /// </summary>
+        public Rank HighCard
+        {
+            get
+            {
+                Evaluate();
+                return _highCards.Count == 0 ? Rank.None : _highCards[0];
+            }
+        }
+
+        
+        List<Card> _cards = new List<Card>(7);
         int[] _suitBits = new int[4];
         int[] _suitCounts = new int[4];
         int _maxSuitCount;
@@ -34,12 +74,22 @@ namespace PokerParts
         List<Rank> _highCards = new List<Rank>(5);
         bool _evaluated = false;
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// ctor
+        /// </summary>
+        //------------------------------------------------------------------------------------
         public Hand(string[] cards = null)
         {
             if (cards == null) return;
             foreach (var card in cards) AddCard(new Card(card));
         }
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Add a card to this hand
+        /// </summary>
+        //------------------------------------------------------------------------------------
         public void AddCard(Card card)
         {
             DealtCards.Add(card);
@@ -71,25 +121,15 @@ namespace PokerParts
             _suitCounts[(int)card.Suit]++;
             if (_suitCounts[(int)card.Suit] > _maxSuitCount) _maxSuitCount++;
             _evaluated = false;
-            // Figure out the value of the hand here
-            // Fill bit arrays by rank (A is both high and low)
-            //  OR bit arrays to look for mixed suits (bitshift the pattern down)
-            //  use AND on bit patterns to find straights
-            //  Count suits to find flushes
-            // Find Counts of 4 of a kind, 3ok, and pairs, mark high cards
-
-
         }
 
-        public HandType Value
-        {
-            get
-            {
-                Evaluate();
-                return _value;
-            }
-        }
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Remove cards from the hand, except for the number of cards you specify.  The
+        /// cards will be removed last in, first out order
+        /// </summary>
+        //------------------------------------------------------------------------------------
         internal void ClearAllBut(int keep)
         {
             var pocketCards = DealtCards.Take(keep);
@@ -106,17 +146,12 @@ namespace PokerParts
             }
         }
 
-        public Rank HighCard
-        {
-            get
-            {
-                Evaluate();
-                return _highCards.Count == 0 ? Rank.None : _highCards[0];
-            }
-        }
-
-
-        public void Evaluate()
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Force the hand to be evaluated if it is not already
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        private void Evaluate()
         {
             if (_evaluated) return;
             _evaluated = true;
@@ -285,6 +320,11 @@ namespace PokerParts
             }
         }
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Compare to another hand.  Returns 1 if we beat the other hand, 0 for tie, -1 for lose
+        /// </summary>
+        //------------------------------------------------------------------------------------
         public int CompareTo(Hand otherHand)
         {
             if(_cards.Count != otherHand._cards.Count)
@@ -307,23 +347,15 @@ namespace PokerParts
                 if (_highCards[i] < otherHand._highCards[i]) return -1;
             }
 
-
             return 0;
-
-            // Royal Flush
-            // Straight Flush
-            // Four of a kind
-            // Full house
-            // Flush
-            // Straight
-            // 3oak
-            // 2pair
-            // pair
-            // high card
-
         }
 
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// ToString
+        /// </summary>
+        //------------------------------------------------------------------------------------
         public override string ToString()
         {
             Evaluate();
