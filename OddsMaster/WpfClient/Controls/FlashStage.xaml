@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="OddsMaster.FlashStage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OddsMaster"
+             mc:Ignorable="d" 
+             
+             d:DesignHeight="600" d:DesignWidth="800">
+    <Border CornerRadius="5" Background="White">
+        <Grid>
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Height="100" Margin="5">
+                    <Label Content="Your Hand:" />
+                    <local:CardControl Card="{Binding PocketCard1}" Margin="5,0,0,0"/>
+                    <local:CardControl Card="{Binding PocketCard2}"  Margin="5,0,0,0"/>
+                    <Label Content="  Street:" />
+                    <local:CardControl Card="{Binding FlopCard1}"  Margin="5,0,0,0"/>
+                    <local:CardControl Card="{Binding FlopCard2}"  Margin="5,0,0,0"/>
+                    <local:CardControl Card="{Binding FlopCard3}"  Margin="5,0,0,0"/>
+                    <local:CardControl Card="{Binding TurnCard}" Margin="20,0,0,0" />
+                    <local:CardControl Card="{Binding RiverCard}" Margin="20,0,0,0" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <Label Content="Strength:  " />
+                    <Button Width="70" FontSize="10" FontWeight="Bold" Margin="0,0,5,0" Click="StrengthClick" Content="Dominating" ToolTip="Expected to win more than 95%" />
+                    <Button Width="70" FontSize="10" FontWeight="Bold" Margin="0,0,5,0" Click="StrengthClick" Content="Powerful"  ToolTip="Expected to win more than 85%" />
+                    <Button Width="70" FontSize="10" FontWeight="Bold" Margin="0,0,5,0" Click="StrengthClick" Content="Strong"  ToolTip="Expected to win more than 65%" />
+                    <Button Width="70" FontSize="10" FontWeight="Bold" Margin="0,0,5,0" Click="StrengthClick" Content="OK"  ToolTip="Expected to win between 35% and 65%" />
+                    <Button Width="70" FontSize="10" FontWeight="Bold" Margin="0,0,5,0" Click="StrengthClick" Content="Risky"  ToolTip="Expected to win less than 35%" />
+                    <Button Width="70" FontSize="10" FontWeight="Bold" Margin="0,0,5,0" Click="StrengthClick" Content="Weak"  ToolTip="Expected to win less than 15%" />
+                    <Button Width="70" FontSize="10" FontWeight="Bold" Margin="0,0,5,0" Click="StrengthClick" Content="Hopeless"  ToolTip="Expected to win less than 5%" />
+                </StackPanel>
+                <TextBlock Text="{Binding Explanation}" Background="LightGray" Height="350" Margin="5" Padding="5"/>
+            </StackPanel>
+        </Grid>
+        
+    </Border>
+</UserControl>

@@ -1,13 +1,14 @@
-﻿using System;
+﻿using PokerParts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PokerParts
+namespace OddsMaster
 {
 
-    class Deck
+    public class Deck
     {
         Random _random = new Random();
         List<Card> _cards = new List<Card>();
