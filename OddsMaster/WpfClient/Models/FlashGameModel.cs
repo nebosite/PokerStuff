@@ -7,6 +7,11 @@ using System.Text;
 
 namespace OddsMaster
 {
+    //------------------------------------------------------------------------------------
+    /// <summary>
+    /// Handles a flash card style of learning poker odds
+    /// </summary>
+    //------------------------------------------------------------------------------------
     class FlashGameModel : INotifyPropertyChanged
     {
         int _playerCount = 5;
@@ -34,6 +39,11 @@ namespace OddsMaster
         Deck _deck;
         Hand _playerHand;
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// ctor
+        /// </summary>
+        //------------------------------------------------------------------------------------
         public FlashGameModel()
         {
             _deck = new Deck();
@@ -62,6 +72,11 @@ namespace OddsMaster
             
         }
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Reset this model and draw some cards
+        /// </summary>
+        //------------------------------------------------------------------------------------
         internal void Reset()
         {
             _deck.Reset();
@@ -81,6 +96,12 @@ namespace OddsMaster
 
             NotifyAllPropertiesChanged();
         }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Re-run odds calculation
+        /// </summary>
+        //------------------------------------------------------------------------------------
         internal void Recalculate()
         {
             CalculateOdds();
@@ -89,6 +110,11 @@ namespace OddsMaster
         }
 
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Figure the odds for the player's hand
+        /// </summary>
+        //------------------------------------------------------------------------------------
         private void CalculateOdds()
         {
             var deckSpot = _deck.DrawSpot;
