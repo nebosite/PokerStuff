@@ -92,8 +92,10 @@ namespace OddsMaster
             _playerHand.AddCard(FlopCard1);
             _playerHand.AddCard(FlopCard2);
             _playerHand.AddCard(FlopCard3);
+            Explanation = "Click re-calc to see stats here.";
+                
 
-            CalculateOdds();
+            CalculateOdds(false);
 
             NotifyAllPropertiesChanged();
         }
@@ -105,7 +107,7 @@ namespace OddsMaster
         //------------------------------------------------------------------------------------
         internal void Recalculate()
         {
-            CalculateOdds();
+            CalculateOdds(true);
 
             NotifyAllPropertiesChanged();
         }
@@ -116,7 +118,7 @@ namespace OddsMaster
         /// Figure the odds for the player's hand
         /// </summary>
         //------------------------------------------------------------------------------------
-        private void CalculateOdds()
+        private void CalculateOdds(bool showReasons)
         {
             var odds = OddsCalculator.Calculate(_deck, _playerHand, PlayerCount, TimeSpan.FromMilliseconds(300));
             
@@ -124,15 +126,68 @@ namespace OddsMaster
 
             var output = new StringBuilder();
             output.AppendLine($"Win percentage: { (odds.WinRatio * 100.0).ToString(".0")}% ");
-            output.AppendLine("\r\nHands that beat you:");
+            output.AppendLine("\r\nHands performance:");
 
-            var villianInfo = odds.VillianPerformance.Select(p => Tuple.Create(p.Key, p.Value)).OrderByDescending(t => t.Item2);
-            foreach(var perfInfo in villianInfo)
+            var villianInfo = odds.VillianPerformance.Select(p => Tuple.Create(p.Key, p.Value)).OrderByDescending(t => t.Item2).ToArray();
+            var playerInfo = odds.PlayerPerformance.Select(p => Tuple.Create(p.Key, p.Value)).OrderByDescending(t => t.Item2).ToArray();
+            var formatter = new FixedFormatter();
+            formatter.ColumnWidths.AddRange(new int[] { -8, 25, -8, 25 });
+            output.AppendLine("Your Winning Hands                  Winning Opponent Hands");
+
+            for(int i = 0; i < villianInfo.Length; i++)
             {
-                output.AppendLine($"{perfInfo.Item1}: {(perfInfo.Item2 * 100.0).ToString(".0")}%");
+                output.AppendLine(formatter.Format(
+                    $"{(playerInfo[i].Item2 * 100.0 * odds.WinRatio).ToString("0.")}%",
+                    playerInfo[i].Item1.ToString(),
+                    $"{(villianInfo[i].Item2 * 100.0 ).ToString("0.")}%",
+                    villianInfo[i].Item1.ToString()
+                ));
+
             }
 
-            Explanation = output.ToString();
+            if(showReasons)
+            {
+                Explanation = output.ToString();
+
+            }
+        }
+
+        class FixedFormatter
+        {
+            public List<int> ColumnWidths = new List<int>();
+            public int Padding = 1;
+
+            public string Format(params string[] columnValues)
+            {
+                var line = new StringBuilder();
+                for(int i = 0; i < columnValues.Length; i++)
+                {
+                    var width = 8;
+                    if (i < ColumnWidths.Count) width = ColumnWidths[i];
+                    var left = true;
+                    if(width < 0)
+                    {
+                        left = false;
+                        width = -width;
+                    }
+
+                    var text = columnValues[i];
+                    if (left)
+                    {
+                        line.Append(text);
+                        line.Append(new string(' ', width - text.Length));
+                    }
+                    else
+                    {
+                        line.Append(new string(' ', width - text.Length));
+                        line.Append(text);
+                    }
+                    line.Append(new string(' ', Padding));
+
+                }
+
+                return line.ToString();
+            }
         }
     }
 }

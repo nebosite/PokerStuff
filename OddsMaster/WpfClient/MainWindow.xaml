@@ -6,7 +6,7 @@
         xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:local="clr-namespace:OddsMaster"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="570.754" Width="823.77">
     <Grid>
         <TabControl TabStripPlacement="Left">
             <TabItem Header="Flash" DataContext="{Binding FlashGame}" >

@@ -3,34 +3,27 @@
 	[x] Create an app model
 	[x] Create a quiz model
 	[x] UI to pick number of users
-	[ ] Quiz Process
-		[ ] Show a pair of two random cards
-			[ ] user classifies strength of hand
-					Dominating 95 - 100
-					powerful 85 - 95 
-					Strong 65 - 85
-					OK 35 - 65
-					Risky 15 - 35
-					weak 5 - 15 
-					hopeless 0 - 5
-				- allow a little crossover so that guessing near the border is not hazardous
-					eg:  "Powerful/Dominating" cover top third of powerful and lower third of dominating
-			[ ] user picks type of hand most likely to beat (flush, 4oak, full house, etc...)
-			[ ] When picking, allow 3 guesses, then show the numbers
-			[ ] Always show numbers at the and of each step in the process
-		[ ] Show the flop
-			[ ] user classifies strength of hand as Dominating, powerful, OK, weak, hopeless
-			[ ] user picks type of hand most likely to beat (flush, 4oak, full house, etc...)
-		[ ] Show the turn
-			[ ] user classifies strength of hand as Dominating, powerful, OK, weak, hopeless
-			[ ] user picks type of hand most likely to beat (flush, 4oak, full house, etc...)
-		[ ] Show the river
-			[ ] user classifies strength of hand as Dominating, powerful, OK, weak, hopeless
-			[ ] user picks type of hand most likely to beat (flush, 4oak, full house, etc...)
+	[ ] Walk through the stages - Preflop, flop, turn, river
+	[ ] Add Limp, bet, 2bet stages in between each
+
+
 	[ ] Track progress
 		[ ] Points: 5 for first guess, then 2, then 1
 		[ ] Remember total points for pocket type
 		[ ] Remember performance at each stage
+
+		    [ ] Instead of categories, click on a line and get:
+        5 points if within a 4% window
+        2 points if within a 12% window
+        1 points if within a 30% window
+        or new categories:
+            0-8% hopeless
+            6% - 20% risky
+            15% - 40% strong
+            35% - 80% poweful
+            70% - 100% Dominating
+            
+	[ ] Game: "pickpocket" show a bunch of options for pockets - you pick the strongest
 
 NEW
 	[ ] Calculate win figures and compare to https://github.com/nebosite/PokerStuff.git

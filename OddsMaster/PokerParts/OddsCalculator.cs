@@ -14,7 +14,14 @@ namespace PokerParts
         /// E.g.:  What percent of my losses were to a Full House?
         /// This helps to identify the types of hands to watch out for.
         /// </summary>
-        public Dictionary<ValueType, double>VillianPerformance { get;  set; } 
+        public Dictionary<ValueType, double> VillianPerformance { get; set; }
+
+        /// <summary>
+        /// For the hands that the player wins, what is the ratio of
+        /// wins for each hand type?  i.e.:  What percent of my wins
+        /// were from Two Pair?
+        /// </summary>
+        public Dictionary<ValueType, double> PlayerPerformance { get; set; }
 
         /// <summary>
         /// What ratio of the iterations did the player win outright?
@@ -49,19 +56,21 @@ namespace PokerParts
             var deckSpot = deck.DrawSpot;
             var hands = new Hand[playerCount];
             var street = new List<Card>(7);
-            var wins = 0;
+            var winCount = 0;
             int lossCount = 0;
 
-            var villianHands = new Dictionary<HandType, int>();
+            var villianWinHands = new Dictionary<HandType, int>();
+            var playerWinHands = new Dictionary<HandType, int>();
             foreach (HandType valueType in Enum.GetValues(typeof(HandType)))
             {
-                villianHands[valueType] = 0;
+                villianWinHands[valueType] = 0;
+                playerWinHands[valueType] = 0;
             }
 
             int iterations = 0;
             deck.Shuffle();
 
-            while(stopwatch.Elapsed < computeLimit)
+            while(stopwatch.Elapsed < computeLimit || iterations < 1000)
             {
                 iterations++;
                 for (int j = 0; j < hands.Length; j++)
@@ -108,14 +117,22 @@ namespace PokerParts
                 for (int j = 1; j < hands.Length; j++)
                 {
                     var result = hands[0].CompareTo(hands[j]);
-                    if (result != 1) win = false;
+                    if (result != 1)
+                    {
+                        win = false;
+                    }
+
                     if (result == -1)
                     {
                         lossCount++;
-                        villianHands[hands[j].Value]++;
+                        villianWinHands[hands[j].Value]++;
                     }
                 }
-                if (win) wins++;
+                if (win)
+                {
+                    playerWinHands[hands[0].Value]++;
+                    winCount++;
+                }
 
                 deck.Reset(deckSpot);
                 deck.Shuffle();
@@ -123,11 +140,13 @@ namespace PokerParts
 
             oddsOutput.Iterations = iterations;
             oddsOutput.VillianPerformance = new Dictionary<ValueType, double>();
+            oddsOutput.PlayerPerformance = new Dictionary<ValueType, double>();
             foreach (HandType valueType in Enum.GetValues(typeof(HandType)))
             {
-                oddsOutput.VillianPerformance[valueType] = (double)villianHands[valueType] / lossCount;
+                oddsOutput.VillianPerformance[valueType] = (double)villianWinHands[valueType] / lossCount;
+                oddsOutput.PlayerPerformance[valueType] = (double)playerWinHands[valueType] / winCount;
             }
-            oddsOutput.WinRatio = (double)wins / iterations;
+            oddsOutput.WinRatio = (double)winCount / iterations;
 
             return oddsOutput;
         }
