@@ -78,6 +78,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\FlashGameControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GenerateTableControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -88,13 +96,21 @@
     </Compile>
     <Compile Include="Controls\CardControl.xaml.cs" />
     <Compile Include="Controls\FlashStage.xaml.cs" />
+    <Compile Include="Controls\FlashGameControl.xaml.cs">
+      <DependentUpon>FlashGameControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GenerateTableControl.xaml.cs">
+      <DependentUpon>GenerateTableControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\AppModel.cs" />
+    <Compile Include="Models\TableGenModel.cs" />
     <Compile Include="Models\FlashGameModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

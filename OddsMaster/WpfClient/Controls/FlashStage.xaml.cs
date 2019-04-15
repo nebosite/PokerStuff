@@ -19,7 +19,6 @@ namespace OddsMaster
         private void StrengthClick(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
-            Model.UserSelectedStrength(button.Content.ToString());
         }
     }
 }

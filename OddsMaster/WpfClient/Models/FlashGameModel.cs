@@ -13,7 +13,7 @@ namespace OddsMaster
     /// Handles a flash card style of learning poker odds
     /// </summary>
     //------------------------------------------------------------------------------------
-    class FlashGameModel : INotifyPropertyChanged
+    class FlashGameModel : BaseModel
     {
         int _playerCount = 5;
         public int PlayerCount
@@ -48,29 +48,6 @@ namespace OddsMaster
         public FlashGameModel()
         {
             _deck = new Deck();
-        }
-
-        #region Notification
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void Notify(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        void NotifyAllPropertiesChanged()
-        {
-            foreach(var property in GetType().GetProperties())
-            {
-                Notify(property.Name);
-            }
-        }
-
-        #endregion
-
-        internal void UserSelectedStrength(string strength)
-        {
-            
         }
 
         //------------------------------------------------------------------------------------

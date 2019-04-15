@@ -29,20 +29,9 @@ namespace OddsMaster
             DataContext = _theApp = new AppModel();
         }
 
-        private void FlashPlayerCountChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void GenerateTableClick(object sender, RoutedEventArgs e)
         {
-            _theApp.ResetFlashGame();
-
-        }
-
-        private void RedealClick(object sender, RoutedEventArgs e)
-        {
-            _theApp.ResetFlashGame();
-        }
-
-        private void RecalcClick(object sender, RoutedEventArgs e)
-        {
-            _theApp.Recalculate();
+            
         }
     }
 }

@@ -7,25 +7,11 @@ using System.Threading.Tasks;
 
 namespace OddsMaster
 {
-    class AppModel : INotifyPropertyChanged
+    class AppModel : BaseModel
     {
         public FlashGameModel FlashGame { get; set; } = new FlashGameModel();
+        public TableGenModel TableGen { get; set; } = new TableGenModel();
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        public void Notify(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        internal void ResetFlashGame()
-        {
-            FlashGame.Reset();
-        }
-
-        internal void Recalculate()
-        {
-            FlashGame.Recalculate();
-        }
     }
 }

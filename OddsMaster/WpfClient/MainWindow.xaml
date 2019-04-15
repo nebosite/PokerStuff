@@ -9,24 +9,13 @@
         Title="MainWindow" Height="570.754" Width="823.77">
     <Grid>
         <TabControl TabStripPlacement="Left">
-            <TabItem Header="Flash" DataContext="{Binding FlashGame}" >
-                <StackPanel Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" Margin="10">
-                        <Label Width="100" HorizontalContentAlignment="Right" Content="# Players:" />
-                        <wpfTool:IntegerUpDown Value="{Binding PlayerCount}" ValueChanged="FlashPlayerCountChanged" Minimum="2" Maximum="9" />
-                        <Button Content=" Re-deal " Margin="20,0" Click="RedealClick"/>
-                        <Button Content=" Recalc " Margin="20,0" Click="RecalcClick"/>
-                    </StackPanel>
-                    <local:FlashStage />
-
-                </StackPanel>
-
+            <TabItem Header="Flash"  >
+                <local:FlashGameControl DataContext="{Binding FlashGame}" />
+            </TabItem>
+            <TabItem Header="Tables" >
+                <local:GenerateTableControl DataContext="{Binding TableGen}" />
             </TabItem>
         </TabControl>
-        <StackPanel>
 
-
-
-        </StackPanel>
     </Grid>
 </Window>
