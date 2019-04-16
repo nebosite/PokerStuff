@@ -64,6 +64,19 @@ namespace PokerParts
             }
         }
 
+        public string PocketId
+        {
+            get
+            {
+                if (DealtCards.Count < 2) return "**";
+                var c1 = GetRankChar(DealtCards[0].Rank);
+                var c2 = GetRankChar(DealtCards[1].Rank);
+                var c3 = DealtCards[0].Rank == DealtCards[1].Rank ? "" 
+                    : DealtCards[0].Suit == DealtCards[1].Suit ? "s" : "o";
+                return $"{c1}{c2}{c3}";
+            }
+        }
+
         
         List<Card> _cards = new List<Card>(7);
         int[] _suitBits = new int[4];
@@ -83,6 +96,11 @@ namespace PokerParts
         {
             if (cards == null) return;
             foreach (var card in cards) AddCard(new Card(card));
+        }
+
+        public static char GetRankChar(Rank rank)
+        {
+            return rank == Rank._10 ? 'T' : rank.ToString().Trim('_')[0];
         }
 
         //------------------------------------------------------------------------------------

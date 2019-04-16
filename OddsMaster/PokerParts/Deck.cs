@@ -21,7 +21,7 @@ namespace OddsMaster
         public int DrawSpot { get; private set; } = 0;
 
         Random _random = new Random();
-        List<Card> _cards = new List<Card>();
+        Card[] _cards = new Card[52];
 
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -32,11 +32,12 @@ namespace OddsMaster
         {
             var ranks = "234567890jqka";
             var suits = "CDHS";
+            int index = 0;
             for(int i = 0; i < 4; i++)
             {
                 for(int j = 0; j < 13; j++)
                 {
-                    _cards.Add(new Card(ranks[j], suits[i]));
+                    _cards[index++] = new Card(ranks[j], suits[i]);
                 }
             }
             DrawSpot = 0;
@@ -49,9 +50,9 @@ namespace OddsMaster
         //------------------------------------------------------------------------------------
         public void Shuffle()
         {
-            for (int i = DrawSpot; i < _cards.Count - 1; i++)
+            for (int i = DrawSpot; i < _cards.Length - 1; i++)
             {
-                var remainingCount = _cards.Count - i - 1;
+                var remainingCount = _cards.Length - i - 1;
                 var swapIndex = _random.Next(remainingCount) + i + 1;
                 var temp = _cards[swapIndex];
                 _cards[swapIndex] = _cards[i];
@@ -66,8 +67,28 @@ namespace OddsMaster
         //------------------------------------------------------------------------------------
         public Card Draw()
         {
-            if (_cards.Count == 0) throw new ApplicationException("Tried to draw from an empty deck.");
+            if (DrawSpot >= _cards.Length) throw new ApplicationException("Tried to draw from an empty deck.");
             return _cards[DrawSpot++];
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Draw the exact card from anywhere in the remaining cards
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public Card Draw(Rank rank, Suit suit)
+        {
+            for(int i = DrawSpot; i < _cards.Length; i++)
+            {
+                if(_cards[i].Rank == rank && _cards[i].Suit == suit)
+                {
+                    var temp = _cards[i];
+                    _cards[i] = _cards[DrawSpot];
+                    _cards[DrawSpot] = temp;
+                    return Draw();
+                }
+            }
+            return null;
         }
 
         //------------------------------------------------------------------------------------

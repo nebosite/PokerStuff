@@ -48,7 +48,7 @@ namespace PokerParts
         /// A class for calculating odds for a hand to win
         /// </summary>
         //------------------------------------------------------------------------------------
-        public static OddsResults Calculate(Deck deck, Hand playerHand, int playerCount, TimeSpan computeLimit)
+        public static OddsResults Calculate(Deck deck, Hand playerHand, int playerCount, TimeSpan computeLimit, int minIterations = 1000)
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -70,7 +70,7 @@ namespace PokerParts
             int iterations = 0;
             deck.Shuffle();
 
-            while(stopwatch.Elapsed < computeLimit || iterations < 1000)
+            while(stopwatch.Elapsed < computeLimit || iterations < minIterations)
             {
                 iterations++;
                 for (int j = 0; j < hands.Length; j++)
