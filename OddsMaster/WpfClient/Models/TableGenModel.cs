@@ -7,6 +7,8 @@ using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using System.Windows.Media;
+using System.Data;
 
 namespace OddsMaster
 {
@@ -39,6 +41,11 @@ namespace OddsMaster
             }
         }
 
+        //public List<TableDataItem[]> TableItems { get; set; } = new List<TableDataItem[]>();
+        public DataTable TableItems { get; set; } = new DataTable();
+
+        const string RankString = "AKQJT98765432";
+
         //------------------------------------------------------------------------------------
         /// <summary>
         /// ctor
@@ -46,6 +53,11 @@ namespace OddsMaster
         //------------------------------------------------------------------------------------
         public TableGenModel()
         {
+            TableItems.Columns.Add(new DataColumn("..", typeof(TableDataItem)));
+            for(int i = 0; i < 13; i++)
+            {
+                TableItems.Columns.Add(new DataColumn(RankString[i].ToString(), typeof(TableDataItem)));
+            }
         }
 
         class CardOddsData
@@ -61,9 +73,9 @@ namespace OddsMaster
 
             public void AddOdds(double newOdds)
             {
-                if(_count != 0 && Math.Abs(_oddsTotal / _count - newOdds) > 3)
+                if (_count != 0 && Math.Abs(_oddsTotal / _count - newOdds) > 3)
                 {
-                    throw new Exception($"Odds look bad... Old:{_oddsTotal/_count}  New:{newOdds}");
+                    throw new Exception($"Odds look bad... Old:{_oddsTotal / _count}  New:{newOdds}");
                 }
 
                 _oddsTotal += newOdds;
@@ -92,6 +104,12 @@ namespace OddsMaster
             }
         }
 
+        public class TableDataItem
+        {
+            public string Display { get; set; }
+            public Brush CellColor { get; set; }
+        }
+
         //------------------------------------------------------------------------------------
         /// <summary>
         /// Generate some data
@@ -101,16 +119,83 @@ namespace OddsMaster
         {
             var result = new Dictionary<string, OddsWorkUnit>();
             Parallel.ForEach<OddsWorkUnit>(GetAllPairs(), (pair) =>
-            //foreach(var pair in GetAllPairs())
             {
-                pair.Odds = OddsCalculator.Calculate(pair.Deck, pair.PlayerHand, PlayerCount, TimeSpan.FromMilliseconds(0),3000);
-                lock(result)
+                pair.Odds = OddsCalculator.Calculate(pair.Deck, pair.PlayerHand, PlayerCount, TimeSpan.FromMilliseconds(0), 3000);
+                lock (result)
                 {
                     result.Add(pair.Id, pair);
                 }
-                //Debug.WriteLine($"Result: {pair.Id}: Odds: {(int)(pair.Odds.WinRatio * 100)}%  Iterations: {pair.Odds.Iterations}");
             });
+
+            var ranks = "AKQJT98765432";
+            TableItems.Clear();
+            for (int i = 0; i < 13; i++)
+            {
+                TableItems.Rows.Add(TableItems.NewRow());
+            }
+
+            for (int y = 0; y < 13; y++)
+            {
+                var highRank = ranks[y];
+                for (int x = 0; x < 13; x++)
+                {
+                    if (x < y) continue;
+                    var lowRank = ranks[x];
+                    if (x == y)
+                    {
+                        var key = "" + highRank + lowRank;
+
+                        //TableItems[y][x] = new TableDataItem()
+                        //{
+                        //    Display = key + " " + result[key].Odds.WinRatio.ToString("0.") + "%",
+                        //    CellColor = GetRatioColor(result[key].Odds.WinRatio)
+                        //};
+                    }
+                    else
+                    {
+                        var key = "" + highRank + lowRank + "o";
+
+                        //TableItems[x][y] = new TableDataItem()
+                        //{
+                        //    Display = key + " " + result[key].Odds.WinRatio.ToString("0.") + "%",
+                        //    CellColor = GetRatioColor(result[key].Odds.WinRatio)
+                        //};
+
+                        key = "" + highRank + lowRank + "s";
+
+                        //TableItems[y][x] = new TableDataItem()
+                        //{
+                        //    Display = key + " " + result[key].Odds.WinRatio.ToString("0.") + "%",
+                        //    CellColor = GetRatioColor(result[key].Odds.WinRatio)
+                        //};
+                    }
+                }
+
+                Notify(nameof(TableItems));
+            }
+    
+            //------------------------------------------------------------------------------------
+            /// <summary>
+            /// Create a heatmap color based on the ratio
+            /// </summary>
+            //------------------------------------------------------------------------------------
+            Brush GetRatioColor(double ratio)
+            {
+                byte r, g, b;
+                if (ratio > .5)
+                {
+                    r = 255;
+                    g = b = (byte)(255 - ((ratio - 0.5) * 2 * 255));
+                }
+                else
+                {
+                    r = g = (byte)(255 - ((.5 - ratio) * 2 * 255));
+                    b = (byte)(255 - ((.5 - ratio) * 2 * 127));
+                }
+                return new SolidColorBrush(Color.FromArgb(255, r, g, b));
+            }
         }
+
 
         //------------------------------------------------------------------------------------
         /// <summary>

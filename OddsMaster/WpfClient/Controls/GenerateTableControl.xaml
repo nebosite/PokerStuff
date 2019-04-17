@@ -16,6 +16,24 @@
                 <Button Content=" Generate " Margin="20,0" Click="GenerateTableClick"/>
             </StackPanel>
             <TextBox Text="{Binding GenOutput,Mode=TwoWay}" MinHeight="100" />
+            <DataGrid ItemsSource="{Binding TableItems}" >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="" Width="30" />
+                    <DataGridTextColumn Header="A"  Width="40" />
+                    <DataGridTextColumn Header="K"   Width="40"  />
+                    <DataGridTextColumn Header="Q"   Width="40"  />
+                    <DataGridTextColumn Header="J"   Width="40"  />
+                    <DataGridTextColumn Header="10"   Width="40"  />
+                    <DataGridTextColumn Header="9"   Width="40"  />
+                    <DataGridTextColumn Header="8"    Width="40" />
+                    <DataGridTextColumn Header="7"    Width="40" />
+                    <DataGridTextColumn Header="6"   Width="40"  />
+                    <DataGridTextColumn Header="5"   Width="40"  />
+                    <DataGridTextColumn Header="4"   Width="40"  />
+                    <DataGridTextColumn Header="3"   Width="40"  />
+                    <DataGridTextColumn Header="2"   Width="40"  />
+                </DataGrid.Columns>
+            </DataGrid>
         </StackPanel>
 
     </Grid>
