@@ -19,7 +19,7 @@ namespace OddsMaster
     /// Interaction logic for GenerateTableControl.xaml
     /// </summary>
     public partial class GenerateTableControl : UserControl
-    {
+    {       
         TableGenModel TheModel => DataContext as TableGenModel;
         public GenerateTableControl()
         {

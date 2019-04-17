@@ -9,6 +9,7 @@
              Background="White"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        
         <StackPanel>
             <StackPanel Orientation="Horizontal" Margin="10">
                 <Label Width="100" HorizontalContentAlignment="Right" Content="# Players:" />
@@ -16,24 +17,29 @@
                 <Button Content=" Generate " Margin="20,0" Click="GenerateTableClick"/>
             </StackPanel>
             <TextBox Text="{Binding GenOutput,Mode=TwoWay}" MinHeight="100" />
-            <DataGrid ItemsSource="{Binding TableItems}" >
+            <DataGrid x:Name="TheGrid" ItemsSource="{Binding TableItems}" AutoGenerateColumns="False" >
+                <DataGrid.Resources>
+                    <DataTemplate x:Key="MyCellTemplate" >
+                        <TextBlock Text="{Binding Text}" Background="{Binding CellColor}" />
+                    </DataTemplate>
+                </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="" Width="30" />
-                    <DataGridTextColumn Header="A"  Width="40" />
-                    <DataGridTextColumn Header="K"   Width="40"  />
-                    <DataGridTextColumn Header="Q"   Width="40"  />
-                    <DataGridTextColumn Header="J"   Width="40"  />
-                    <DataGridTextColumn Header="10"   Width="40"  />
-                    <DataGridTextColumn Header="9"   Width="40"  />
-                    <DataGridTextColumn Header="8"    Width="40" />
-                    <DataGridTextColumn Header="7"    Width="40" />
-                    <DataGridTextColumn Header="6"   Width="40"  />
-                    <DataGridTextColumn Header="5"   Width="40"  />
-                    <DataGridTextColumn Header="4"   Width="40"  />
-                    <DataGridTextColumn Header="3"   Width="40"  />
-                    <DataGridTextColumn Header="2"   Width="40"  />
+                    <DataGridTemplateColumn Header="rank" > <DataGridTemplateColumn.CellTemplate> <DataTemplate><TextBlock Text="{Binding [0].Text}" Background="{Binding [0].CellColor}" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="A" > <DataGridTemplateColumn.CellTemplate> <DataTemplate><TextBlock Text="{Binding [1].Text}" Background="{Binding [1].CellColor}" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="K" > <DataGridTemplateColumn.CellTemplate> <DataTemplate><TextBlock Text="{Binding [2].Text}" Background="{Binding [2].CellColor}" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Q" > <DataGridTemplateColumn.CellTemplate> <DataTemplate><TextBlock Text="{Binding [3].Text}" Background="{Binding [3].CellColor}" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="J" > <DataGridTemplateColumn.CellTemplate> <DataTemplate><TextBlock Text="{Binding [4].Text}" Background="{Binding [4].CellColor}" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="10" > <DataGridTemplateColumn.CellTemplate> <DataTemplate><TextBlock Text="{Binding [5].Text}" Background="{Binding [5].CellColor}" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="9" > <DataGridTemplateColumn.CellTemplate> <DataTemplate><TextBlock Text="{Binding [7].Text}" Background="{Binding [6].CellColor}" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="8" > <DataGridTemplateColumn.CellTemplate> <DataTemplate><TextBlock Text="{Binding [6].Text}" Background="{Binding [7].CellColor}" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="7" > <DataGridTemplateColumn.CellTemplate> <DataTemplate><TextBlock Text="{Binding [8].Text}" Background="{Binding [8].CellColor}" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="6" > <DataGridTemplateColumn.CellTemplate> <DataTemplate><TextBlock Text="{Binding [9].Text}" Background="{Binding [9].CellColor}" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="5" > <DataGridTemplateColumn.CellTemplate> <DataTemplate><TextBlock Text="{Binding [10].Text}" Background="{Binding [10].CellColor}" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="4" > <DataGridTemplateColumn.CellTemplate> <DataTemplate><TextBlock Text="{Binding [11].Text}" Background="{Binding [11].CellColor}" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="3" > <DataGridTemplateColumn.CellTemplate> <DataTemplate><TextBlock Text="{Binding [12].Text}" Background="{Binding [12].CellColor}" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="2" > <DataGridTemplateColumn.CellTemplate> <DataTemplate><TextBlock Text="{Binding [13].Text}" Background="{Binding [13].CellColor}" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
                 </DataGrid.Columns>
-            </DataGrid>
+           </DataGrid>
         </StackPanel>
 
     </Grid>

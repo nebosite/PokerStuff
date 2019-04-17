@@ -9,9 +9,22 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Windows.Media;
 using System.Data;
+using System.Collections.ObjectModel;
 
 namespace OddsMaster
 {
+
+    public class TableDataItem
+    {
+        public string Text { get; set; }
+        public Brush CellColor { get; set; }
+
+        public override string ToString()
+        {
+            return Text;
+        }
+    }
+
     //------------------------------------------------------------------------------------
     /// <summary>
     /// Handles generating tables of poker odds
@@ -41,8 +54,7 @@ namespace OddsMaster
             }
         }
 
-        //public List<TableDataItem[]> TableItems { get; set; } = new List<TableDataItem[]>();
-        public DataTable TableItems { get; set; } = new DataTable();
+        public ObservableCollection<TableDataItem[]> TableItems { get; set; } = new ObservableCollection<TableDataItem[]>();
 
         const string RankString = "AKQJT98765432";
 
@@ -53,11 +65,6 @@ namespace OddsMaster
         //------------------------------------------------------------------------------------
         public TableGenModel()
         {
-            TableItems.Columns.Add(new DataColumn("..", typeof(TableDataItem)));
-            for(int i = 0; i < 13; i++)
-            {
-                TableItems.Columns.Add(new DataColumn(RankString[i].ToString(), typeof(TableDataItem)));
-            }
         }
 
         class CardOddsData
@@ -104,11 +111,6 @@ namespace OddsMaster
             }
         }
 
-        public class TableDataItem
-        {
-            public string Display { get; set; }
-            public Brush CellColor { get; set; }
-        }
 
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -131,12 +133,18 @@ namespace OddsMaster
             TableItems.Clear();
             for (int i = 0; i < 13; i++)
             {
-                TableItems.Rows.Add(TableItems.NewRow());
+                TableItems.Add(new TableDataItem[14]);
             }
 
             for (int y = 0; y < 13; y++)
             {
                 var highRank = ranks[y];
+                TableItems[y][0] = new TableDataItem()
+                {
+                    Text = highRank.ToString(),
+                    CellColor = Brushes.White
+                };
+
                 for (int x = 0; x < 13; x++)
                 {
                     if (x < y) continue;
@@ -145,29 +153,29 @@ namespace OddsMaster
                     {
                         var key = "" + highRank + lowRank;
 
-                        //TableItems[y][x] = new TableDataItem()
-                        //{
-                        //    Display = key + " " + result[key].Odds.WinRatio.ToString("0.") + "%",
-                        //    CellColor = GetRatioColor(result[key].Odds.WinRatio)
-                        //};
+                        TableItems[y][x+1] =  new TableDataItem()
+                        {
+                            Text = (result[key].Odds.WinRatio * 100).ToString("0.") + "%",
+                            CellColor = GetRatioColor(result[key].Odds.WinRatio)
+                        };
                     }
                     else
                     {
                         var key = "" + highRank + lowRank + "o";
 
-                        //TableItems[x][y] = new TableDataItem()
-                        //{
-                        //    Display = key + " " + result[key].Odds.WinRatio.ToString("0.") + "%",
-                        //    CellColor = GetRatioColor(result[key].Odds.WinRatio)
-                        //};
+                        TableItems[x][y+1] = new TableDataItem()
+                        {
+                            Text = (result[key].Odds.WinRatio * 100).ToString("0.") + "%",
+                            CellColor = GetRatioColor(result[key].Odds.WinRatio)
+                        };
 
                         key = "" + highRank + lowRank + "s";
 
-                        //TableItems[y][x] = new TableDataItem()
-                        //{
-                        //    Display = key + " " + result[key].Odds.WinRatio.ToString("0.") + "%",
-                        //    CellColor = GetRatioColor(result[key].Odds.WinRatio)
-                        //};
+                        TableItems[y][x+1] = new TableDataItem()
+                        {
+                            Text = (result[key].Odds.WinRatio * 100).ToString("0.") + "%",
+                            CellColor = GetRatioColor(result[key].Odds.WinRatio)
+                        };
                     }
                 }
 
