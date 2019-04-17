@@ -155,7 +155,7 @@ namespace OddsMaster
 
                         TableItems[y][x+1] =  new TableDataItem()
                         {
-                            Text = (result[key].Odds.WinRatio * 100).ToString("0.") + "%",
+                            Text = key + " " + (result[key].Odds.WinRatio * 100).ToString("0.") + "%",
                             CellColor = GetRatioColor(result[key].Odds.WinRatio)
                         };
                     }
@@ -165,7 +165,7 @@ namespace OddsMaster
 
                         TableItems[x][y+1] = new TableDataItem()
                         {
-                            Text = (result[key].Odds.WinRatio * 100).ToString("0.") + "%",
+                            Text = key+ " " + (result[key].Odds.WinRatio * 100).ToString("0.") + "%",
                             CellColor = GetRatioColor(result[key].Odds.WinRatio)
                         };
 
@@ -173,7 +173,7 @@ namespace OddsMaster
 
                         TableItems[y][x+1] = new TableDataItem()
                         {
-                            Text = (result[key].Odds.WinRatio * 100).ToString("0.") + "%",
+                            Text = key+ " " + (result[key].Odds.WinRatio * 100).ToString("0.") + "%",
                             CellColor = GetRatioColor(result[key].Odds.WinRatio)
                         };
                     }
@@ -190,15 +190,17 @@ namespace OddsMaster
             Brush GetRatioColor(double ratio)
             {
                 byte r, g, b;
-                if (ratio > .5)
+                ratio = (ratio - 0.5) * 2;
+                var colorRatio = Math.Abs(ratio);
+                if (ratio > 0)
                 {
                     r = 255;
-                    g = b = (byte)(255 - ((ratio - 0.5) * 2 * 255));
+                    g = b = (byte)(255 - (colorRatio * 255));
                 }
                 else
                 {
-                    r = g = (byte)(255 - ((.5 - ratio) * 2 * 255));
-                    b = (byte)(255 - ((.5 - ratio) * 2 * 127));
+                    r = g = (byte)(255 - (colorRatio * 127));
+                    b = (byte)(255 - (colorRatio * 80));
                 }
                 return new SolidColorBrush(Color.FromArgb(255, r, g, b));
             }
