@@ -54,9 +54,17 @@ namespace OddsMaster
             }
         }
 
+        public Card FlopCard1 { get; set; }
+        public Card FlopCard2 { get; set; }
+        public Card FlopCard3 { get; set; }
+        public Card TurnCard { get; set; }
+        public Card RiverCard { get; set; }
+
         public ObservableCollection<TableDataItem[]> TableItems { get; set; } = new ObservableCollection<TableDataItem[]>();
 
         const string RankString = "AKQJT98765432";
+
+        Deck _deck = new Deck();
 
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -66,6 +74,18 @@ namespace OddsMaster
         public TableGenModel()
         {
         }
+
+        internal void DealFlop()
+        {
+            _deck.Reset();
+            _deck.Shuffle();
+            FlopCard1 = _deck.Draw();
+            FlopCard2 = _deck.Draw();
+            FlopCard3 = _deck.Draw();
+
+            NotifyAllPropertiesChanged();
+        }
+
 
         class CardOddsData
         {
@@ -102,12 +122,23 @@ namespace OddsMaster
             public Hand PlayerHand = new Hand();
             public string Id => PlayerHand.PocketId;
 
-            public OddsWorkUnit(Rank highRank, Suit highsuit, Rank lowRank, Suit lowsuit)
+            bool _offSuit;
+
+            public OddsWorkUnit()
             {
-                PlayerHand.AddCard(new Card(highRank, highsuit));
-                PlayerHand.AddCard(new Card(lowRank, lowsuit));
-                Deck.Draw(highRank, highsuit);
-                Deck.Draw(lowRank, lowsuit);
+            }
+
+            Random _random = new Random();
+            public void PickPlayerCards(Rank highRank, Rank lowRank, bool _offSuit)
+            {
+                // TODO:  make sure that the card is available.  Switch suits if not.
+                // Pick random suits
+                var suit1 = Suit.Clubs;
+                var suit2 = _offSuit ? Suit.Diamonds : suit1;
+                PlayerHand.AddCard(new Card(highRank, suit1));
+                PlayerHand.AddCard(new Card(lowRank, suit2));
+                Deck.Draw(PlayerHand.DealtCards[0]);
+                Deck.Draw(PlayerHand.DealtCards[1]);
             }
         }
 
@@ -214,19 +245,32 @@ namespace OddsMaster
         //------------------------------------------------------------------------------------
         IEnumerable<OddsWorkUnit> GetAllPairs()
         {
+            OddsWorkUnit GetUnit(Rank highRank, Rank lowRank, bool offSuit)
+            {
+                var unit = new OddsWorkUnit();
+                if (FlopCard1 != null)
+                {
+                    unit.Deck.Draw(FlopCard1);
+                    unit.Deck.Draw(FlopCard2);
+                    unit.Deck.Draw(FlopCard3);
+                    unit.PlayerHand.AddCard(FlopCard1);
+                    unit.PlayerHand.AddCard(FlopCard2);
+                    unit.PlayerHand.AddCard(FlopCard3);
+                }
+                unit.PickPlayerCards(highRank, lowRank, offSuit);
+                return unit;
+            }
+
             foreach(Rank highRank in Enum.GetValues(typeof(Rank)))
             {
                 if (highRank == Rank.None) continue;
                 foreach (Rank lowRank in Enum.GetValues(typeof(Rank)))
                 {
                     if (lowRank == Rank.None || lowRank > highRank) continue;
-                    var lowsuit = Suit.Diamonds;
-                    var highsuit = Suit.Clubs;
-                    yield return new OddsWorkUnit(highRank, highsuit, lowRank, lowsuit);
+                    yield return GetUnit(highRank, lowRank, offSuit: true);
                     if(lowRank != highRank)
                     {
-                        highsuit = lowsuit;
-                        yield return new OddsWorkUnit(highRank, highsuit, lowRank, lowsuit);
+                        yield return GetUnit(highRank, lowRank, offSuit: false);
                     }
                 }
 

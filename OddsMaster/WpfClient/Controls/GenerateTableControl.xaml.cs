@@ -35,5 +35,10 @@ namespace OddsMaster
         {
 
         }
+
+        private void DealFlopClick(object sender, RoutedEventArgs e)
+        {
+            TheModel.DealFlop();
+        }
     }
 }

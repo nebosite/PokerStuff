@@ -76,6 +76,11 @@ namespace OddsMaster
         /// Draw the exact card from anywhere in the remaining cards
         /// </summary>
         //------------------------------------------------------------------------------------
+        public Card Draw(Card card)
+        {
+            return Draw(card.Rank, card.Suit);
+        }
+
         public Card Draw(Rank rank, Suit suit)
         {
             for(int i = DrawSpot; i < _cards.Length; i++)
