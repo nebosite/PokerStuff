@@ -76,16 +76,14 @@ namespace PokerParts
                 return $"{c1}{c2}{c3}";
             }
         }
-
-        
-        List<Card> _cards = new List<Card>(7);
+     
         int[] _suitBits = new int[4];
         int[] _suitCounts = new int[4];
-        int _maxSuitCount;
         int _rankBits;
         HandType _value;
         List<Rank> _highCards = new List<Rank>(5);
         bool _evaluated = false;
+        ulong _cardBits;
 
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -110,35 +108,48 @@ namespace PokerParts
         //------------------------------------------------------------------------------------
         public void AddCard(Card card)
         {
+            if((_cardBits & card.Bit) > 0)
+            {
+                throw new ApplicationException("Duplicate Card: " + card);
+            }
+            _cardBits |= card.Bit;
             DealtCards.Add(card);
-            bool cardAdded = false;
-            for (int i = 0; i < _cards.Count; i++)
-            {
-                var rank = _cards[i].Rank;
-                if (card.Rank > rank)
-                {
-                    _cards.Insert(i, card);
-                    cardAdded = true;
-                    break;
-                }
-                if (card.Rank == rank && card.Suit == _cards[i].Suit)
-                {
-                    throw new ApplicationException("Duplicate Card: " + card);
-                }
-            }
-            if (!cardAdded) _cards.Add(card);
-
-            _suitBits[(int)card.Suit] |= (int)card.Rank;
-            _rankBits |= (int)card.Rank;
-            // ace is special because it can be the "1" in a strait
-            if (card.Rank == Rank.Ace)
-            {
-                _suitBits[(int)card.Suit] |= 1;
-                _rankBits |= 1;
-            }
-            _suitCounts[(int)card.Suit]++;
-            if (_suitCounts[(int)card.Suit] > _maxSuitCount) _maxSuitCount++;
             _evaluated = false;
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Do some preprossessing of the cards before evaluation
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public Card[] PrepCards()
+        {
+            // Use a custom insertion sort for fastest sorting on this
+            // small array.
+            var cards = DealtCards.ToArray();
+            for(int i = 1; i < cards.Length; i++)
+            {
+                for(int j = i-1; j >= 0 && cards[j].Rank < cards[j+1].Rank; j--)
+                {
+                    var temp = cards[j];
+                    cards[j] = cards[j + 1];
+                    cards[j + 1] = temp;
+                }
+            }
+
+            foreach (var card in cards)
+            {
+                _suitBits[(int)card.Suit] |= (int)card.Rank;
+                _rankBits |= (int)card.Rank;
+                // ace is special because it can be the "1" in a strait
+                if (card.Rank == Rank.Ace)
+                {
+                    _suitBits[(int)card.Suit] |= 1;
+                    _rankBits |= 1;
+                }
+                _suitCounts[(int)card.Suit]++;
+            }
+            return cards;
         }
 
 
@@ -151,13 +162,13 @@ namespace PokerParts
         internal void ClearAllBut(int keep)
         {
             var pocketCards = DealtCards.Take(keep);
-            _cards.Clear();
             DealtCards.Clear();
 
             _suitBits = new int[4];
             _suitCounts = new int[4];
-            _maxSuitCount = _rankBits = 0;
+            _rankBits = 0;
             _evaluated = false;
+            _cardBits = 0;
             foreach(var card in pocketCards)
             {
                 AddCard(card);
@@ -173,27 +184,30 @@ namespace PokerParts
         {
             if (_evaluated) return;
             _evaluated = true;
+            var cards = PrepCards();
             _highCards.Clear();
 
             int straightMask = 0x3e00;
             Suit flushSuit = Suit.None;
-            if (_maxSuitCount > 4)
-            {
-                // Royal flush?
-                for (int i = 0; i < 4; i++)
-                {
-                    if (_suitCounts[i] > 4)
-                    {
-                        flushSuit = (Suit)i;
-                        if ((_suitBits[i] & straightMask) == straightMask)
-                        {
-                            _value = HandType.RoyalFlush;
-                            return;
-                        }
-                    }
-                }
 
-                // Strait flush?
+            // Royal flush?
+            for (int i = 0; i < 4; i++)
+            {
+                if (_suitCounts[i] > 4)
+                {
+                    flushSuit = (Suit)i;
+                    if ((_suitBits[i] & straightMask) == straightMask)
+                    {
+                        _value = HandType.RoyalFlush;
+                        return;
+                    }
+                    break;
+                }
+            }
+
+            // Strait flush?
+            if (flushSuit != Suit.None)
+            {
                 for (int r = (int)Rank.King; r >= (int)Rank._5; r /= 2)
                 {
                     straightMask >>= 1;
@@ -213,11 +227,11 @@ namespace PokerParts
             var kickers = new List<Rank>(7);
 
             // Find matches
-            for (int i = 0; i < _cards.Count; i++)
+            for (int i = 0; i < cards.Length; i++)
             {
-                var rank = _cards[i].Rank;
+                var rank = cards[i].Rank;
                 int count = 1;
-                while (i < _cards.Count - 1 && _cards[i + 1].Rank == rank)
+                while (i < cards.Length - 1 && cards[i + 1].Rank == rank)
                 {
                     count++;
                     i++;
@@ -267,7 +281,7 @@ namespace PokerParts
             {
                 _value = HandType.Flush;
 
-                foreach (var card in _cards)
+                foreach (var card in cards)
                 {
                     if (_highCards.Count >= 5) break;
                     if (card.Suit != flushSuit) continue;
@@ -331,7 +345,7 @@ namespace PokerParts
 
 
             _value = HandType.HighCard;
-            foreach (var card in _cards)
+            foreach (var card in cards)
             {
                 if (_highCards.Count >= 5) break;
                 _highCards.Add(card.Rank);
@@ -345,7 +359,7 @@ namespace PokerParts
         //------------------------------------------------------------------------------------
         public int CompareTo(Hand otherHand)
         {
-            if(_cards.Count != otherHand._cards.Count)
+            if(DealtCards.Count != otherHand.DealtCards.Count)
             {
                 throw new ApplicationException("Can't compare hands with different card counts.");
             }
@@ -377,7 +391,7 @@ namespace PokerParts
         public override string ToString()
         {
             Evaluate();
-            return $"{_value} ({string.Join(",", _highCards)}) [{string.Join(",", _cards)}]";
+            return $"{_value} ({string.Join(",", _highCards)}) [{string.Join(",", DealtCards)}]";
         }
     }
 }

@@ -14,10 +14,10 @@ namespace PokerParts
     //------------------------------------------------------------------------------------
     public enum Suit
     {
-        Clubs,
-        Diamonds,
-        Hearts,
-        Spades,
+        Clubs = 0,
+        Diamonds = 1,
+        Hearts = 2,
+        Spades = 3,
         None
     }
 
@@ -53,6 +53,7 @@ namespace PokerParts
     {
         public Suit Suit;
         public Rank Rank;
+        public ulong Bit;
 
         string _originalData;
 
@@ -69,6 +70,7 @@ namespace PokerParts
             _originalData = twoCharacterCard;
             if (twoCharacterCard.Length != 2) throw new ApplicationException("Bad card specifier: " + twoCharacterCard);
             Init(twoCharacterCard[0], twoCharacterCard[1]);
+            SetBit();
         }
 
         //------------------------------------------------------------------------------------
@@ -80,6 +82,7 @@ namespace PokerParts
         {
             Init(rank, suit);
             if (_originalData == null) _originalData = "" + rank + suit;
+            SetBit();
         }
 
         //------------------------------------------------------------------------------------
@@ -92,6 +95,22 @@ namespace PokerParts
             Rank = rank;
             Suit = suit;
             if (_originalData == null) _originalData = "" + rank + suit;
+            SetBit();
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Set a unique bit that corresponds to this card
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        void SetBit()
+        {
+            Bit = (ulong)(Rank)  << ((int)Suit*16);
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)Bit;
         }
 
         //------------------------------------------------------------------------------------

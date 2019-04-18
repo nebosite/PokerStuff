@@ -104,7 +104,7 @@ namespace PokerPartsTests
             testHand = new Hand("6D,6C,6S,6H,5S,5H,4C".Split(','));
             Assert.AreEqual("FourOfAKind (_6,_5) [6D,6C,6S,6H,5S,5H,4C]", testHand.ToString());
             testHand = new Hand("6D,6C,6S,6H,5S,5H,AC".Split(','));
-            Assert.AreEqual("FourOfAKind (_6,Ace) [AC,6D,6C,6S,6H,5S,5H]", testHand.ToString());
+            Assert.AreEqual("FourOfAKind (_6,Ace) [6D,6C,6S,6H,5S,5H,AC]", testHand.ToString());
 
 
             TestHands(-1, Hands.FourofAKind9, Hands.RoyalFlushHearts);
