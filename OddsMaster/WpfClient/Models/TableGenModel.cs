@@ -153,7 +153,7 @@ namespace OddsMaster
             var result = new Dictionary<string, OddsWorkUnit>();
             Parallel.ForEach<OddsWorkUnit>(GetAllPairs(), (pair) =>
             {
-                pair.Odds = OddsCalculator.Calculate(pair.Deck, pair.PlayerHand, PlayerCount, TimeSpan.FromMilliseconds(0), 3000);
+                pair.Odds = OddsCalculator.Calculate(pair.Deck, pair.PlayerHand, PlayerCount, TimeSpan.FromMilliseconds(0), 10000);
                 lock (result)
                 {
                     result.Add(pair.Id, pair);

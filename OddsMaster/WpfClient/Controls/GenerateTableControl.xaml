@@ -15,9 +15,9 @@
                 <Label Width="100" HorizontalContentAlignment="Right" Content="# Players:" />
                 <wpfTool:IntegerUpDown Value="{Binding PlayerCount}" ValueChanged="FlashPlayerCountChanged" Minimum="2" Maximum="9" />
                 <Button Content=" Generate " Margin="20,0" Click="GenerateTableClick"/>
-                <Button Content=" DealFlop " Margin="20,0" Click="DealFlopClick"/>
+                <Button Content=" DealFlop " Margin="20,0" Click="DealFlopClick" Visibility="Collapsed"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Height="100" Margin="5">
+            <StackPanel Orientation="Horizontal" Height="100" Margin="5" Visibility="Collapsed">
                 <Label Content="  Street:" />
                 <local:CardControl Card="{Binding FlopCard1}"  Margin="5,0,0,0"/>
                 <local:CardControl Card="{Binding FlopCard2}"  Margin="5,0,0,0"/>
