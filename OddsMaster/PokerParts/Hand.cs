@@ -124,16 +124,15 @@ namespace PokerParts
         //------------------------------------------------------------------------------------
         public Card[] PrepCards()
         {
+            var cards = DealtCards.ToArray();
+
             // Use a custom insertion sort for fastest sorting on this
             // small array.
-            var cards = DealtCards.ToArray();
             for(int i = 1; i < cards.Length; i++)
             {
-                for(int j = i-1; j >= 0 && cards[j].Rank < cards[j+1].Rank; j--)
+                for(int j = i-1, k = i; j >= 0 && cards[j].Rank < cards[k].Rank; j--, k--)
                 {
-                    var temp = cards[j];
-                    cards[j] = cards[j + 1];
-                    cards[j + 1] = temp;
+                    (cards[j], cards[k]) = (cards[k], cards[j]);
                 }
             }
 
@@ -174,6 +173,9 @@ namespace PokerParts
                 AddCard(card);
             }
         }
+
+        List<Rank> _pairs = new List<Rank>(3);
+        List<Rank> _kickers = new List<Rank>(7);
 
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -221,10 +223,10 @@ namespace PokerParts
 
             }
 
-            var pairs = new List<Rank>(3);
             var threeOfAKind = Rank.None;
             var fourOfAKindRank = Rank.None;
-            var kickers = new List<Rank>(7);
+            _pairs.Clear();
+            _kickers.Clear();
 
             // Find matches
             for (int i = 0; i < cards.Length; i++)
@@ -238,8 +240,8 @@ namespace PokerParts
                 }
                 switch (count)
                 {
-                    case 1: kickers.Add(rank); break;
-                    case 2: pairs.Add(rank); break;
+                    case 1: _kickers.Add(rank); break;
+                    case 2: _pairs.Add(rank); break;
                     case 3:
                         {
                             if (threeOfAKind == Rank.None)
@@ -248,7 +250,7 @@ namespace PokerParts
                             }
                             else
                             {
-                                pairs.Insert(0, rank);
+                                _pairs.Insert(0, rank);
                             }
                         }
                         break;
@@ -262,17 +264,17 @@ namespace PokerParts
                 _value = HandType.FourOfAKind;
                 _highCards.Add(fourOfAKindRank);
                 if (threeOfAKind != Rank.None) _highCards.Add(threeOfAKind);
-                else if (pairs.Count > 0 && (kickers.Count == 0 || pairs[0] > kickers[0])) _highCards.Add(pairs[0]);
-                else if (kickers.Count > 0) _highCards.Add(kickers[0]);
+                else if (_pairs.Count > 0 && (_kickers.Count == 0 || _pairs[0] > _kickers[0])) _highCards.Add(_pairs[0]);
+                else if (_kickers.Count > 0) _highCards.Add(_kickers[0]);
                 return;
             }
 
             // Full house?
-            if (threeOfAKind != Rank.None && pairs.Count > 0)
+            if (threeOfAKind != Rank.None && _pairs.Count > 0)
             {
                 _value = HandType.FullHouse;
                 _highCards.Add(threeOfAKind);
-                _highCards.Add(pairs[0]);
+                _highCards.Add(_pairs[0]);
                 return;
             }
 
@@ -309,37 +311,37 @@ namespace PokerParts
             {
                 _value = HandType.ThreeOfAKind;
                 _highCards.Add(threeOfAKind);
-                if (kickers.Count > 0) _highCards.Add(kickers[0]);
-                if (kickers.Count > 1) _highCards.Add(kickers[1]);
+                if (_kickers.Count > 0) _highCards.Add(_kickers[0]);
+                if (_kickers.Count > 1) _highCards.Add(_kickers[1]);
                 return;
             }
 
             // Two Pair?
-            if( pairs.Count > 1)
+            if( _pairs.Count > 1)
             {
                 _value = HandType.TwoPair;
-                _highCards.Add(pairs[0]);
-                _highCards.Add(pairs[1]);
-                if(pairs.Count == 3 && pairs[2] > kickers[0])
+                _highCards.Add(_pairs[0]);
+                _highCards.Add(_pairs[1]);
+                if(_pairs.Count == 3 && _pairs[2] > _kickers[0])
                 {
-                    _highCards.Add(pairs[2]);
+                    _highCards.Add(_pairs[2]);
                 }
                 else
                 {
-                    _highCards.Add(kickers[0]);
+                    _highCards.Add(_kickers[0]);
                 }
                 return;
             }
 
             // Pair?
-            if (pairs.Count > 0)
+            if (_pairs.Count > 0)
             {
                 _value = HandType.Pair;
-                _highCards.Add(pairs[0]);
+                _highCards.Add(_pairs[0]);
 
-                if(kickers.Count > 0) _highCards.Add(kickers[0]);
-                if (kickers.Count > 1) _highCards.Add(kickers[1]);
-                if (kickers.Count > 2) _highCards.Add(kickers[2]);
+                if(_kickers.Count > 0) _highCards.Add(_kickers[0]);
+                if (_kickers.Count > 1) _highCards.Add(_kickers[1]);
+                if (_kickers.Count > 2) _highCards.Add(_kickers[2]);
                 return;
             }
 
