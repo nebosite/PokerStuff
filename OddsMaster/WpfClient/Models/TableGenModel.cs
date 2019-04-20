@@ -210,6 +210,12 @@ namespace OddsMaster
                     }
                 }
 
+                var tableData = new StringBuilder();
+                foreach(var item in result.Values.OrderByDescending(v => v.Odds.WinRatio))
+                {
+                    tableData.AppendLine($"\"{item.Id}\": \"{item.Odds.WinRatio.ToString(".000")}\",");
+                }
+                GenOutput = tableData.ToString();
                 Notify(nameof(TableItems));
             }
     
