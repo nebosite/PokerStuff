@@ -43,6 +43,9 @@ namespace OddsMaster
             TheModel.Recalculate();
         }
 
-
+        private void ExplainClick(object sender, RoutedEventArgs e)
+        {
+            TheModel.ShowExplanation();
+        }
     }
 }

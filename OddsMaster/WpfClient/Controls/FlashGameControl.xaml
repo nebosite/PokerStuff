@@ -15,6 +15,7 @@
                 <wpfTool:IntegerUpDown Value="{Binding PlayerCount}" ValueChanged="FlashPlayerCountChanged" Minimum="2" Maximum="9" />
                 <Button Content=" Re-deal " Margin="20,0" Click="RedealClick"/>
                 <Button Content=" Recalc " Margin="20,0" Click="RecalcClick"/>
+                <Button Content=" Explain " Margin="20,0" Click="ExplainClick"/>
             </StackPanel>
             <local:FlashStage />
 

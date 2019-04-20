@@ -21,15 +21,26 @@
                     <local:CardControl Card="{Binding TurnCard}" Margin="20,0,0,0" />
                     <local:CardControl Card="{Binding RiverCard}" Margin="20,0,0,0" />
                 </StackPanel>
+                <TextBlock Text="{Binding ProgressText}" FontFamily="Lucida Console" FontSize="14" Background="LightGray" MinHeight="30" Margin="5" Padding="5"/>
+
                 <StackPanel Orientation="Horizontal" Margin="5">
+                    <StackPanel.Resources>
+                        <Style TargetType="Button">
+                            <Setter Property="Width" Value="70" />
+                            <Setter Property="FontSize" Value="10" />
+                            <Setter Property="FontWeight" Value="Bold" />
+                            <Setter Property="Margin" Value="0,0,5,0" />
+                            <EventSetter Event="Click" Handler="StrengthClick"/>
+                        </Style>
+                    </StackPanel.Resources>
                     <Label Content="Strength:  " />
-                    <Button Width="70" FontSize="10" FontWeight="Bold" Margin="0,0,5,0" Click="StrengthClick" Content="Dominating" ToolTip="Expected to win more than 95%" />
-                    <Button Width="70" FontSize="10" FontWeight="Bold" Margin="0,0,5,0" Click="StrengthClick" Content="Powerful"  ToolTip="Expected to win more than 85%" />
-                    <Button Width="70" FontSize="10" FontWeight="Bold" Margin="0,0,5,0" Click="StrengthClick" Content="Strong"  ToolTip="Expected to win more than 65%" />
-                    <Button Width="70" FontSize="10" FontWeight="Bold" Margin="0,0,5,0" Click="StrengthClick" Content="OK"  ToolTip="Expected to win between 35% and 65%" />
-                    <Button Width="70" FontSize="10" FontWeight="Bold" Margin="0,0,5,0" Click="StrengthClick" Content="Risky"  ToolTip="Expected to win less than 35%" />
-                    <Button Width="70" FontSize="10" FontWeight="Bold" Margin="0,0,5,0" Click="StrengthClick" Content="Weak"  ToolTip="Expected to win less than 15%" />
-                    <Button Width="70" FontSize="10" FontWeight="Bold" Margin="0,0,5,0" Click="StrengthClick" Content="Hopeless"  ToolTip="Expected to win less than 5%" />
+                    <Button IsEnabled="{Binding StrengthEnabled[6]}" Background="{Binding StrengthBackground[6]}" Content="Dominating" ToolTip="1.1:1"  Tag="6" />
+                    <Button IsEnabled="{Binding StrengthEnabled[5]}" Background="{Binding StrengthBackground[5]}" Content="Powerful"  ToolTip="1.5:1" Tag="5"/>
+                    <Button IsEnabled="{Binding StrengthEnabled[4]}" Background="{Binding StrengthBackground[4]}" Content="Strong"  ToolTip="2:1"  Tag="4"/>
+                    <Button IsEnabled="{Binding StrengthEnabled[3]}" Background="{Binding StrengthBackground[3]}" Content="OK"  ToolTip="3:1" Tag="3" />
+                    <Button IsEnabled="{Binding StrengthEnabled[2]}" Background="{Binding StrengthBackground[2]}" Content="Risky"  ToolTip="5:1" Tag="2"/>
+                    <Button IsEnabled="{Binding StrengthEnabled[1]}" Background="{Binding StrengthBackground[1]}" Content="Weak"  ToolTip="10:1" Tag="1" />
+                    <Button IsEnabled="{Binding StrengthEnabled[0]}" Background="{Binding StrengthBackground[0]}" Content="Hopeless"  ToolTip="20:1" Tag="0" />
                 </StackPanel>
                 <TextBlock Text="{Binding Explanation}" FontFamily="Lucida Console" FontSize="14" Background="LightGray" Height="250" Margin="5" Padding="5"/>
             </StackPanel>
