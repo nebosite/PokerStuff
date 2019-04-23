@@ -22,5 +22,10 @@ namespace OddsMaster
 
             Model.SelectStrength(int.Parse(button.Tag.ToString()));
         }
+
+        private void Button_SourceUpdated(object sender, System.Windows.Data.DataTransferEventArgs e)
+        {
+
+        }
     }
 }

@@ -6,6 +6,10 @@
 	[x] Percentages for pairs look wrong with 2 players
 	[x] Generate odds tables for initial pair
 	[ ] Walk through the stages - Preflop, flop, turn, river
+		[ ] If incorrect, give a hint
+		[ ] If correct, say the percentage and lock the buttons
+		[ ] Once a correct answer is given, enable a buttong to deal the next card(s)
+		[ ] Color does not show up when button is disabled
 		Dominating (1.1:1)
 					90%
 		Powerful (1.5:1)
@@ -21,6 +25,8 @@
 		Hopeless (20:1)
 					0%
 	[ ] Add Limp, bet, 2bet stages in between each
+
+	[ ] Fix the button style to be perfect: https://gist.github.com/markheath/c8189790270b8615625d
 
 
 	[ ] Track progress

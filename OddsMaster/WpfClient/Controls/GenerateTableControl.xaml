@@ -25,7 +25,7 @@
                 <local:CardControl Card="{Binding TurnCard}" Margin="20,0,0,0" />
                 <local:CardControl Card="{Binding RiverCard}" Margin="20,0,0,0" />
             </StackPanel>
-            <TextBox Text="{Binding GenOutput,Mode=TwoWay}" MinHeight="100" />
+            <TextBox Text="{Binding GenOutput,Mode=TwoWay}" MaxHeight="100" />
             <DataGrid x:Name="TheGrid" ItemsSource="{Binding TableItems}" AutoGenerateColumns="False" >
                 <DataGrid.Resources>
                     <DataTemplate x:Key="MyCellTemplate" >

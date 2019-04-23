@@ -45,6 +45,9 @@ namespace OddsMaster
 
         Deck _deck;
         Hand _playerHand;
+        int _handScore = 0;
+        int? _currentTurnScore;
+        int _potentialPoints;
 
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -64,12 +67,16 @@ namespace OddsMaster
         //------------------------------------------------------------------------------------
         internal void Reset()
         {
+            _potentialPoints = 3;
+            _currentTurnScore = null;
+            _handScore = 0;
             _deck.Reset();
             _deck.Shuffle();
             _playerHand = new Hand();
             _playerHand.AddCard(_deck.Draw());
             _playerHand.AddCard(_deck.Draw());
             Explanation = "Click 'Explain' to see stats here.";
+            ProgressText = "Starting new hand.  Guess the strength of your current hand. The probability is based on all players continuing to the river.\r\n";
             CalculateOdds();
             ResetButtons();
             NotifyAllPropertiesChanged();
@@ -120,6 +127,7 @@ namespace OddsMaster
         //------------------------------------------------------------------------------------
         public void SelectStrength(int strength)
         {
+            if (!StrengthEnabled[strength] || _currentTurnScore != null) return;
             var low = _strengthPartitions[strength];
             var high = _strengthPartitions[strength + 1];
             var overlapRatio = 0.2;
@@ -136,17 +144,46 @@ namespace OddsMaster
             }
 
             StrengthEnabled[strength] = false;
-            if (_currentOdds.WinRatio >= low && _currentOdds.WinRatio <= high)
+            var winPercentage = _currentOdds.WinRatio * 100;
+            if(winPercentage < low)
             {
-                StrengthBackground[strength] = Brushes.Green;
+                StrengthBackground[strength] = Brushes.Red;
+                PrintProgress("Too High.");
+                _potentialPoints -= 2;
+                
+            }
+            else if(winPercentage > high)
+            {
+                StrengthBackground[strength] = Brushes.Red;
+                PrintProgress("Too Low.");
+                _potentialPoints -= 2;
+
             }
             else
             {
-                StrengthBackground[strength] = Brushes.Red;
+                PrintProgress($"Nice!  Probability of a win is {winPercentage.ToString(".0")}%");
+                StrengthBackground[strength] = Brushes.Green;
+                _currentTurnScore = _potentialPoints;
+                _handScore += _potentialPoints;
+                PrintProgress($"Current Score: {_handScore}");
             }
+
+            if (_potentialPoints < 0) _potentialPoints = 0;
+
 
             Notify(nameof(StrengthBackground));
             Notify(nameof(StrengthEnabled));
+            Notify(nameof(ProgressText));
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Print Progress information
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        void PrintProgress(string message)
+        {
+            ProgressText = message + "\r\n" + ProgressText;
         }
 
         //------------------------------------------------------------------------------------
