@@ -103,6 +103,18 @@ namespace PokerParts
 
         //------------------------------------------------------------------------------------
         /// <summary>
+        /// Get a card that has been dealt to the player
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public Card GetDealtCard(int cardPosition)
+        {
+            if (DealtCards.Count >= cardPosition + 1) return DealtCards[cardPosition];
+            else return null;
+        }
+
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
         /// Add a card to this hand
         /// </summary>
         //------------------------------------------------------------------------------------

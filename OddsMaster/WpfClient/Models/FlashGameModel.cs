@@ -28,26 +28,30 @@ namespace OddsMaster
         }
 
         const int STRENGTH_BUTTON_COUNT = 7;
+
         public bool[] StrengthEnabled { get; } = new bool[STRENGTH_BUTTON_COUNT];
         public Brush[] StrengthBackground { get; } = new Brush[STRENGTH_BUTTON_COUNT];
 
         public string Explanation { get; set; }
         public string ProgressText { get; set; }
 
-        public Card PocketCard1 => _playerHand?.DealtCards[0];
-        public Card PocketCard2 => _playerHand?.DealtCards[1];
-        public Card FlopCard1 { get; set; }
+        public bool CanDealNext => _currentTurnScore != null && RiverCard == null;
 
-        public Card FlopCard2 { get; set; }
-        public Card FlopCard3 { get; set; }
-        public Card TurnCard { get; set; }
-        public Card RiverCard { get; set; }
+        public Card PocketCard1 => _playerHand?.GetDealtCard(0);
+        public Card PocketCard2 => _playerHand?.GetDealtCard(1);
+        public Card FlopCard1 => _playerHand?.GetDealtCard(2);
+
+        public Card FlopCard2 => _playerHand?.GetDealtCard(3);
+        public Card FlopCard3 => _playerHand?.GetDealtCard(4);
+        public Card TurnCard => _playerHand?.GetDealtCard(5);
+        public Card RiverCard => _playerHand?.GetDealtCard(6);
 
         Deck _deck;
         Hand _playerHand;
         int _handScore = 0;
         int? _currentTurnScore;
         int _potentialPoints;
+
 
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -75,6 +79,7 @@ namespace OddsMaster
             _playerHand = new Hand();
             _playerHand.AddCard(_deck.Draw());
             _playerHand.AddCard(_deck.Draw());
+            
             Explanation = "Click 'Explain' to see stats here.";
             ProgressText = "Starting new hand.  Guess the strength of your current hand. The probability is based on all players continuing to the river.\r\n";
             CalculateOdds();
@@ -98,6 +103,43 @@ namespace OddsMaster
             Notify(nameof(StrengthEnabled));
             Notify(nameof(StrengthBackground));
         }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Deal the next cards
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public void DealNext()
+        {
+            ResetButtons();
+            _currentTurnScore = null;
+            _potentialPoints = 3;
+            if (FlopCard1 == null)
+            {
+                PrintProgress("Dealing flop cards...");
+                _playerHand.AddCard(_deck.Draw());
+                _playerHand.AddCard(_deck.Draw());
+                _playerHand.AddCard(_deck.Draw());
+            }
+            else if (TurnCard == null)
+            {
+                PrintProgress("Dealing turn card...");
+                _playerHand.AddCard(_deck.Draw());
+            }
+            else if (RiverCard == null)
+            { 
+                PrintProgress("Dealing river card...");
+                _playerHand.AddCard(_deck.Draw());
+            }
+            else
+            {
+                PrintProgress("Whoops, this should not happen.");
+            }
+
+            CalculateOdds();
+            NotifyAllPropertiesChanged();
+        }
+
 
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -171,9 +213,7 @@ namespace OddsMaster
             if (_potentialPoints < 0) _potentialPoints = 0;
 
 
-            Notify(nameof(StrengthBackground));
-            Notify(nameof(StrengthEnabled));
-            Notify(nameof(ProgressText));
+            NotifyAllPropertiesChanged();
         }
 
         //------------------------------------------------------------------------------------

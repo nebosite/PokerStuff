@@ -6,8 +6,8 @@
 	[x] Percentages for pairs look wrong with 2 players
 	[x] Generate odds tables for initial pair
 	[ ] Walk through the stages - Preflop, flop, turn, river
-		[ ] If incorrect, give a hint
-		[ ] If correct, say the percentage and lock the buttons
+		[x] If incorrect, give a hint
+		[x] If correct, say the percentage and lock the buttons
 		[ ] Once a correct answer is given, enable a buttong to deal the next card(s)
 		[ ] Color does not show up when button is disabled
 		Dominating (1.1:1)

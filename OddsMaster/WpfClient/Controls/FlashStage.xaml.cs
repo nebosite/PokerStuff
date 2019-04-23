@@ -27,5 +27,10 @@ namespace OddsMaster
         {
 
         }
+
+        private void DealNextClick(object sender, RoutedEventArgs e)
+        {
+            Model.DealNext();
+        }
     }
 }
