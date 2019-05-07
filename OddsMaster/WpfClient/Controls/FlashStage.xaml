@@ -29,6 +29,7 @@
                                Background="LightGray" Height="80" Margin="251,5,5,5" Padding="5"/>
                     
                 </Grid>
+                <local:PercentagePicker Height="50" />
 
                 <StackPanel Orientation="Horizontal" Margin="5">
                     <StackPanel.Resources>
