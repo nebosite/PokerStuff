@@ -40,6 +40,57 @@ namespace OddsMaster
             {
                 _playerCount = value;
                 Notify(nameof(PlayerCount));
+                FixBets();
+            }
+        }
+
+        int _weakBets = 0;
+        public int WeakBets
+        {
+            get => _weakBets;
+            set
+            {
+                _weakBets = value;
+                FixBets();
+            }
+        }
+
+        int _regularBets = 0;
+        public int RegularBets
+        {
+            get => _regularBets;
+            set
+            {
+                _regularBets = value;
+                FixBets();
+            }
+        }
+
+        int _strongBets = 0;
+        public int StrongBets
+        {
+            get => _strongBets;
+            set
+            {
+                _strongBets = value;
+                FixBets();
+            }
+        }
+
+        double _threshholdPercent = 33;
+        public string ThreshholdPercent
+        {
+            get => _threshholdPercent.ToString();
+            set
+            {
+                if(!double.TryParse(value, out var doubleValue))
+                {
+                    doubleValue = 33;
+                }
+                if (doubleValue < 0) doubleValue = 0;
+                if (doubleValue > 99) doubleValue = 99;
+                _threshholdPercent = doubleValue;
+                Notify(nameof(ThreshholdPercent));
             }
         }
 
@@ -73,6 +124,20 @@ namespace OddsMaster
         //------------------------------------------------------------------------------------
         public TableGenModel()
         {
+        }
+
+        void FixBets()
+        {
+            while(_weakBets + _regularBets + _strongBets > PlayerCount)
+            {
+                if (_strongBets > 0) _strongBets--;
+                else if (_regularBets > 0) _regularBets--;
+                else if (_weakBets > 0) _weakBets--;
+            }
+
+            Notify(nameof(WeakBets));
+            Notify(nameof(RegularBets));
+            Notify(nameof(StrongBets));
         }
 
         internal void DealFlop()
@@ -227,17 +292,40 @@ namespace OddsMaster
             Brush GetRatioColor(double ratio)
             {
                 byte r, g, b;
-                ratio = (ratio - 0.5) * 2;
-                var colorRatio = Math.Abs(ratio);
-                if (ratio > 0)
+                bool aboveThreshhold = false;
+                var threshhold = _threshholdPercent / 100.0;
+                if(ratio > threshhold)
                 {
-                    r = 255;
-                    g = b = (byte)(255 - (colorRatio * 255));
+                    aboveThreshhold = true;
+                    ratio = (ratio - threshhold) / (1 - threshhold);
                 }
                 else
                 {
-                    r = g = (byte)(255 - (colorRatio * 127));
-                    b = (byte)(255 - (colorRatio * 80));
+                    ratio = ratio / threshhold;
+                }
+
+                if(aboveThreshhold)
+                {
+                    b = 0;
+                    r = (byte)(255 * (1 - ratio));
+                    g = 255;
+                    //ratio = (ratio - 0.5) * 2;
+                    //var colorRatio = Math.Abs(ratio);
+                    //if (ratio > 0)
+                    //{
+                    //    g = b = (byte)(255 - (colorRatio * 255));
+                    //    r = 255;
+                    //}
+                    //else
+                    //{
+                    //    r = g = (byte)(255 - (colorRatio * 127));
+                    //    b = (byte)(255 - (colorRatio * 80));
+                    //}
+
+                }
+                else
+                {
+                    r = g = b = (byte)(80 + 128 * ratio);  
                 }
                 return new SolidColorBrush(Color.FromArgb(255, r, g, b));
             }
