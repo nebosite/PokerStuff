@@ -49,7 +49,7 @@ namespace PokerParts
     /// Card 
     /// </summary>
     //------------------------------------------------------------------------------------
-    public class Card 
+    public class Card : IEquatable<Card>
     {
         public Suit Suit;
         public Rank Rank;
@@ -166,6 +166,16 @@ namespace PokerParts
         public override string ToString()
         {
             return _originalData;
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Equatable
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public bool Equals(Card other)
+        {
+            return Suit == other.Suit && Rank == other.Rank;
         }
     }
 }

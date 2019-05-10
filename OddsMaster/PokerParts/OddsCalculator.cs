@@ -42,14 +42,24 @@ namespace PokerParts
     //------------------------------------------------------------------------------------
     public class OddsCalculator
     {
+        public class Bets
+        {
+            public int Weak { get; set; }
+            public int Regular { get; set; }
+            public int Strong { get; set; }
+            public Card[][] WeakPairs { get; set; }
+            public Card[][] RegularPairs { get; set; }
+            public Card[][] StrongPairs { get; set; }
+        }
         //------------------------------------------------------------------------------------
         /// <summary>
         /// A class for calculating odds for a hand to win
         /// </summary>
         //------------------------------------------------------------------------------------
-        public static OddsResults Calculate(Deck deck, Hand playerHand, int playerCount, TimeSpan computeLimit, int minIterations = 1000)
+        public static OddsResults Calculate(Deck deck, Hand playerHand, int playerCount, TimeSpan computeLimit, int minIterations = 1000, Bets bets = null)
         {
             var stopwatch = Stopwatch.StartNew();
+            var rand = new Random();
 
             var oddsOutput = new OddsResults();
             var deckSpot = deck.DrawSpot;
@@ -88,16 +98,48 @@ namespace PokerParts
                     street.Add(deck.Draw());
                 }
 
-                // Deal player cards to dummy player
+                // Player 0 is the user, deal the two hole cards to them
                 hands[0].AddCard(playerHand.DealtCards[0]);
                 hands[0].AddCard(playerHand.DealtCards[1]);
 
-                // Now deal two cards to everyone else
-                for (int k = 0; k < 2; k++)
+                // If the betting profile is specified, deal the 
+                // cards accordingly
+                int playerNumber = 1;
+                if(bets != null)
                 {
-                    for (int j = 1; j < hands.Length; j++)
+                    void DealRandomSet(int count, Card[][] pairs)
                     {
-                        hands[j].AddCard(deck.Draw());
+                        while(count > 0 && playerNumber < hands.Length)
+                        {
+                            // Try to deal random cards.  Give up if it takes too
+                            // long since we might have an impossible situation
+                            int tries = 30;
+                            while (tries-- > 0)
+                            {
+                                var pair = pairs[rand.Next(pairs.Length)];
+                                if (deck.CanDraw(pair))
+                                {
+                                    hands[playerNumber].AddCard(deck.Draw(pair[0]));
+                                    hands[playerNumber].AddCard(deck.Draw(pair[1]));
+                                    break;
+                                }
+                            }
+                            playerNumber++;
+                            count--;
+                        }
+                    }
+
+                    DealRandomSet(bets.Weak, bets.WeakPairs);
+                    DealRandomSet(bets.Regular, bets.RegularPairs);
+                    DealRandomSet(bets.Strong, bets.StrongPairs);
+                }
+                
+                // Now deal random two cards to everyone else
+                for (; playerNumber < hands.Length; playerNumber++)
+                {
+                    for (int k = 0; k < 2; k++)
+                    {
+                        hands[playerNumber].AddCard(deck.Draw());
                     }
                 }
 
