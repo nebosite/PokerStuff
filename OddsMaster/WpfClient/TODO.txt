@@ -8,6 +8,7 @@
 	[ ] Better odds table
 		[x] Fix odds table to show betting threshholds
 		[x] Load the odds tables at program start
+		[ ] bet counts should be < PlayerCount -1
 		[ ] Before calculating odds, fill in the betting profile	
 			- base = 1/# of players
 			- Strong = ratio > base * 1.3

@@ -214,6 +214,7 @@ namespace OddsMaster
         //------------------------------------------------------------------------------------
         /// <summary>
         /// Generate some data
+        /// 
         /// </summary>
         //------------------------------------------------------------------------------------
         public void Generate()
@@ -221,10 +222,42 @@ namespace OddsMaster
             var result = new Dictionary<string, OddsWorkUnit>();
             var baseThreshhold = _threshholdPercent / 100.0;
 
-            // Run a bunch of hands for each pair of cards we want to test
-            Parallel.ForEach<OddsWorkUnit>(GetAllPairs(), (pair) =>
+            //     /// Before calculating odds, fill in the betting profile	
+            //- Strong = ratio > base * 1.3
+            //- regular = ratio > base
+            //- weak = ratio > base / 1.3
+
+            var bettingProfile = new OddsCalculator.Bets();
+            bettingProfile.Regular = RegularBets;
+            bettingProfile.Weak = WeakBets;
+            bettingProfile.Strong = StrongBets;
+            var weakThreshhold = baseThreshhold / 1.3;
+            var strongThreshhold = baseThreshhold * 1.3;
+
+            var oddsTable = AppModel.PocketHandOdds[PlayerCount];
+            foreach(var pair in GetAllPairs())
             {
-                pair.Odds = OddsCalculator.Calculate(pair.Deck, pair.PlayerHand, PlayerCount, TimeSpan.FromMilliseconds(0), 10000);
+                var id = GetId(pair);
+                if (oddsTable[id] > strongThreshhold)
+                {
+                    bettingProfile.StrongPairs.Add(pair);
+                }
+                else if (oddsTable[id] > baseThreshhold)
+                {
+                    bettingProfile.RegularPairs.Add(pair);
+                }
+                else if (oddsTable[id] > weakThreshhold)
+                {
+                    bettingProfile.WeakPairs.Add(pair);
+                }
+            }
+
+
+
+            // Run a bunch of hands for each pair of cards we want to test
+            Parallel.ForEach<OddsWorkUnit>(GetAllPairWorkUnits(), (pair) =>
+            {
+                pair.Odds = OddsCalculator.Calculate(pair.Deck, pair.PlayerHand, PlayerCount, TimeSpan.FromMilliseconds(0), 10000, bettingProfile);
                 lock (result)
                 {
                     result.Add(pair.Id, pair);
@@ -339,13 +372,54 @@ namespace OddsMaster
             }
         }
 
+        private string GetId(Card[] pair)
+        {
+            // high card is first
+            if(pair[0].Rank < pair[1].Rank)
+            {
+                var temp = pair[0];
+                pair[0] = pair[1];
+                pair[1] = temp;
+            }
+
+            var letter1 = Hand.GetRankChar(pair[0].Rank);
+            var letter2 = Hand.GetRankChar(pair[1].Rank);
+            var suitLetter = "";
+            if (pair[0].Rank != pair[1].Rank)
+            {
+                suitLetter = pair[0].Suit == pair[1].Suit ? "s" : "o";
+            }
+
+
+            return $"{letter1}{letter2}{suitLetter}";
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Generate all possible pairs of cards from the deck
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        IEnumerable<Card[]> GetAllPairs()
+        {
+            var deck = new Deck();
+            int count = 0;
+            for(int i = 0; i < deck.AllCards.Length; i++)
+            {
+                for (int j = i+1; j < deck.AllCards.Length; j++)
+                {
+                    count++;
+                    yield return new Card[] { deck.AllCards[i], deck.AllCards[j] };
+                }
+            }
+
+        }
 
         //------------------------------------------------------------------------------------
         /// <summary>
         /// Generate all the pairs in the grid
         /// </summary>
         //------------------------------------------------------------------------------------
-        IEnumerable<OddsWorkUnit> GetAllPairs()
+        IEnumerable<OddsWorkUnit> GetAllPairWorkUnits()
         {
             OddsWorkUnit GetUnit(Rank highRank, Rank lowRank, bool offSuit)
             {

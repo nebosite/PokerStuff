@@ -23,6 +23,8 @@ namespace PokerParts
         Random _random = new Random();
         Card[] _cards = new Card[52];
 
+        public Card[] AllCards => _cards;
+
         //------------------------------------------------------------------------------------
         /// <summary>
         /// ctor - creats a fresh, ordered deck

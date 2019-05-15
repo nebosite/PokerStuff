@@ -47,9 +47,9 @@ namespace PokerParts
             public int Weak { get; set; }
             public int Regular { get; set; }
             public int Strong { get; set; }
-            public Card[][] WeakPairs { get; set; }
-            public Card[][] RegularPairs { get; set; }
-            public Card[][] StrongPairs { get; set; }
+            public List<Card[]> WeakPairs { get; set; } = new List<Card[]>();
+            public List<Card[]> RegularPairs { get; set; } = new List<Card[]>();
+            public List<Card[]> StrongPairs { get; set; } = new List<Card[]>();
         }
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -107,22 +107,30 @@ namespace PokerParts
                 int playerNumber = 1;
                 if(bets != null)
                 {
-                    void DealRandomSet(int count, Card[][] pairs)
+                    void DealRandomSet(int count, List<Card[]> pairs)
                     {
                         while(count > 0 && playerNumber < hands.Length)
                         {
                             // Try to deal random cards.  Give up if it takes too
                             // long since we might have an impossible situation
                             int tries = 30;
-                            while (tries-- > 0)
+                            while (--tries > 0)
                             {
-                                var pair = pairs[rand.Next(pairs.Length)];
+                                var pair = pairs[rand.Next(pairs.Count)];
                                 if (deck.CanDraw(pair))
                                 {
                                     hands[playerNumber].AddCard(deck.Draw(pair[0]));
                                     hands[playerNumber].AddCard(deck.Draw(pair[1]));
                                     break;
                                 }
+                            }
+                            
+
+                            // If we can't draw the cards we want, then just put in some random cards
+                            if(tries == 0)
+                            {
+                                hands[playerNumber].AddCard(deck.Draw());
+                                hands[playerNumber].AddCard(deck.Draw());
                             }
                             playerNumber++;
                             count--;
