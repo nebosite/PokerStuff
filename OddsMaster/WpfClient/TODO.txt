@@ -6,8 +6,8 @@
 	[x] Percentages for pairs look wrong with 2 players
 	[x] Generate odds tables for initial pair
 	[ ] Better odds table
-		[ ] Fix odds table to show betting threshholds
-		[ ] Load the odds tables at program start
+		[x] Fix odds table to show betting threshholds
+		[x] Load the odds tables at program start
 		[ ] Before calculating odds, fill in the betting profile	
 			- base = 1/# of players
 			- Strong = ratio > base * 1.3
