@@ -25,6 +25,10 @@
 		Hopeless (20:1)
 					0%
 	[ ] Add Limp, bet, 2bet stages in between each
+	[ ] In the explanation talk about why the percentage whent up or down.
+		E.g.:  That 9 on the river just give a boost to a villian's straight potential
+		[ ] Bonus question:  which type of hand accounted for the biggest part of the percentage change?  
+			eg: player 3ok, villian straight, etc.
 
 	[ ] Fix the button style to be perfect: https://gist.github.com/markheath/c8189790270b8615625d
 
