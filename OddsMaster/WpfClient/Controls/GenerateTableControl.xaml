@@ -14,6 +14,17 @@
             <StackPanel Orientation="Horizontal" Margin="10">
                 <Label Width="100" HorizontalContentAlignment="Right" Content="# Players:" />
                 <wpfTool:IntegerUpDown Value="{Binding PlayerCount}" ValueChanged="FlashPlayerCountChanged" Minimum="2" Maximum="9" />
+                <Label Margin="30,0,0,0" Content="Bets:" />
+                <Label Margin="10,0,0,0" Content="Weak:" />
+                <wpfTool:IntegerUpDown Value="{Binding WeakBets}" Minimum="0" Maximum="{Binding PlayerCount}" />
+                <Label Margin="10,0,0,0" Content="Regular:" />
+                <wpfTool:IntegerUpDown Value="{Binding RegularBets}"  Minimum="0" Maximum="{Binding PlayerCount}" />
+                <Label Margin="10,0,0,0" Content="Strong:" />
+                <wpfTool:IntegerUpDown Value="{Binding StrongBets}"  Minimum="0" Maximum="{Binding PlayerCount}" />
+                <Label Margin="10,0,0,0" Content="Threshhold%:" />
+                <TextBox Text="{Binding ThreshholdPercent}" Width="40" Background="LightBlue" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="10">
                 <Button Content=" Generate " Margin="20,0" Click="GenerateTableClick"/>
                 <Button Content=" DealFlop " Margin="20,0" Click="DealFlopClick" Visibility="Collapsed"/>
             </StackPanel>

@@ -106,5 +106,22 @@ namespace PokerParts
         {
             DrawSpot = newSpot;
         }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// return true if cards are still int the deck
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        internal bool CanDraw(params Card[] cards)
+        {
+            for(int i = 0; i < DrawSpot; i++)
+            {
+                for(int j = 0; j < cards.Length; j++)
+                {
+                    if (_cards[i].Equals(_cards[j])) return false;
+                }
+            }
+            return true;
+        }
     }
 }

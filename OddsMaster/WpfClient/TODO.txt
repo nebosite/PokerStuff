@@ -5,6 +5,15 @@
 	[x] UI to pick number of users
 	[x] Percentages for pairs look wrong with 2 players
 	[x] Generate odds tables for initial pair
+	[ ] Better odds table
+		[ ] Fix odds table to show betting threshholds
+		[ ] Load the odds tables at program start
+		[ ] Before calculating odds, fill in the betting profile	
+			- base = 1/# of players
+			- Strong = ratio > base * 1.3
+			- regular = ratio > base
+			- weak = ratio > base / 1.3
+
 	[ ] Walk through the stages - Preflop, flop, turn, river
 		[x] If incorrect, give a hint
 		[x] If correct, say the percentage and lock the buttons

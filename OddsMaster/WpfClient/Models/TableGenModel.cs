@@ -40,6 +40,59 @@ namespace OddsMaster
             {
                 _playerCount = value;
                 Notify(nameof(PlayerCount));
+                _threshholdPercent = 100 / PlayerCount;
+                Notify(nameof(ThreshholdPercent));
+                FixBets();
+            }
+        }
+
+        int _weakBets = 0;
+        public int WeakBets
+        {
+            get => _weakBets;
+            set
+            {
+                _weakBets = value;
+                FixBets();
+            }
+        }
+
+        int _regularBets = 0;
+        public int RegularBets
+        {
+            get => _regularBets;
+            set
+            {
+                _regularBets = value;
+                FixBets();
+            }
+        }
+
+        int _strongBets = 0;
+        public int StrongBets
+        {
+            get => _strongBets;
+            set
+            {
+                _strongBets = value;
+                FixBets();
+            }
+        }
+
+        double _threshholdPercent = 33;
+        public string ThreshholdPercent
+        {
+            get => _threshholdPercent.ToString();
+            set
+            {
+                if(!double.TryParse(value, out var doubleValue))
+                {
+                    doubleValue = 33;
+                }
+                if (doubleValue < 0) doubleValue = 0;
+                if (doubleValue > 99) doubleValue = 99;
+                _threshholdPercent = doubleValue;
+                Notify(nameof(ThreshholdPercent));
             }
         }
 
@@ -73,6 +126,21 @@ namespace OddsMaster
         //------------------------------------------------------------------------------------
         public TableGenModel()
         {
+            PlayerCount = 5;
+        }
+
+        void FixBets()
+        {
+            while(_weakBets + _regularBets + _strongBets > PlayerCount)
+            {
+                if (_strongBets > 0) _strongBets--;
+                else if (_regularBets > 0) _regularBets--;
+                else if (_weakBets > 0) _weakBets--;
+            }
+
+            Notify(nameof(WeakBets));
+            Notify(nameof(RegularBets));
+            Notify(nameof(StrongBets));
         }
 
         internal void DealFlop()
@@ -151,6 +219,9 @@ namespace OddsMaster
         public void Generate()
         {
             var result = new Dictionary<string, OddsWorkUnit>();
+            var baseThreshhold = _threshholdPercent / 100.0;
+
+            // Run a bunch of hands for each pair of cards we want to test
             Parallel.ForEach<OddsWorkUnit>(GetAllPairs(), (pair) =>
             {
                 pair.Odds = OddsCalculator.Calculate(pair.Deck, pair.PlayerHand, PlayerCount, TimeSpan.FromMilliseconds(0), 10000);
@@ -160,6 +231,7 @@ namespace OddsMaster
                 }
             });
 
+            // Process the results into a spreadsheet
             var ranks = "AKQJT98765432";
             TableItems.Clear();
             for (int i = 0; i < 13; i++)
@@ -187,7 +259,7 @@ namespace OddsMaster
                         TableItems[y][x+1] =  new TableDataItem()
                         {
                             Text = key + " " + (result[key].Odds.WinRatio * 100).ToString("0.") + "%",
-                            CellColor = GetRatioColor(result[key].Odds.WinRatio)
+                            CellColor = GetRatioColor(result[key].Odds.WinRatio, baseThreshhold)
                         };
                     }
                     else
@@ -197,7 +269,7 @@ namespace OddsMaster
                         TableItems[x][y+1] = new TableDataItem()
                         {
                             Text = key+ " " + (result[key].Odds.WinRatio * 100).ToString("0.") + "%",
-                            CellColor = GetRatioColor(result[key].Odds.WinRatio)
+                            CellColor = GetRatioColor(result[key].Odds.WinRatio, baseThreshhold)
                         };
 
                         key = "" + highRank + lowRank + "s";
@@ -205,7 +277,7 @@ namespace OddsMaster
                         TableItems[y][x+1] = new TableDataItem()
                         {
                             Text = key+ " " + (result[key].Odds.WinRatio * 100).ToString("0.") + "%",
-                            CellColor = GetRatioColor(result[key].Odds.WinRatio)
+                            CellColor = GetRatioColor(result[key].Odds.WinRatio, baseThreshhold)
                         };
                     }
                 }
@@ -224,21 +296,45 @@ namespace OddsMaster
             /// Create a heatmap color based on the ratio
             /// </summary>
             //------------------------------------------------------------------------------------
-            Brush GetRatioColor(double ratio)
+            Brush GetRatioColor(double ratio, double threshhold)
             {
-                byte r, g, b;
-                ratio = (ratio - 0.5) * 2;
-                var colorRatio = Math.Abs(ratio);
-                if (ratio > 0)
+                int rl, gl, bl;
+                int rh, gh, bh;
+                var level0 = threshhold / 1.3;
+                var level1 = threshhold ;
+                var level2 = threshhold * 1.3;
+
+                rh = gh = bh = 255;
+                rl = gl = bl = 0;
+
+                if (ratio < level0)
                 {
-                    r = 255;
-                    g = b = (byte)(255 - (colorRatio * 255));
+                    rl = gl = bl = 100;
+                    rh = gh = bh = 220;
+                    ratio = ratio / level0;
                 }
-                else
+                else if (ratio < level1)
                 {
-                    r = g = (byte)(255 - (colorRatio * 127));
-                    b = (byte)(255 - (colorRatio * 80));
+                    rl = rh = 255;
+                    gh = bh = 220;
+                    ratio = (ratio - level0) / (level1-level0);
                 }
+                else if (ratio < level2)
+                {
+                    rl = rh = gl = gh = 255;
+                    bh = 220;
+                    ratio = (ratio - level1) / (level2-level1);
+                }
+                else 
+                {
+                    gl = gh = 255;
+                    rh = bh = 220;
+                    ratio = (ratio - level2) / (1-level2);
+                }
+
+                var r = (byte)((rh - rl) * ratio + rl);
+                var g = (byte)((gh - gl) * ratio + gl);
+                var b = (byte)((bh - bl) * ratio + bl);
                 return new SolidColorBrush(Color.FromArgb(255, r, g, b));
             }
         }
