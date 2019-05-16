@@ -120,7 +120,7 @@ namespace PokerParts
             {
                 for(int j = 0; j < cards.Length; j++)
                 {
-                    if (_cards[i].Equals(_cards[j])) return false;
+                    if (_cards[i].Equals(cards[j])) return false;
                 }
             }
             return true;

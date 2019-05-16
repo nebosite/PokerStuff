@@ -131,7 +131,7 @@ namespace OddsMaster
 
         void FixBets()
         {
-            while(_weakBets + _regularBets + _strongBets > PlayerCount)
+            while(_weakBets + _regularBets + _strongBets > PlayerCount - 1)
             {
                 if (_strongBets > 0) _strongBets--;
                 else if (_regularBets > 0) _regularBets--;
