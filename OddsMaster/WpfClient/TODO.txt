@@ -5,16 +5,33 @@
 	[x] UI to pick number of users
 	[x] Percentages for pairs look wrong with 2 players
 	[x] Generate odds tables for initial pair
-	[ ] Better odds table
+	[x] Better odds table
 		[x] Fix odds table to show betting threshholds
 		[x] Load the odds tables at program start
-		[ ] bet counts should be < PlayerCount -1
-		[ ] Before calculating odds, fill in the betting profile	
+		[x] bet counts should be < PlayerCount -1
+		[x] Before calculating odds, fill in the betting profile	
 			- base = 1/# of players
 			- Strong = ratio > base * 1.3
 			- regular = ratio > base
 			- weak = ratio > base / 1.3
-
+	[ ] Odds Table
+		[ ] Add folds
+	[ ] Odds Flash
+		[ ] Odds flash is just about getting a feel for raw odds and seeing the explanation
+			- It generates completely random enemy hands each time
+		[ ] Get the percentage picker to work
+			[ ] Click on the percentage and award 1,2,or 4 points based on nearness
+			[ ] Show a highlight to indicate the range
+			[ ] Be able to show a grey highlight so we can see the last hand
+	[ ] Simulated game
+		[ ] Helps you think about postion and pot odds
+		[ ] Get the percentage picker to work
+			[ ] Adjust percentages to show your real chance range
+			[ ] Click on the percentage and award 1,2,or 4 points based on nearness
+			[ ] Show a highlight to indicate the range
+			[ ] Be able to show a grey highlight so we can see the last hand
+	    |!!!!!!!!!!!!!!|++++++++++++++++++|-----------------|                     |
+		DDDD PPPPPPP SSSSSS OOOOOO RRRRR WWWWWWWWWWWWWWWWW HHHH->
 	[ ] Walk through the stages - Preflop, flop, turn, river
 		[x] If incorrect, give a hint
 		[x] If correct, say the percentage and lock the buttons
