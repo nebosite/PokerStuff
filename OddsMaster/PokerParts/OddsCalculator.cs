@@ -44,9 +44,11 @@ namespace PokerParts
     {
         public class Bets
         {
+            public int Foldable { get; set; }
             public int Weak { get; set; }
             public int Regular { get; set; }
             public int Strong { get; set; }
+            public List<Card[]> FoldablePairs { get; set; } = new List<Card[]>();
             public List<Card[]> WeakPairs { get; set; } = new List<Card[]>();
             public List<Card[]> RegularPairs { get; set; } = new List<Card[]>();
             public List<Card[]> StrongPairs { get; set; } = new List<Card[]>();
@@ -107,9 +109,11 @@ namespace PokerParts
                 int playerNumber = 1;
                 if(bets != null)
                 {
-                    void DealRandomSet(int count, List<Card[]> pairs)
+                    void DealRandomSet(int count, List<Card[]> pairs, bool isFold = false)
                     {
-                        while(count > 0 && playerNumber < hands.Length)
+                        while(count > 0 
+                            && playerNumber < hands.Length
+                            && pairs.Count > 0)
                         {
                             // Try to deal random cards.  Give up if it takes too
                             // long since we might have an impossible situation
@@ -132,11 +136,18 @@ namespace PokerParts
                                 hands[playerNumber].AddCard(deck.Draw());
                                 hands[playerNumber].AddCard(deck.Draw());
                             }
+
+                            if(isFold)
+                            {
+                                hands[playerNumber].IsFolded = true;
+                            }
+
                             playerNumber++;
                             count--;
                         }
                     }
 
+                    DealRandomSet(bets.Foldable, bets.FoldablePairs, isFold: true);
                     DealRandomSet(bets.Weak, bets.WeakPairs);
                     DealRandomSet(bets.Regular, bets.RegularPairs);
                     DealRandomSet(bets.Strong, bets.StrongPairs);
@@ -156,6 +167,7 @@ namespace PokerParts
                 {
                     for (int j = 0; j < hands.Length; j++)
                     {
+                        if (hands[j].IsFolded) continue;
                         hands[j].AddCard(street[k]);
                     }
                 }
@@ -165,6 +177,7 @@ namespace PokerParts
                 var win = true;
                 for (int j = 1; j < hands.Length; j++)
                 {
+                    if (hands[j].IsFolded) continue;
                     var result = hands[0].CompareTo(hands[j]);
                     if (result != 1)
                     {

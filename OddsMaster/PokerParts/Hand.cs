@@ -40,6 +40,11 @@ namespace PokerParts
         public List<Card> DealtCards { get; set; } = new List<Card>(7);
 
         /// <summary>
+        /// For marking when a hand is folded
+        /// </summary>
+        public bool IsFolded { get; set; }
+
+        /// <summary>
         /// The Raw value of this hand - only best five cards are considered
         /// </summary>
         public HandType Value

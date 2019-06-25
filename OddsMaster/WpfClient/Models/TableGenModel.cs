@@ -40,8 +40,17 @@ namespace OddsMaster
             {
                 _playerCount = value;
                 Notify(nameof(PlayerCount));
-                _threshholdPercent = 100 / PlayerCount;
-                Notify(nameof(ThreshholdPercent));
+                FixBets();
+            }
+        }
+
+        int _folds = 0;
+        public int Folds
+        {
+            get => _folds;
+            set
+            {
+                _folds = value;
                 FixBets();
             }
         }
@@ -131,16 +140,22 @@ namespace OddsMaster
 
         void FixBets()
         {
-            while(_weakBets + _regularBets + _strongBets > PlayerCount - 1)
+            while(_folds + _weakBets + _regularBets + _strongBets > PlayerCount - 1)
             {
                 if (_strongBets > 0) _strongBets--;
                 else if (_regularBets > 0) _regularBets--;
                 else if (_weakBets > 0) _weakBets--;
+                else if (_folds > 0) _folds--;
             }
 
+            Notify(nameof(Folds));
             Notify(nameof(WeakBets));
             Notify(nameof(RegularBets));
             Notify(nameof(StrongBets));
+
+            _threshholdPercent = 100 / (PlayerCount-(Folds * 1.0));
+            Notify(nameof(ThreshholdPercent));
+
         }
 
         internal void DealFlop()
@@ -228,6 +243,7 @@ namespace OddsMaster
             //- weak = ratio > base / 1.3
 
             var bettingProfile = new OddsCalculator.Bets();
+            bettingProfile.Foldable = Folds;
             bettingProfile.Regular = RegularBets;
             bettingProfile.Weak = WeakBets;
             bettingProfile.Strong = StrongBets;
@@ -249,6 +265,10 @@ namespace OddsMaster
                 else if (oddsTable[id] > weakThreshhold)
                 {
                     bettingProfile.WeakPairs.Add(pair);
+                }
+                else
+                {
+                    bettingProfile.FoldablePairs.Add(pair);
                 }
             }
 

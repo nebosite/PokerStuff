@@ -14,8 +14,8 @@
 			- Strong = ratio > base * 1.3
 			- regular = ratio > base
 			- weak = ratio > base / 1.3
-	[ ] Odds Table
-		[ ] Add folds
+	[x] Odds Table
+		[x] Add folds
 	[ ] Odds Flash
 		[ ] Odds flash is just about getting a feel for raw odds and seeing the explanation
 			- It generates completely random enemy hands each time
