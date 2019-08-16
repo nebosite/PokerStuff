@@ -14,15 +14,104 @@ using System.Collections.ObjectModel;
 namespace OddsMaster
 {
 
-    public class TableDataItem
+    public class TableDataItem : BaseModel
     {
+        public string VisibleText => _pivot ? PivotText : Text;
+        public string PivotText { get; set; }
         public string Text { get; set; }
+        public Brush VisibleColor { get; set; }
+        public Brush PivotColor { get; set; }
         public Brush CellColor { get; set; }
+
+        private bool _pivot;
+        public double WinRatio { get; set; }
+        private string _handType;
+        private bool _isLabel;
+
+        public TableDataItem(string label, double winRatio, double threshhold, bool isLabel = false)
+        {
+            WinRatio = winRatio;
+            _handType = label;
+            _isLabel = isLabel;
+            Text = $"{_handType}:{(int)(winRatio*100)}%";
+            CellColor = Brushes.White;
+            if(!isLabel)
+            {
+                CellColor = GetRatioColor(winRatio, threshhold);
+            }
+        }
 
         public override string ToString()
         {
             return Text;
         }
+
+        public void PivotOn(double selectedRatio)
+        {
+            if (_isLabel) return;
+            _pivot = true;
+            var multiplier = WinRatio / selectedRatio;
+            PivotText = $"{_handType}:{multiplier.ToString(".0")}";
+            Notify(nameof(VisibleColor));
+            Notify(nameof(VisibleText));
+        }
+
+        internal void RemovePivot(double threshhold)
+        {
+            if (_isLabel) return;
+            _pivot = false;
+            CellColor = GetRatioColor(WinRatio, threshhold);
+            Notify(nameof(VisibleColor));
+            Notify(nameof(VisibleText));
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Create a heatmap color based on the ratio
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        Brush GetRatioColor(double ratio, double threshhold)
+        {
+            int rl, gl, bl;
+            int rh, gh, bh;
+            var level0 = threshhold / 1.3;
+            var level1 = threshhold;
+            var level2 = threshhold * 1.3;
+
+            rh = gh = bh = 255;
+            rl = gl = bl = 0;
+
+            if (ratio < level0)
+            {
+                rl = gl = bl = 100;
+                rh = gh = bh = 220;
+                ratio = ratio / level0;
+            }
+            else if (ratio < level1)
+            {
+                rl = rh = 255;
+                gh = bh = 220;
+                ratio = (ratio - level0) / (level1 - level0);
+            }
+            else if (ratio < level2)
+            {
+                rl = rh = gl = gh = 255;
+                bh = 220;
+                ratio = (ratio - level1) / (level2 - level1);
+            }
+            else
+            {
+                gl = gh = 255;
+                rh = bh = 220;
+                ratio = (ratio - level2) / (1 - level2);
+            }
+
+            var r = (byte)((rh - rl) * ratio + rl);
+            var g = (byte)((gh - gl) * ratio + gl);
+            var b = (byte)((bh - bl) * ratio + bl);
+            return new SolidColorBrush(Color.FromArgb(255, r, g, b));
+        }
+
     }
 
     //------------------------------------------------------------------------------------
@@ -156,6 +245,25 @@ namespace OddsMaster
             _threshholdPercent = 100 / (PlayerCount-(Folds * 1.0));
             Notify(nameof(ThreshholdPercent));
 
+        }
+
+        internal void PivotOnCell(TableDataItem selectedCell)
+        {
+            foreach(var row in TableItems)
+            {
+                foreach(var cell in row)
+                {
+                    if(selectedCell != null)
+                    {
+                        cell.PivotOn(selectedCell.WinRatio);
+
+                    }
+                    else
+                    {
+                        cell.RemovePivot(_threshholdPercent / 100.0);
+                    }
+                }
+            }
         }
 
         internal void DealFlop()
@@ -295,11 +403,8 @@ namespace OddsMaster
             for (int y = 0; y < 13; y++)
             {
                 var highRank = ranks[y];
-                TableItems[y][0] = new TableDataItem()
-                {
-                    Text = highRank.ToString(),
-                    CellColor = Brushes.White
-                };
+                TableItems[y][0] = new TableDataItem(highRank.ToString(), 0, 0, isLabel: true);
+
 
                 for (int x = 0; x < 13; x++)
                 {
@@ -309,29 +414,18 @@ namespace OddsMaster
                     {
                         var key = "" + highRank + lowRank;
 
-                        TableItems[y][x+1] =  new TableDataItem()
-                        {
-                            Text = key + " " + (result[key].Odds.WinRatio * 100).ToString("0.") + "%",
-                            CellColor = GetRatioColor(result[key].Odds.WinRatio, baseThreshhold)
-                        };
+                        TableItems[y][x + 1] = new TableDataItem(key, result[key].Odds.WinRatio, baseThreshhold);
+
                     }
                     else
                     {
                         var key = "" + highRank + lowRank + "o";
 
-                        TableItems[x][y+1] = new TableDataItem()
-                        {
-                            Text = key+ " " + (result[key].Odds.WinRatio * 100).ToString("0.") + "%",
-                            CellColor = GetRatioColor(result[key].Odds.WinRatio, baseThreshhold)
-                        };
+                        TableItems[x][y+1] = new TableDataItem(key, result[key].Odds.WinRatio, baseThreshhold);
 
                         key = "" + highRank + lowRank + "s";
 
-                        TableItems[y][x+1] = new TableDataItem()
-                        {
-                            Text = key+ " " + (result[key].Odds.WinRatio * 100).ToString("0.") + "%",
-                            CellColor = GetRatioColor(result[key].Odds.WinRatio, baseThreshhold)
-                        };
+                        TableItems[y][x+1] = new TableDataItem(key, result[key].Odds.WinRatio, baseThreshhold);
                     }
                 }
 
@@ -344,52 +438,6 @@ namespace OddsMaster
                 Notify(nameof(TableItems));
             }
     
-            //------------------------------------------------------------------------------------
-            /// <summary>
-            /// Create a heatmap color based on the ratio
-            /// </summary>
-            //------------------------------------------------------------------------------------
-            Brush GetRatioColor(double ratio, double threshhold)
-            {
-                int rl, gl, bl;
-                int rh, gh, bh;
-                var level0 = threshhold / 1.3;
-                var level1 = threshhold ;
-                var level2 = threshhold * 1.3;
-
-                rh = gh = bh = 255;
-                rl = gl = bl = 0;
-
-                if (ratio < level0)
-                {
-                    rl = gl = bl = 100;
-                    rh = gh = bh = 220;
-                    ratio = ratio / level0;
-                }
-                else if (ratio < level1)
-                {
-                    rl = rh = 255;
-                    gh = bh = 220;
-                    ratio = (ratio - level0) / (level1-level0);
-                }
-                else if (ratio < level2)
-                {
-                    rl = rh = gl = gh = 255;
-                    bh = 220;
-                    ratio = (ratio - level1) / (level2-level1);
-                }
-                else 
-                {
-                    gl = gh = 255;
-                    rh = bh = 220;
-                    ratio = (ratio - level2) / (1-level2);
-                }
-
-                var r = (byte)((rh - rl) * ratio + rl);
-                var g = (byte)((gh - gl) * ratio + gl);
-                var b = (byte)((bh - bl) * ratio + bl);
-                return new SolidColorBrush(Color.FromArgb(255, r, g, b));
-            }
         }
 
         private string GetId(Card[] pair)
