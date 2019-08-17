@@ -2,83 +2,40 @@
 OddsMaster TODO
 ------------------------------
 
+    [x] Enable clicking forward without having to guess (you just go no points)
+    [ ] Click on one tile and re-color the chart
+		[ ] Datagrid cell selection not working
+    [ ] Allow Folds in Flash calculation
 
 
 
 NEW
-    [ ] Enable clicking forward without having to guess (you just go no points)
-    [ ] Show history
-    [ ] Click on one tile and re-color the chart
-    [ ] Allow Folds in Flash calculation
+	[ ] Flash game improvements
+		[ ] Checkbox to always explain
+		[ ] Maybe hover over explanation box to see it
+		[ ] Play it like a game - have opponents fold / bet
+		[ ] Show value along with percentage
+	[ ] Table improvements
+		[ ] Select just one cell
+
+SOON
+
+LATER
+    [ ] Show history of your hand percentage
+
+
 	[ ] Calculate win figures and compare to https://github.com/nebosite/PokerStuff.git
 		- Everyone Stays to the end
 		- Show a little status to show # runs and confidence
 	[ ] If calculation is slow, always have a thread doing calculations ahead
 	[ ] Bring in elements of poker play, which will adjust the odds at each stage
 
-SOON
-
-LATER
-	[ ] Odds Flash
-		[ ] Odds flash is just about getting a feel for raw odds and seeing the explanation
-			- It generates completely random enemy hands each time
-		[ ] Get the percentage picker to work
-			[ ] Click on the percentage and award 1,2,or 4 points based on nearness
-			[ ] Show a highlight to indicate the range
-			[ ] Be able to show a grey highlight so we can see the last hand
-	[ ] Simulated game
-		[ ] Helps you think about postion and pot odds
-		[ ] Get the percentage picker to work
-			[ ] Adjust percentages to show your real chance range
-			[ ] Click on the percentage and award 1,2,or 4 points based on nearness
-			[ ] Show a highlight to indicate the range
-			[ ] Be able to show a grey highlight so we can see the last hand
-	    |!!!!!!!!!!!!!!|++++++++++++++++++|-----------------|                     |
-		DDDD PPPPPPP SSSSSS OOOOOO RRRRR WWWWWWWWWWWWWWWWW HHHH->
-	[ ] Walk through the stages - Preflop, flop, turn, river
-		[x] If incorrect, give a hint
-		[x] If correct, say the percentage and lock the buttons
-		[ ] Once a correct answer is given, enable a buttong to deal the next card(s)
-		[ ] Color does not show up when button is disabled
-		Dominating (1.1:1)
-					90%
-		Powerful (1.5:1)
-					65%
-		Strong (2:1)
-					40%
-		OK	(3:1)
-					25%
-		Risky (5:1)
-					15%
-		Weak	(10:1)
-					5%
-		Hopeless (20:1)
-					0%
-	[ ] Add Limp, bet, 2bet stages in between each
 	[ ] In the explanation talk about why the percentage whent up or down.
 		E.g.:  That 9 on the river just give a boost to a villian's straight potential
 		[ ] Bonus question:  which type of hand accounted for the biggest part of the percentage change?  
 			eg: player 3ok, villian straight, etc.
 
 	[ ] Fix the button style to be perfect: https://gist.github.com/markheath/c8189790270b8615625d
-
-
-	[ ] Track progress
-		[ ] Points: 5 for first guess, then 2, then 1
-		[ ] Remember total points for pocket type
-		[ ] Remember performance at each stage
-
-		    [ ] Instead of categories, click on a line and get:
-        5 points if within a 4% window
-        2 points if within a 12% window
-        1 points if within a 30% window
-        or new categories:
-            0-8% hopeless
-            6% - 20% risky
-            15% - 40% strong
-            35% - 80% poweful
-            70% - 100% Dominating
-            
 	[ ] Game: "pickpocket" show a bunch of options for pockets - you pick the strongest
 
 DONE ================================================================================

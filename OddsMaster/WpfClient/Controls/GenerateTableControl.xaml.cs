@@ -40,5 +40,11 @@ namespace OddsMaster
         {
             TheModel.DealFlop();
         }
+
+        private void HandleCellClicked(object sender, MouseButtonEventArgs e)
+        {
+            var textBlock = sender as TextBlock;
+            TheModel.PivotOnCell(textBlock.DataContext as TableDataItem);
+        }
     }
 }

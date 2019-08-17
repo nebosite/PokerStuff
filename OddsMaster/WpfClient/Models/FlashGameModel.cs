@@ -35,7 +35,7 @@ namespace OddsMaster
         public string Explanation { get; set; }
         public string ProgressText { get; set; }
 
-        public bool CanDealNext => _currentTurnScore != null && RiverCard == null;
+        public bool CanDealNext =>  /*_currentTurnScore != null &&*/ RiverCard == null;
 
         public Card PocketCard1 => _playerHand?.GetDealtCard(0);
         public Card PocketCard2 => _playerHand?.GetDealtCard(1);
