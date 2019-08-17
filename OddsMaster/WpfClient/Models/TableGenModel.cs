@@ -10,18 +10,19 @@ using System.Collections.Concurrent;
 using System.Windows.Media;
 using System.Data;
 using System.Collections.ObjectModel;
+using System.Windows.Controls;
 
 namespace OddsMaster
 {
 
     public class TableDataItem : BaseModel
     {
-        public string VisibleText => _pivot ? PivotText : Text;
+        public string VisibleText =>  _pivot ? PivotText : NormalText;
         public string PivotText { get; set; }
-        public string Text { get; set; }
-        public Brush VisibleColor { get; set; }
+        public string NormalText { get; set; }
+        public Brush VisibleColor =>  _pivot ? PivotColor : NormalColor;
         public Brush PivotColor { get; set; }
-        public Brush CellColor { get; set; }
+        public Brush NormalColor { get; set; }
 
         private bool _pivot;
         public double WinRatio { get; set; }
@@ -33,17 +34,17 @@ namespace OddsMaster
             WinRatio = winRatio;
             _handType = label;
             _isLabel = isLabel;
-            Text = $"{_handType}:{(int)(winRatio*100)}%";
-            CellColor = Brushes.White;
+            NormalText = isLabel ? label : $"{_handType}:{(int)(winRatio*100)}%";
+            NormalColor = Brushes.White;
             if(!isLabel)
             {
-                CellColor = GetRatioColor(winRatio, threshhold);
+                NormalColor = GetRatioColor(winRatio, threshhold);
             }
         }
 
         public override string ToString()
         {
-            return Text;
+            return NormalText;
         }
 
         public void PivotOn(double selectedRatio)
@@ -51,7 +52,27 @@ namespace OddsMaster
             if (_isLabel) return;
             _pivot = true;
             var multiplier = WinRatio / selectedRatio;
-            PivotText = $"{_handType}:{multiplier.ToString(".0")}";
+            var log = Math.Log10(multiplier) * 100;
+            if (log < -31.99) log = -31.99;
+            if (log > 31.99) log = 31.99;
+            log /= 32;
+            byte r, g, b;
+            r = g = b = 0;
+            if(log < 0)
+            {
+                log = log * log * -1;
+                r = (byte)(-log * 256);
+                g = (byte)(200 + log * 200);
+                b = (byte)(255 + log * 256);
+            }
+            else
+            {
+                log *= log;
+                r = (byte)(255 - log * 256);
+                g = 255;               
+            }
+            PivotText = $"{_handType}: {multiplier.ToString(".0")}";
+            PivotColor = new SolidColorBrush(Color.FromRgb(r,g,b));
             Notify(nameof(VisibleColor));
             Notify(nameof(VisibleText));
         }
@@ -60,7 +81,7 @@ namespace OddsMaster
         {
             if (_isLabel) return;
             _pivot = false;
-            CellColor = GetRatioColor(WinRatio, threshhold);
+            NormalColor = GetRatioColor(WinRatio, threshhold);
             Notify(nameof(VisibleColor));
             Notify(nameof(VisibleText));
         }
@@ -213,6 +234,22 @@ namespace OddsMaster
 
         public ObservableCollection<TableDataItem[]> TableItems { get; set; } = new ObservableCollection<TableDataItem[]>();
 
+        private DataGridCellInfo _selectedCell;
+        public DataGridCellInfo SelectedCell
+        {
+            get { return _selectedCell; }
+            set
+            {
+                _selectedCell = value;
+                if(value.Column != null)
+                {
+                    var items = _selectedCell.Item as TableDataItem[];
+                    var cellItem = items[_selectedCell.Column.DisplayIndex];
+                    PivotOnCell(cellItem);
+                }
+                Notify(nameof(SelectedCell));
+            }
+        }
         const string RankString = "AKQJT98765432";
 
         Deck _deck = new Deck();
