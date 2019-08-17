@@ -1,21 +1,24 @@
-﻿TODO
-	[x] Finish unit tests for Card classes
-	[x] Create an app model
-	[x] Create a quiz model
-	[x] UI to pick number of users
-	[x] Percentages for pairs look wrong with 2 players
-	[x] Generate odds tables for initial pair
-	[x] Better odds table
-		[x] Fix odds table to show betting threshholds
-		[x] Load the odds tables at program start
-		[x] bet counts should be < PlayerCount -1
-		[x] Before calculating odds, fill in the betting profile	
-			- base = 1/# of players
-			- Strong = ratio > base * 1.3
-			- regular = ratio > base
-			- weak = ratio > base / 1.3
-	[x] Odds Table
-		[x] Add folds
+﻿------------------------------
+OddsMaster TODO
+------------------------------
+
+
+
+
+NEW
+    [ ] Enable clicking forward without having to guess (you just go no points)
+    [ ] Show history
+    [ ] Click on one tile and re-color the chart
+    [ ] Allow Folds in Flash calculation
+	[ ] Calculate win figures and compare to https://github.com/nebosite/PokerStuff.git
+		- Everyone Stays to the end
+		- Show a little status to show # runs and confidence
+	[ ] If calculation is slow, always have a thread doing calculations ahead
+	[ ] Bring in elements of poker play, which will adjust the odds at each stage
+
+SOON
+
+LATER
 	[ ] Odds Flash
 		[ ] Odds flash is just about getting a feel for raw odds and seeing the explanation
 			- It generates completely random enemy hands each time
@@ -78,15 +81,21 @@
             
 	[ ] Game: "pickpocket" show a bunch of options for pockets - you pick the strongest
 
-NEW
-	[ ] Calculate win figures and compare to https://github.com/nebosite/PokerStuff.git
-		- Everyone Stays to the end
-		- Show a little status to show # runs and confidence
-	[ ] If calculation is slow, always have a thread doing calculations ahead
-	[ ] Bring in elements of poker play, which will adjust the odds at each stage
-
-SOON
-
-LATER
-
 DONE ================================================================================
+	[x] Finish unit tests for Card classes
+	[x] Create an app model
+	[x] Create a quiz model
+	[x] UI to pick number of users
+	[x] Percentages for pairs look wrong with 2 players
+	[x] Generate odds tables for initial pair
+	[x] Better odds table
+		[x] Fix odds table to show betting threshholds
+		[x] Load the odds tables at program start
+		[x] bet counts should be < PlayerCount -1
+		[x] Before calculating odds, fill in the betting profile	
+			- base = 1/# of players
+			- Strong = ratio > base * 1.3
+			- regular = ratio > base
+			- weak = ratio > base / 1.3
+	[x] Odds Table
+		[x] Add folds
