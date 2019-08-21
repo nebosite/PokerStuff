@@ -71,6 +71,7 @@ namespace OddsMaster
                 r = (byte)(255 - log * 256);
                 g = 255;               
             }
+            if (multiplier < 1) multiplier = -(1 / multiplier);
             PivotText = $"{_handType}: {multiplier.ToString(".0")}";
             PivotColor = new SolidColorBrush(Color.FromRgb(r,g,b));
             Notify(nameof(VisibleColor));
@@ -381,6 +382,7 @@ namespace OddsMaster
         {
             var result = new Dictionary<string, OddsWorkUnit>();
             var baseThreshhold = _threshholdPercent / 100.0;
+            var betThreshold = 1.0 / PlayerCount;
 
             //     /// Before calculating odds, fill in the betting profile	
             //- Strong = ratio > base * 1.3
@@ -392,8 +394,8 @@ namespace OddsMaster
             bettingProfile.Regular = RegularBets;
             bettingProfile.Weak = WeakBets;
             bettingProfile.Strong = StrongBets;
-            var weakThreshhold = baseThreshhold / 1.3;
-            var strongThreshhold = baseThreshhold * 1.3;
+            var weakThreshhold = betThreshold / 1.3;
+            var strongThreshhold = betThreshold * 1.3;
 
             var oddsTable = AppModel.PocketHandOdds[PlayerCount];
             foreach(var pair in GetAllPairs())
@@ -403,7 +405,7 @@ namespace OddsMaster
                 {
                     bettingProfile.StrongPairs.Add(pair);
                 }
-                else if (oddsTable[id] > baseThreshhold)
+                else if (oddsTable[id] > betThreshold)
                 {
                     bettingProfile.RegularPairs.Add(pair);
                 }
@@ -558,5 +560,19 @@ namespace OddsMaster
             }
         }
 
+        DataGridCellInfo _lastSelection;
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Generate all the pairs in the grid
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        internal void MaybeDeselect()
+        {
+            if(SelectedCell == _lastSelection)
+            {
+                PivotOnCell(null); 
+            }
+            _lastSelection = SelectedCell;
+        }
     }
 }

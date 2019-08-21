@@ -3,8 +3,8 @@ OddsMaster TODO
 ------------------------------
 
     [x] Enable clicking forward without having to guess (you just go no points)
-    [ ] Click on one tile and re-color the chart
-		[ ] Datagrid cell selection not working
+    [x] Click on one tile and re-color the chart
+		[x] Datagrid cell selection not working
     [ ] Allow Folds in Flash calculation
 
 
@@ -15,8 +15,7 @@ NEW
 		[ ] Maybe hover over explanation box to see it
 		[ ] Play it like a game - have opponents fold / bet
 		[ ] Show value along with percentage
-	[ ] Table improvements
-		[ ] Select just one cell
+
 
 SOON
 

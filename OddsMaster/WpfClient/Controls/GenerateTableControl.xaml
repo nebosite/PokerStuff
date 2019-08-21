@@ -39,7 +39,9 @@
                 <local:CardControl Card="{Binding RiverCard}" Margin="20,0,0,0" />
             </StackPanel>
             <TextBox Text="{Binding GenOutput,Mode=TwoWay}" MaxHeight="100" Visibility="Collapsed" />
-            <DataGrid x:Name="TheGrid" ItemsSource="{Binding TableItems}" AutoGenerateColumns="False"
+            <DataGrid x:Name="TheGrid" ItemsSource="{Binding TableItems}" 
+                      PreviewMouseUp="HandleDataGridMouseUp"
+                      AutoGenerateColumns="False"
                       CurrentCell="{Binding SelectedCell, Mode=TwoWay}"
                       SelectionUnit="Cell" SelectionMode="Single" 
                        >

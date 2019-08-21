@@ -46,5 +46,10 @@ namespace OddsMaster
             var textBlock = sender as TextBlock;
             TheModel.PivotOnCell(textBlock.DataContext as TableDataItem);
         }
+
+        private void HandleDataGridMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            TheModel.MaybeDeselect();   
+        }
     }
 }
