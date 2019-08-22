@@ -5,6 +5,7 @@ OddsMaster TODO
     [x] Enable clicking forward without having to guess (you just go no points)
     [x] Click on one tile and re-color the chart
 		[x] Datagrid cell selection not working
+	[ ] Don't redeal when changing player count, just re-calc
     [ ] Allow Folds in Flash calculation
 
 

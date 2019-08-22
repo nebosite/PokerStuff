@@ -23,6 +23,7 @@ namespace OddsMaster
             set
             {
                 _playerCount = value;
+                CalculateOdds();
                 Notify(nameof(PlayerCount));
             }
         }
@@ -61,7 +62,7 @@ namespace OddsMaster
         public FlashGameModel()
         {
             _deck = new Deck();
-            ResetButtons();
+            Reset();
         }
 
         //------------------------------------------------------------------------------------
@@ -233,7 +234,8 @@ namespace OddsMaster
         //------------------------------------------------------------------------------------
         private void CalculateOdds()
         {
-            _currentOdds = OddsCalculator.Calculate(_deck, _playerHand, PlayerCount, TimeSpan.FromMilliseconds(300));          
+            if (_playerHand == null) return;
+            _currentOdds = OddsCalculator.Calculate(_deck, _playerHand, PlayerCount, TimeSpan.FromMilliseconds(100));          
             Debug.WriteLine($"Number of hands examined: {_currentOdds.Iterations}"); 
         }
 

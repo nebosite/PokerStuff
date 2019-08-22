@@ -27,12 +27,6 @@ namespace OddsMaster
             InitializeComponent();
         }
 
-        private void FlashPlayerCountChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            TheModel.Reset();
-
-        }
-
         private void RedealClick(object sender, RoutedEventArgs e)
         {
             TheModel.Reset();
