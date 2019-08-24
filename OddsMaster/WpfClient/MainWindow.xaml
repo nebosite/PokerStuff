@@ -9,11 +9,14 @@
         Title="MainWindow" Height="570.754" Width="823.77">
     <Grid>
         <TabControl TabStripPlacement="Left">
-            <TabItem Header="Flash"  >
-                <local:FlashGameControl DataContext="{Binding FlashGame}" />
+            <TabItem Header="Profit" >
+                <local:ProfitControl DataContext="{Binding Profit}" />
             </TabItem>
             <TabItem Header="Tables" >
                 <local:GenerateTableControl DataContext="{Binding TableGen}" />
+            </TabItem>
+            <TabItem Header="Flash"  >
+                <local:FlashGameControl DataContext="{Binding FlashGame}" />
             </TabItem>
         </TabControl>
 

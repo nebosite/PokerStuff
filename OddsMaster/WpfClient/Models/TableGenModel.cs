@@ -74,8 +74,8 @@ namespace OddsMaster
             if (multiplier < 1) multiplier = -(1 / multiplier);
             PivotText = $"{_handType}: {multiplier.ToString(".0")}";
             PivotColor = new SolidColorBrush(Color.FromRgb(r,g,b));
-            Notify(nameof(VisibleColor));
-            Notify(nameof(VisibleText));
+            NotifyPropertyChanged(nameof(VisibleColor));
+            NotifyPropertyChanged(nameof(VisibleText));
         }
 
         internal void RemovePivot(double threshhold)
@@ -83,8 +83,8 @@ namespace OddsMaster
             if (_isLabel) return;
             _pivot = false;
             NormalColor = GetRatioColor(WinRatio, threshhold);
-            Notify(nameof(VisibleColor));
-            Notify(nameof(VisibleText));
+            NotifyPropertyChanged(nameof(VisibleColor));
+            NotifyPropertyChanged(nameof(VisibleText));
         }
 
         //------------------------------------------------------------------------------------
@@ -150,7 +150,7 @@ namespace OddsMaster
             set
             {
                 _playerCount = value;
-                Notify(nameof(PlayerCount));
+                NotifyPropertyChanged(nameof(PlayerCount));
                 FixBets();
             }
         }
@@ -212,7 +212,7 @@ namespace OddsMaster
                 if (doubleValue < 0) doubleValue = 0;
                 if (doubleValue > 99) doubleValue = 99;
                 _threshholdPercent = doubleValue;
-                Notify(nameof(ThreshholdPercent));
+                NotifyPropertyChanged(nameof(ThreshholdPercent));
             }
         }
 
@@ -223,7 +223,7 @@ namespace OddsMaster
             set
             {
                 _genOutput = value;
-                Notify(nameof(GenOutput));
+                NotifyPropertyChanged(nameof(GenOutput));
             }
         }
 
@@ -248,7 +248,7 @@ namespace OddsMaster
                     var cellItem = items[_selectedCell.Column.DisplayIndex];
                     PivotOnCell(cellItem);
                 }
-                Notify(nameof(SelectedCell));
+                NotifyPropertyChanged(nameof(SelectedCell));
             }
         }
         const string RankString = "AKQJT98765432";
@@ -275,13 +275,13 @@ namespace OddsMaster
                 else if (_folds > 0) _folds--;
             }
 
-            Notify(nameof(Folds));
-            Notify(nameof(WeakBets));
-            Notify(nameof(RegularBets));
-            Notify(nameof(StrongBets));
+            NotifyPropertyChanged(nameof(Folds));
+            NotifyPropertyChanged(nameof(WeakBets));
+            NotifyPropertyChanged(nameof(RegularBets));
+            NotifyPropertyChanged(nameof(StrongBets));
 
             _threshholdPercent = 100 / (PlayerCount-(Folds * 1.0));
-            Notify(nameof(ThreshholdPercent));
+            NotifyPropertyChanged(nameof(ThreshholdPercent));
 
         }
 
@@ -474,7 +474,7 @@ namespace OddsMaster
                     tableData.AppendLine($"\"{item.Id}\": \"{item.Odds.WinRatio.ToString(".000")}\",");
                 }
                 GenOutput = tableData.ToString();
-                Notify(nameof(TableItems));
+                NotifyPropertyChanged(nameof(TableItems));
             }
     
         }

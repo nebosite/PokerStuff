@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="OddsMaster.ProfitControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OddsMaster"
+             xmlns:wpfTool="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             mc:Ignorable="d" 
+             
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <Label Width="100" HorizontalContentAlignment="Right" Content="Starting Players:" />
+                <wpfTool:IntegerUpDown Value="{Binding PlayerCount}" Minimum="2" Maximum="10" />
+                <Button Content=" Reset " Margin="20,0" Click="ResetClick"/>
+            </StackPanel>
+
+        </StackPanel>
+    </Grid>
+</UserControl>

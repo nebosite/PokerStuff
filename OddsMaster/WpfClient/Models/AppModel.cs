@@ -12,6 +12,7 @@ namespace OddsMaster
 {
     class AppModel : BaseModel
     {
+        public ProfitModel Profit { get; set; } = new ProfitModel();
         public FlashGameModel FlashGame { get; set; } = new FlashGameModel();
         public TableGenModel TableGen { get; set; } = new TableGenModel();
         public static Dictionary<int, Dictionary<string, double>> PocketHandOdds { get; private set; }

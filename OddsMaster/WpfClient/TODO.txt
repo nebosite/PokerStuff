@@ -11,6 +11,20 @@ OddsMaster TODO
 
 
 NEW
+	[ ] Profitablility page
+		[ ] Start: show profitability grid:
+			- Y axis is number of players that stay in
+			- X axis is type of game:
+				- Call circle
+				- Call circle++
+				- Bet and fold
+				- 2 bet (and fold)
+				- 3 bet (and fold)
+				- Big bet (and fold)
+				- 2 Big
+				- 3 Big
+		[ ] Click on card to change it
+		[ ] Click on profit grid to see how the hand breaks out
 	[ ] Flash game improvements
 		[ ] Checkbox to always explain
 		[ ] Maybe hover over explanation box to see it

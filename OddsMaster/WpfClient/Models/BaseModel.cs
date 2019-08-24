@@ -11,7 +11,7 @@ namespace OddsMaster
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void Notify(string propertyName)
+        public void NotifyPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -20,7 +20,7 @@ namespace OddsMaster
         {
             foreach(var property in GetType().GetProperties())
             {
-                Notify(property.Name);
+                NotifyPropertyChanged(property.Name);
             }
         }
     }
