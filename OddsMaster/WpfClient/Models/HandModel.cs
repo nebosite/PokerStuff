@@ -51,13 +51,13 @@ namespace OddsMaster
             _playerHand.AddCard(card);
             switch (_playerHand.DealtCards.Count)
             {
-                case 0: NotifyPropertyChanged(nameof(PocketCard1)); break;
-                case 1: NotifyPropertyChanged(nameof(PocketCard2)); break;
-                case 2: NotifyPropertyChanged(nameof(FlopCard1)); break;
-                case 3: NotifyPropertyChanged(nameof(FlopCard2)); break;
-                case 4: NotifyPropertyChanged(nameof(FlopCard3)); break;
-                case 5: NotifyPropertyChanged(nameof(TurnCard)); break;
-                case 6: NotifyPropertyChanged(nameof(RiverCard)); break;
+                case 1: NotifyPropertyChanged(nameof(PocketCard1)); break;
+                case 2: NotifyPropertyChanged(nameof(PocketCard2)); break;
+                case 3: NotifyPropertyChanged(nameof(FlopCard1)); break;
+                case 4: NotifyPropertyChanged(nameof(FlopCard2)); break;
+                case 5: NotifyPropertyChanged(nameof(FlopCard3)); break;
+                case 6: NotifyPropertyChanged(nameof(TurnCard)); break;
+                case 7: NotifyPropertyChanged(nameof(RiverCard)); break;
             }
         }
 

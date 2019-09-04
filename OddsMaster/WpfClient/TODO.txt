@@ -2,15 +2,6 @@
 OddsMaster TODO
 ------------------------------
 
-    [x] Enable clicking forward without having to guess (you just go no points)
-    [x] Click on one tile and re-color the chart
-		[x] Datagrid cell selection not working
-	[ ] Don't redeal when changing player count, just re-calc
-    [ ] Allow Folds in Flash calculation
-
-
-
-NEW
 	[ ] Profitablility page
 		[ ] Start: show profitability grid:
 			- Y axis is number of players that stay in
@@ -25,16 +16,18 @@ NEW
 				- 3 Big
 		[ ] Click on card to change it
 		[ ] Click on profit grid to see how the hand breaks out
-	[ ] Flash game improvements
-		[ ] Checkbox to always explain
-		[ ] Maybe hover over explanation box to see it
-		[ ] Play it like a game - have opponents fold / bet
-		[ ] Show value along with percentage
+
+NEW
 
 
 SOON
+	[ ] Game Mode
 
 LATER
+	[ ] Flash game improvements
+		[ ] Checkbox to always explain
+		[ ] Maybe hover over explanation box to see it
+		[ ] Show value along with percentage
     [ ] Show history of your hand percentage
 
 
@@ -53,6 +46,13 @@ LATER
 	[ ] Game: "pickpocket" show a bunch of options for pockets - you pick the strongest
 
 DONE ================================================================================
+
+    [x] Enable clicking forward without having to guess (you just go no points)
+    [x] Click on one tile and re-color the chart
+		[x] Datagrid cell selection not working
+	[x] Don't redeal when changing player count, just re-calc
+
+
 	[x] Finish unit tests for Card classes
 	[x] Create an app model
 	[x] Create a quiz model
