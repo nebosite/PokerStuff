@@ -24,8 +24,6 @@ namespace OddsMaster
         public string Explanation { get; set; }
         public string ProgressText { get; set; }
 
-        public bool CanDealNext =>  /*_currentTurnScore != null &&*/ PlayerHand.RiverCard == null;
-
         int _handScore = 0;
         int? _currentTurnScore;
         int _potentialPoints;

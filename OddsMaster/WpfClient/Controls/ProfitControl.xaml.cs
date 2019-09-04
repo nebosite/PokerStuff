@@ -29,7 +29,12 @@ namespace OddsMaster
 
         private void ResetClick(object sender, RoutedEventArgs e)
         {
+            ContextModel.Reset();
+        }
 
+        private void DealNextClick(object sender, RoutedEventArgs e)
+        {
+            ContextModel.DealNext();
         }
     }
 }

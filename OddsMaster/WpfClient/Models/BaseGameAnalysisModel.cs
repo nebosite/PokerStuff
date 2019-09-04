@@ -51,6 +51,8 @@ namespace OddsMaster
             }
         }
 
+        public bool CanDealNext => PlayerHand.RiverCard == null;
+
         //------------------------------------------------------------------------------------
         /// <summary>
         /// ctor
@@ -73,7 +75,8 @@ namespace OddsMaster
             _deck.Shuffle();
             PlayerHand.Reset();
             PlayerHand.AddCard(_deck.Draw());
-            PlayerHand.AddCard(_deck.Draw());            
+            PlayerHand.AddCard(_deck.Draw());
+            NotifyPropertyChanged(nameof(CanDealNext));
         }
 
         //------------------------------------------------------------------------------------
@@ -101,6 +104,8 @@ namespace OddsMaster
             {
                 Debug.WriteLine("Whoops, this should not happen in DealNext()");
             }
+
+            NotifyPropertyChanged(nameof(CanDealNext));
         }
 
         //------------------------------------------------------------------------------------
