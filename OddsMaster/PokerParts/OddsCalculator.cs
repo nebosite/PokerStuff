@@ -210,6 +210,10 @@ namespace PokerParts
             }
             oddsOutput.WinRatio = (double)winCount / iterations;
 
+            if(computeLimit != TimeSpan.Zero)
+            {
+                Debug.WriteLine($"Calculated {oddsOutput.Iterations} hands");
+            }
             return oddsOutput;
         }
     }

@@ -88,7 +88,7 @@ namespace PokerParts
         HandType _value;
         List<Rank> _highCards = new List<Rank>(5);
         bool _evaluated = false;
-        ulong _cardBits;
+        public ulong CardBits { get; private set; }
 
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -125,11 +125,11 @@ namespace PokerParts
         //------------------------------------------------------------------------------------
         public void AddCard(Card card)
         {
-            if((_cardBits & card.Bit) > 0)
+            if((CardBits & card.Bit) > 0)
             {
                 throw new ApplicationException("Duplicate Card: " + card);
             }
-            _cardBits |= card.Bit;
+            CardBits |= card.Bit;
             DealtCards.Add(card);
             _evaluated = false;
         }
@@ -184,7 +184,7 @@ namespace PokerParts
             _suitCounts = new int[4];
             _rankBits = 0;
             _evaluated = false;
-            _cardBits = 0;
+            CardBits = 0;
             foreach(var card in pocketCards)
             {
                 AddCard(card);

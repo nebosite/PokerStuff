@@ -53,6 +53,10 @@ namespace PokerParts
     {
         public Suit Suit;
         public Rank Rank;
+
+        /// <summary>
+        /// Unique Id for this card, guaranteed to be a single bit in a 64 bit number
+        /// </summary>
         public ulong Bit;
 
         string _originalData;

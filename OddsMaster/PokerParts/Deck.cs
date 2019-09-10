@@ -24,6 +24,7 @@ namespace PokerParts
         Card[] _cards = new Card[52];
 
         public Card[] AllCards => _cards;
+        ulong _drawnCards = 0;
 
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -64,13 +65,32 @@ namespace PokerParts
 
         //------------------------------------------------------------------------------------
         /// <summary>
+        /// Generate all possible pairs of cards from the deck
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public IEnumerable<Card[]> GetAllAvailablePairs()
+        {
+            for (int i = DrawSpot; i < _cards.Length; i++)
+            {
+                for (int j = i + 1; j < _cards.Length; j++)
+                {
+                    yield return new Card[] { AllCards[i], AllCards[j] };
+                }
+            }
+        }
+
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
         /// Draw the top card from the deck (advances the DrawSpot)
         /// </summary>
         //------------------------------------------------------------------------------------
         public Card Draw()
         {
             if (DrawSpot >= _cards.Length) throw new ApplicationException("Tried to draw from an empty deck.");
-            return _cards[DrawSpot++];
+            var drawnCard = _cards[DrawSpot++];
+            _drawnCards |= drawnCard.Bit;
+            return drawnCard;
         }
 
         //------------------------------------------------------------------------------------
@@ -107,6 +127,11 @@ namespace PokerParts
         public void Reset(int newSpot = 0)
         {
             DrawSpot = newSpot;
+            _drawnCards = 0;
+            for(int i = 0; i < newSpot; i++)
+            {
+                _drawnCards |= _cards[i].Bit;
+            }
         }
 
         //------------------------------------------------------------------------------------
@@ -116,12 +141,9 @@ namespace PokerParts
         //------------------------------------------------------------------------------------
         internal bool CanDraw(params Card[] cards)
         {
-            for(int i = 0; i < DrawSpot; i++)
+            for(int j = 0; j < cards.Length; j++)
             {
-                for(int j = 0; j < cards.Length; j++)
-                {
-                    if (_cards[i].Equals(cards[j])) return false;
-                }
+                if ((_drawnCards & cards[j].Bit) > 0) return false;
             }
             return true;
         }

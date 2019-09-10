@@ -28,7 +28,10 @@ namespace OddsMaster
         public Card TurnCard => _playerHand?.GetDealtCard(5);
         public Card RiverCard => _playerHand?.GetDealtCard(6);
 
+        public ulong CardBits => _playerHand.CardBits;
+
         private Hand _playerHand = new Hand();
+
 
         //------------------------------------------------------------------------------------
         /// <summary>

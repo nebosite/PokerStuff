@@ -398,7 +398,7 @@ namespace OddsMaster
             var strongThreshhold = betThreshold * 1.3;
 
             var oddsTable = AppModel.PocketHandOdds[PlayerCount];
-            foreach(var pair in GetAllPairs())
+            foreach(var pair in new Deck().GetAllAvailablePairs())
             {
                 var id = GetId(pair);
                 if (oddsTable[id] > strongThreshhold)
@@ -418,8 +418,6 @@ namespace OddsMaster
                     bettingProfile.FoldablePairs.Add(pair);
                 }
             }
-
-
 
             // Run a bunch of hands for each pair of cards we want to test
             Parallel.ForEach<OddsWorkUnit>(GetAllPairWorkUnits(), (pair) =>
@@ -499,26 +497,6 @@ namespace OddsMaster
 
 
             return $"{letter1}{letter2}{suitLetter}";
-        }
-
-        //------------------------------------------------------------------------------------
-        /// <summary>
-        /// Generate all possible pairs of cards from the deck
-        /// </summary>
-        //------------------------------------------------------------------------------------
-        IEnumerable<Card[]> GetAllPairs()
-        {
-            var deck = new Deck();
-            int count = 0;
-            for(int i = 0; i < deck.AllCards.Length; i++)
-            {
-                for (int j = i+1; j < deck.AllCards.Length; j++)
-                {
-                    count++;
-                    yield return new Card[] { deck.AllCards[i], deck.AllCards[j] };
-                }
-            }
-
         }
 
         //------------------------------------------------------------------------------------
