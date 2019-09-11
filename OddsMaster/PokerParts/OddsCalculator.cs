@@ -42,23 +42,12 @@ namespace PokerParts
     //------------------------------------------------------------------------------------
     public class OddsCalculator
     {
-        public class Bets
-        {
-            public int Foldable { get; set; }
-            public int Weak { get; set; }
-            public int Regular { get; set; }
-            public int Strong { get; set; }
-            public List<Card[]> FoldablePairs { get; set; } = new List<Card[]>();
-            public List<Card[]> WeakPairs { get; set; } = new List<Card[]>();
-            public List<Card[]> RegularPairs { get; set; } = new List<Card[]>();
-            public List<Card[]> StrongPairs { get; set; } = new List<Card[]>();
-        }
         //------------------------------------------------------------------------------------
         /// <summary>
         /// A class for calculating odds for a hand to win
         /// </summary>
         //------------------------------------------------------------------------------------
-        public static OddsResults Calculate(Deck deck, Hand playerHand, int playerCount, TimeSpan computeLimit, int minIterations = 1000, Bets bets = null)
+        public static OddsResults Calculate(Deck deck, Hand playerHand, int playerCount, TimeSpan computeLimit, int minIterations = 1000, BettingProfile bets = null)
         {
             var stopwatch = Stopwatch.StartNew();
             var rand = new Random();

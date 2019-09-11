@@ -30,6 +30,8 @@ namespace OddsMaster
 
         public ulong CardBits => _playerHand.CardBits;
 
+        public Card[] Cards => _playerHand.DealtCards.ToArray();
+
         private Hand _playerHand = new Hand();
 
 

@@ -28,7 +28,7 @@ namespace OddsMaster
             }
         }
 
-        private Deck _deck;
+        protected Deck _deck;
         private HandModel _theHand = new HandModel();
         public HandModel PlayerHand
         {

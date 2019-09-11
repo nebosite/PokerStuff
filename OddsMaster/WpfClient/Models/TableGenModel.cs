@@ -344,32 +344,6 @@ namespace OddsMaster
             }
         }
 
-        class OddsWorkUnit
-        {
-            public OddsResults Odds { get; internal set; }
-            public Deck Deck = new Deck();
-            public Hand PlayerHand = new Hand();
-            public string Id => PlayerHand.PocketId;
-
-            bool _offSuit;
-
-            public OddsWorkUnit()
-            {
-            }
-
-            Random _random = new Random();
-            public void PickPlayerCards(Rank highRank, Rank lowRank, bool _offSuit)
-            {
-                // TODO:  make sure that the card is available.  Switch suits if not.
-                // Pick random suits
-                var suit1 = Suit.Clubs;
-                var suit2 = _offSuit ? Suit.Diamonds : suit1;
-                PlayerHand.AddCard(new Card(highRank, suit1));
-                PlayerHand.AddCard(new Card(lowRank, suit2));
-                Deck.Draw(PlayerHand.DealtCards[0]);
-                Deck.Draw(PlayerHand.DealtCards[1]);
-            }
-        }
 
 
         //------------------------------------------------------------------------------------
@@ -389,7 +363,7 @@ namespace OddsMaster
             //- regular = ratio > base
             //- weak = ratio > base / 1.3
 
-            var bettingProfile = new OddsCalculator.Bets();
+            var bettingProfile = new BettingProfile();
             bettingProfile.Foldable = Folds;
             bettingProfile.Regular = RegularBets;
             bettingProfile.Weak = WeakBets;
@@ -400,7 +374,7 @@ namespace OddsMaster
             var oddsTable = AppModel.PocketHandOdds[PlayerCount];
             foreach(var pair in new Deck().GetAllAvailablePairs())
             {
-                var id = GetId(pair);
+                var id = Deck.GetPairType(pair);
                 if (oddsTable[id] > strongThreshhold)
                 {
                     bettingProfile.StrongPairs.Add(pair);
@@ -420,12 +394,12 @@ namespace OddsMaster
             }
 
             // Run a bunch of hands for each pair of cards we want to test
-            Parallel.ForEach<OddsWorkUnit>(GetAllPairWorkUnits(), (pair) =>
+            Parallel.ForEach<OddsWorkUnit>(GetAllPairWorkUnits(), (unit) =>
             {
-                pair.Odds = OddsCalculator.Calculate(pair.Deck, pair.PlayerHand, PlayerCount, TimeSpan.FromMilliseconds(0), 10000, bettingProfile);
+                unit.Odds = OddsCalculator.Calculate(unit.Deck, unit.PlayerHand, PlayerCount, TimeSpan.FromMilliseconds(0), 10000, bettingProfile);
                 lock (result)
                 {
-                    result.Add(pair.Id, pair);
+                    result.Add(unit.Id, unit);
                 }
             });
 
@@ -477,27 +451,6 @@ namespace OddsMaster
     
         }
 
-        private string GetId(Card[] pair)
-        {
-            // high card is first
-            if(pair[0].Rank < pair[1].Rank)
-            {
-                var temp = pair[0];
-                pair[0] = pair[1];
-                pair[1] = temp;
-            }
-
-            var letter1 = Hand.GetRankChar(pair[0].Rank);
-            var letter2 = Hand.GetRankChar(pair[1].Rank);
-            var suitLetter = "";
-            if (pair[0].Rank != pair[1].Rank)
-            {
-                suitLetter = pair[0].Suit == pair[1].Suit ? "s" : "o";
-            }
-
-
-            return $"{letter1}{letter2}{suitLetter}";
-        }
 
         //------------------------------------------------------------------------------------
         /// <summary>

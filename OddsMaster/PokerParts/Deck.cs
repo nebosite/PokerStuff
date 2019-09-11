@@ -147,5 +147,34 @@ namespace PokerParts
             }
             return true;
         }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Return a string that identifies a pair of cards.
+        /// e.g.:  K9s, AJo
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public static string GetPairType(Card[] pair)
+        {
+            // high card is first
+            if (pair[0].Rank < pair[1].Rank)
+            {
+                var temp = pair[0];
+                pair[0] = pair[1];
+                pair[1] = temp;
+            }
+
+            var letter1 = Hand.GetRankChar(pair[0].Rank);
+            var letter2 = Hand.GetRankChar(pair[1].Rank);
+            var suitLetter = "";
+            if (pair[0].Rank != pair[1].Rank)
+            {
+                suitLetter = pair[0].Suit == pair[1].Suit ? "s" : "o";
+            }
+
+
+            return $"{letter1}{letter2}{suitLetter}";
+        }
+
     }
 }

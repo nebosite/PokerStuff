@@ -3,15 +3,31 @@ OddsMaster TODO
 ------------------------------
 
 	[ ] Profitablility page
-		[ ] Start: show profitability grid:
+		[x] Start: show profitability grid:
 			- Y axis is number of players that stay in
 			- Y axis is type of betting for the people that stay in:
 				- Weak 
 				- Normal
 				- Strong
+		[ ] Profitability calculation
+			- Pre-flop Iteration:
+				- Generate a random game
+					- Calculate bets based on pocket strengths
+					- Fold players who can't make the bet level
+					- Play Flop to River N times to calculate a raw profitability
+					- Add to the grid
+				- Repeat until the grid has at least 10 games per square
+			- Flop iteration:
+				- Generate table of possible pairs, accounting for the street
+				- For each pair, play 20-30 games with the street cards to figure the value of the pair
+				- Play N games like this
+					- For each type of game, pick pairs based on bet type
+					- Play to the end without bets
+				- May need to take into account earlier bet profiles
+
 		[ ] Click on card to change it
 		[ ] Click on profit grid to see how the hand breaks out
-
+		[ ] In tablegen, GetAllPairWorkUnits should not consider flop
 NEW
 
 
