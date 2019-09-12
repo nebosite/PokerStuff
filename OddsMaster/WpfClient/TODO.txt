@@ -10,6 +10,9 @@ OddsMaster TODO
 				- Normal
 				- Strong
 		[ ] Profitability calculation
+			[ ] Center the text, lower case BB
+			[ ] Add color
+			[ ] Click on cell to see breakdown of the hands
 			- Pre-flop Iteration:
 				- Generate a random game
 					- Calculate bets based on pocket strengths

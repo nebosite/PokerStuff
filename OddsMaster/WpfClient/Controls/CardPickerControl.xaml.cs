@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace OddsMaster
 {
     /// <summary>
-    /// Interaction logic for HandControl.xaml
+    /// Interaction logic for CardPickerControl.xaml
     /// </summary>
-    public partial class HandControl : UserControl
+    public partial class CardPickerControl : UserControl
     {
-        public HandControl()
+        public CardPickerControl()
         {
             InitializeComponent();
         }

@@ -107,10 +107,10 @@ namespace OddsMaster
                     unit.PlayerHand, 
                     PlayerCount, 
                     TimeSpan.FromMilliseconds(0), 
-                    1000, 
+                    4000, 
                     unit.BettingProfile);
 
-                unit.TableCell.NormalText = (unit.Odds.WinRatio * 100).ToString(".0") + "%";
+                unit.TableCell.NormalText = ((double)unit.Odds.TotalBigBlindsWon / unit.Odds.Iterations).ToString(".0") + " BB";
             });
 
             NotifyAllPropertiesChanged();
@@ -191,11 +191,14 @@ namespace OddsMaster
                     }
 
                     // return some work to do
+                    var cell = ProfitRows[betStrength][remainingOpponentCount];
+                    cell.NormalText = "--";
                     var workUnit = new ProfitWorkUnit(
                         betStrength, 
                         remainingOpponentCount, 
                         bettingProfile,
-                        ProfitRows[betStrength][remainingOpponentCount]);
+                        cell
+                        );
                     workUnit.PickPlayerCards(PlayerHand.Cards);
                     yield return workUnit;
 

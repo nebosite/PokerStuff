@@ -33,6 +33,11 @@ namespace PokerParts
         /// computer time?
         /// </summary>
         public int Iterations { get; internal set; }
+
+        /// <summary>
+        /// Number of BBs won over all the games
+        /// </summary>
+        public int TotalBigBlindsWon { get; set; }
     }
 
     //------------------------------------------------------------------------------------
@@ -73,6 +78,7 @@ namespace PokerParts
             while(stopwatch.Elapsed < computeLimit || iterations < minIterations)
             {
                 iterations++;
+                int pot = 0;
                 for (int j = 0; j < hands.Length; j++)
                 {
                     hands[j] = new Hand();
@@ -96,9 +102,10 @@ namespace PokerParts
                 // If the betting profile is specified, deal the 
                 // cards accordingly
                 int playerNumber = 1;
+                int maxContribution = 0;
                 if(bets != null)
                 {
-                    void DealRandomSet(int count, List<Card[]> pairs, bool isFold = false)
+                    void DealRandomSet(int count, List<Card[]> pairs, int potContribution)
                     {
                         while(count > 0 
                             && playerNumber < hands.Length
@@ -126,21 +133,29 @@ namespace PokerParts
                                 hands[playerNumber].AddCard(deck.Draw());
                             }
 
-                            if(isFold)
+                            if(potContribution == 0)
                             {
                                 hands[playerNumber].IsFolded = true;
                             }
 
+                            pot += potContribution;
+                            if (potContribution > maxContribution) maxContribution = potContribution;
                             playerNumber++;
                             count--;
                         }
+
                     }
 
-                    DealRandomSet(bets.Foldable, bets.FoldablePairs, isFold: true);
-                    DealRandomSet(bets.Weak, bets.WeakPairs);
-                    DealRandomSet(bets.Regular, bets.RegularPairs);
-                    DealRandomSet(bets.Strong, bets.StrongPairs);
+                    DealRandomSet(bets.Foldable, bets.FoldablePairs, 0);
+                    DealRandomSet(bets.Weak, bets.WeakPairs, 2);
+                    DealRandomSet(bets.Regular, bets.RegularPairs, 4);
+                    DealRandomSet(bets.Strong, bets.StrongPairs, 10);
+                    pot += maxContribution;
                 }
+
+                // Include the player's bet
+                oddsOutput.TotalBigBlindsWon -= maxContribution;
+                pot += maxContribution;
                 
                 // Now deal random two cards to everyone else
                 for (; playerNumber < hands.Length; playerNumber++)
@@ -179,8 +194,10 @@ namespace PokerParts
                         villianWinHands[hands[j].Value]++;
                     }
                 }
+
                 if (win)
                 {
+                    oddsOutput.TotalBigBlindsWon += pot;
                     playerWinHands[hands[0].Value]++;
                     winCount++;
                 }
