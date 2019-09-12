@@ -70,8 +70,8 @@ namespace OddsMaster
                     case Rank._3: rankText = "3"; break;
                     case Rank._2: rankText = "2"; break;
                 }
-                control.CardSuitLabel.Content = suitText;
-                control.CardRankLabel.Content = rankText;
+                control.CardSuitLabel.Text = suitText;
+                control.CardRankLabel.Text = rankText;
             }
 
         }
@@ -80,8 +80,8 @@ namespace OddsMaster
         {
             InitializeComponent();
             Card = null;
-            CardSuitLabel.Content = "";
-            CardRankLabel.Content = "";
+            CardSuitLabel.Text = "";
+            CardRankLabel.Text = "";
         }
     }
 }
