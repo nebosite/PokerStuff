@@ -54,5 +54,15 @@ namespace OddsMaster
             Card = card;
             Available = available;
         }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// ToString
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public override string ToString()
+        {
+            return Card.ToString();
+        }
     }
 }

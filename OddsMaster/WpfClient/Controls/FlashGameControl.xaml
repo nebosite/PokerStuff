@@ -20,5 +20,6 @@
             <local:FlashStage />
 
         </StackPanel>
+        <local:CardPickerControl x:Name="TheCardPicker" Visibility="Collapsed" />
     </Grid>
 </UserControl>

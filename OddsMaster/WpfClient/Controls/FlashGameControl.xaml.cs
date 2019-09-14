@@ -18,7 +18,7 @@ namespace OddsMaster
     /// <summary>
     /// Interaction logic for FlashGameControl.xaml
     /// </summary>
-    public partial class FlashGameControl : UserControl
+    public partial class FlashGameControl : UserControl, ICardClickProvider
     {
         FlashGameModel TheModel => DataContext as FlashGameModel;
 
@@ -40,6 +40,11 @@ namespace OddsMaster
         private void ExplainClick(object sender, RoutedEventArgs e)
         {
             TheModel.ShowExplanation();
+        }
+
+        public void ClickedOnCard(CardControl card)
+        {
+            TheCardPicker.PickCardFor(card);
         }
     }
 }
