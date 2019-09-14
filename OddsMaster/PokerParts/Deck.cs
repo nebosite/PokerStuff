@@ -79,6 +79,47 @@ namespace PokerParts
             }
         }
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Swap the two cards in the deck
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public void Swap(Card targetCard, Card sourceCard)
+        {
+            var targetIndex = IndexOf(targetCard);
+            var sourceIndex = IndexOf(sourceCard);
+
+            var temp = _cards[targetIndex];
+            _cards[targetIndex] = _cards[sourceIndex];
+            _cards[sourceIndex] = temp;
+            _drawnCards &= ~(targetCard.Bit);
+            _drawnCards |= sourceCard.Bit;
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Get the index of a card
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        private int IndexOf(Card card)
+        {
+            for(int i = 0; i < _cards.Length; i++)
+            {
+                if (_cards[i].Bit == card.Bit) return i;
+            }
+            throw new ApplicationException("The deck is missing a card.");
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Return the card object from the deck that matches the input card
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public Card FindCard(Card card)
+        {
+            return _cards[IndexOf(card)];
+        }
+
 
         //------------------------------------------------------------------------------------
         /// <summary>

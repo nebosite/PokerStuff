@@ -18,19 +18,19 @@ namespace OddsMaster
     //------------------------------------------------------------------------------------
     public class HandModel : BaseModel
     {
-        public Card PocketCard1 => _playerHand?.GetDealtCard(0);
-        public Card PocketCard2 => _playerHand?.GetDealtCard(1);
+        public CardModel PocketCard1 => GetCardModel(0);
+        public CardModel PocketCard2 => GetCardModel(1);
 
-        public Card FlopCard1 => _playerHand?.GetDealtCard(2);
-        public Card FlopCard2 => _playerHand?.GetDealtCard(3);
-        public Card FlopCard3 => _playerHand?.GetDealtCard(4);
+        public CardModel FlopCard1 => GetCardModel(2);
+        public CardModel FlopCard2 => GetCardModel(3);
+        public CardModel FlopCard3 => GetCardModel(4);
 
-        public Card TurnCard => _playerHand?.GetDealtCard(5);
-        public Card RiverCard => _playerHand?.GetDealtCard(6);
+        public CardModel TurnCard => GetCardModel(5);
+        public CardModel RiverCard => GetCardModel(6);
 
         public ulong CardBits => _playerHand.CardBits;
 
-        public Card[] Cards => _playerHand.DealtCards.ToArray();
+        public CardModel[] Cards => _playerHand.DealtCards.Select(c => GetCardModel(c)).ToArray();
 
         private Hand _playerHand = new Hand();
 
@@ -44,6 +44,22 @@ namespace OddsMaster
         {
             _playerHand = new Hand();
             NotifyAllPropertiesChanged();
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Create a card model for a card in the hand
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        CardModel GetCardModel(int slot)
+        {
+            var card = _playerHand?.GetDealtCard(slot);
+            if (card == null) return null;
+            return GetCardModel(card);
+        }
+        CardModel GetCardModel(Card card)
+        {
+            return new CardModel(card);
         }
 
         //------------------------------------------------------------------------------------
@@ -64,6 +80,17 @@ namespace OddsMaster
                 case 6: NotifyPropertyChanged(nameof(TurnCard)); break;
                 case 7: NotifyPropertyChanged(nameof(RiverCard)); break;
             }
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Swap one of the cards in our hand with another card in the deck
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        internal void Swap(CardModel targetCard, Card cardInDeck)
+        {
+            _playerHand.Swap(targetCard.Card, cardInDeck);
+            NotifyAllPropertiesChanged();
         }
 
         //------------------------------------------------------------------------------------

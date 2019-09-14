@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PokerParts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace OddsMaster
 {
-    public interface ICardPickerProvider
+    public interface ICardClickProvider
     {
-        CardPickerControl GetCardPicker();
+        void ClickedOnCard(CardControl card);
     }
 }

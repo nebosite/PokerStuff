@@ -78,7 +78,8 @@
       <DependentUpon>CardPickerControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\DummyCard.cs" />
-    <Compile Include="ICardPickerProvider.cs" />
+    <Compile Include="ICardClickProvider.cs" />
+    <Compile Include="Models\CardModel.cs" />
     <Compile Include="SimpleGrid.xaml.cs">
       <DependentUpon>SimpleGrid.xaml</DependentUpon>
     </Compile>

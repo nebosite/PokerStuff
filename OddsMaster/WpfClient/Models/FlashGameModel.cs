@@ -199,5 +199,15 @@ namespace OddsMaster
             Explanation = output.ToString();
             NotifyPropertyChanged(nameof(Explanation));
         }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Handle Hand change
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public override void HandleHandChanged()
+        {
+            Recalculate();
+        }
     }
 }

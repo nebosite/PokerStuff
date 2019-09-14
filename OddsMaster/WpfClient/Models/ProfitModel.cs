@@ -107,10 +107,11 @@ namespace OddsMaster
                     unit.PlayerHand, 
                     PlayerCount, 
                     TimeSpan.FromMilliseconds(0), 
-                    4000, 
+                    1000, 
                     unit.BettingProfile);
 
                 unit.TableCell.NormalText = ((double)unit.Odds.TotalBigBlindsWon / unit.Odds.Iterations).ToString(".0") + " BB";
+                unit.TableCell.NotifyAllPropertiesChanged();
             });
 
             NotifyAllPropertiesChanged();
@@ -148,8 +149,11 @@ namespace OddsMaster
             {
                 for(int remainingOpponentCount = 1; remainingOpponentCount < 10; remainingOpponentCount ++)
                 {
+                    var cell = ProfitRows[betStrength][remainingOpponentCount];
+                    cell.NormalText = "--";
                     if (remainingOpponentCount > (PlayerCount - 1))
                     {
+                        cell.NotifyAllPropertiesChanged();
                         continue;
                     }
 
@@ -191,15 +195,13 @@ namespace OddsMaster
                     }
 
                     // return some work to do
-                    var cell = ProfitRows[betStrength][remainingOpponentCount];
-                    cell.NormalText = "--";
                     var workUnit = new ProfitWorkUnit(
                         betStrength, 
                         remainingOpponentCount, 
                         bettingProfile,
                         cell
                         );
-                    workUnit.PickPlayerCards(PlayerHand.Cards);
+                    workUnit.PickPlayerCards(PlayerHand.Cards.Select(c => c.Card).ToArray());
                     yield return workUnit;
 
                 }
@@ -208,6 +210,15 @@ namespace OddsMaster
 
         }
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Handle Hand change
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public override void HandleHandChanged()
+        {
+            Calculate();
+        }
 
     }
 }

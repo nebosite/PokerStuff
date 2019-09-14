@@ -25,10 +25,12 @@ namespace OddsMaster
                 _playerCount = value;
                 CalculateOdds();
                 NotifyPropertyChanged(nameof(PlayerCount));
+                HandleHandChanged();
             }
         }
 
         protected Deck _deck;
+
         private HandModel _theHand = new HandModel();
         public HandModel PlayerHand
         {
@@ -53,7 +55,11 @@ namespace OddsMaster
 
         public bool CanDealNext => PlayerHand.RiverCard == null;
 
-        public Card[] PickableCards => new Deck().AllCards.Select(c => { c.CanDraw = _deck.CanDraw(c); return c; }).ToArray();
+        public CardModel[] PickableCards => 
+            new Deck()
+            .AllCards
+            .Select(c=> new CardModel(c, _deck.CanDraw(c)))
+            .ToArray();
             
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -65,6 +71,27 @@ namespace OddsMaster
             _deck = new Deck();
             Reset();
         }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Replace the target card with the specified card
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public void ReplaceCard(CardModel targetCard, CardModel card)
+        {
+            var cardInDeck = _deck.FindCard(card.Card);
+            _deck.Swap(targetCard.Card, cardInDeck);
+            PlayerHand.Swap(targetCard, cardInDeck);
+            HandleHandChanged();
+            NotifyAllPropertiesChanged();
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Do what you gotta do if the hand changes
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public abstract void HandleHandChanged();
 
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -108,6 +135,7 @@ namespace OddsMaster
             }
 
             NotifyPropertyChanged(nameof(CanDealNext));
+            NotifyPropertyChanged(nameof(PickableCards));
         }
 
         //------------------------------------------------------------------------------------

@@ -102,8 +102,6 @@ namespace PokerParts
 
         string _originalData;
 
-        public bool CanDraw { get; set; } = true;
-
         public Card() : this("Ac")
         {
             
@@ -222,12 +220,32 @@ namespace PokerParts
 
         //------------------------------------------------------------------------------------
         /// <summary>
+        /// ==
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public static bool operator ==(Card obj1, Card obj2)
+        {
+            return (obj1?.Bit == obj2?.Bit);
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// !=
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public static bool operator !=(Card obj1, Card obj2)
+        {
+            return !(obj1?.Bit == obj2?.Bit);
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
         /// Equatable
         /// </summary>
         //------------------------------------------------------------------------------------
         public bool Equals(Card other)
         {
-            return Suit == other.Suit && Rank == other.Rank;
+            return Bit == other.Bit;
         }
     }
 }

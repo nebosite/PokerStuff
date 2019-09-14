@@ -12,13 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using PokerParts;
 
 namespace OddsMaster
 {
     /// <summary>
     /// Interaction logic for ProfitControl.xaml
     /// </summary>
-    public partial class ProfitControl : UserControl, ICardPickerProvider
+    public partial class ProfitControl : UserControl, ICardClickProvider
     {
         ProfitModel ContextModel => DataContext as ProfitModel;
 
@@ -37,9 +38,9 @@ namespace OddsMaster
             ContextModel.DealNext();
         }
 
-        public CardPickerControl GetCardPicker()
+        public void ClickedOnCard(CardControl card)
         {
-            return TheCardPicker;
+            TheCardPicker.PickCardFor(card);
         }
     }
 }

@@ -101,6 +101,11 @@ namespace PokerParts
             foreach (var card in cards) AddCard(new Card(card));
         }
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Get a printable character for a rank
+        /// </summary>
+        //------------------------------------------------------------------------------------
         public static char GetRankChar(Rank rank)
         {
             return rank == Rank._10 ? 'T' : rank.ToString().Trim('_')[0];
@@ -117,6 +122,24 @@ namespace PokerParts
             else return null;
         }
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Swap the matching card in the hand with a card in the deck
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public void Swap(Card targetCard, Card cardInDeck)
+        {
+            for(int i = 0; i < DealtCards.Count; i++)
+            {
+                if(DealtCards[i] == targetCard)
+                {
+                    CardBits &= ~(targetCard.Bit);
+                    CardBits |= cardInDeck.Bit;
+                    DealtCards[i] = cardInDeck;
+                    return;
+                }
+            }
+        }
 
         //------------------------------------------------------------------------------------
         /// <summary>

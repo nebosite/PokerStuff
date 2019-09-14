@@ -10,6 +10,6 @@ namespace OddsMaster
     {
         public string RankText { get; set; } = "A";
         public string SuitText { get; set; } = "§";
-        public bool CanDraw { get; set; } = true;
+        public bool Available { get; set; } = true;
     }
 }

@@ -10,7 +10,7 @@ namespace OddsMaster
     /// </summary>
     public partial class CardControl : UserControl
     {
-        Card ContextModel => DataContext as Card;
+        public CardModel ContextModel => DataContext as CardModel;
 
         public CardControl()
         {
@@ -22,7 +22,7 @@ namespace OddsMaster
         {
             var control = this;
             var color = Brushes.Red;
-            var card = DataContext as Card;
+            var card = ContextModel;
             
             if(card == null)
             {
@@ -41,17 +41,15 @@ namespace OddsMaster
         private void HandleMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             e.Handled = true;
-            if (ContextModel == null || !ContextModel.CanDraw)
+            if (ContextModel == null || !ContextModel.Available)
             {
                 return;
             }
 
-            var provider = WpfHelper.FindParentWithInterface(this, typeof(ICardPickerProvider)) as ICardPickerProvider;
+            var provider = WpfHelper.FindParentWithInterface(this, typeof(ICardClickProvider)) as ICardClickProvider;
             if (provider == null) return;
 
-            var picker = provider.GetCardPicker();
-
-            picker.PickCardFor(this);
+            provider.ClickedOnCard(this);
         }
     }
 }
