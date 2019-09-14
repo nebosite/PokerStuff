@@ -4,7 +4,5 @@
              xmlns:local="clr-namespace:OddsMaster"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <local:BoolToVisibilityValueConverter x:Key="BoolToVisibilityValueConverter" />
-        <local:BoolToVisibilityReverseValueConverter x:Key="BoolToVisibilityReverseValueConverter" />
     </Application.Resources>
 </Application>

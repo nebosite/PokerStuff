@@ -24,6 +24,6 @@
             </Viewbox>
         </Border>
         <Border CornerRadius="5" Background="#BB222222" BorderThickness="1" BorderBrush="Black" 
-                Visibility="{Binding Available, Converter={StaticResource BoolToVisibilityReverseValueConverter}}"/>
+                Visibility="{Binding Available, Converter={x:Static local:VisibilityConverter.TrueToCollapsed}}"/>
     </Grid>
 </UserControl>

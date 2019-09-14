@@ -73,13 +73,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Helpers\BoolToVisibilityValueConverter.cs" />
+    <Compile Include="Helpers\Converters.cs" />
     <Compile Include="Controls\CardPickerControl.xaml.cs">
       <DependentUpon>CardPickerControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\DummyCard.cs" />
+    <Compile Include="Helpers\DummyModels.cs" />
     <Compile Include="ICardClickProvider.cs" />
     <Compile Include="Models\CardModel.cs" />
+    <Compile Include="Controls\ProfitCellControl.xaml.cs">
+      <DependentUpon>ProfitCellControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SimpleGrid.xaml.cs">
       <DependentUpon>SimpleGrid.xaml</DependentUpon>
     </Compile>
@@ -136,6 +139,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ProfitControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ProfitCellControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

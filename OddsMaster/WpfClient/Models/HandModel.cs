@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace OddsMaster
 {
@@ -18,22 +19,31 @@ namespace OddsMaster
     //------------------------------------------------------------------------------------
     public class HandModel : BaseModel
     {
-        public CardModel PocketCard1 => GetCardModel(0);
-        public CardModel PocketCard2 => GetCardModel(1);
+        public CardModel PocketCard1 => GetCard(0);
+        public CardModel PocketCard2 => GetCard(1);
 
-        public CardModel FlopCard1 => GetCardModel(2);
-        public CardModel FlopCard2 => GetCardModel(3);
-        public CardModel FlopCard3 => GetCardModel(4);
+        public CardModel FlopCard1 => GetCard(2);
+        public CardModel FlopCard2  => GetCard(3);
+        public CardModel FlopCard3 => GetCard(4);
 
-        public CardModel TurnCard => GetCardModel(5);
-        public CardModel RiverCard => GetCardModel(6);
+        public CardModel TurnCard => GetCard(5);
+        public CardModel RiverCard => GetCard(6);
 
         public ulong CardBits => _playerHand.CardBits;
 
-        public CardModel[] Cards => _playerHand.DealtCards.Select(c => GetCardModel(c)).ToArray();
+        public List<CardModel> Cards { get; private set; } = new List<CardModel>();
 
         private Hand _playerHand = new Hand();
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// ctor
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public HandModel()
+        {
+
+        }
 
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -42,24 +52,20 @@ namespace OddsMaster
         //------------------------------------------------------------------------------------
         public void Reset()
         {
+            Cards.Clear();
             _playerHand = new Hand();
             NotifyAllPropertiesChanged();
         }
 
         //------------------------------------------------------------------------------------
         /// <summary>
-        /// Create a card model for a card in the hand
+        /// Get a card from the hand
         /// </summary>
         //------------------------------------------------------------------------------------
-        CardModel GetCardModel(int slot)
+        CardModel GetCard(int slot)
         {
-            var card = _playerHand?.GetDealtCard(slot);
-            if (card == null) return null;
-            return GetCardModel(card);
-        }
-        CardModel GetCardModel(Card card)
-        {
-            return new CardModel(card);
+            if (Cards.Count > slot) return Cards[slot];
+            return null;
         }
 
         //------------------------------------------------------------------------------------
@@ -70,6 +76,8 @@ namespace OddsMaster
         internal void AddCard(Card card)
         {
             _playerHand.AddCard(card);
+            var newCard = new CardModel(card);
+            Cards.Add(newCard);
             switch (_playerHand.DealtCards.Count)
             {
                 case 1: NotifyPropertyChanged(nameof(PocketCard1)); break;
@@ -90,6 +98,11 @@ namespace OddsMaster
         internal void Swap(CardModel targetCard, Card cardInDeck)
         {
             _playerHand.Swap(targetCard.Card, cardInDeck);
+            Cards.Clear();
+            foreach(var card in _playerHand.DealtCards)
+            {
+                Cards.Add(new CardModel(card));
+            }
             NotifyAllPropertiesChanged();
         }
 

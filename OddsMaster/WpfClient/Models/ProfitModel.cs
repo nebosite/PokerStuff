@@ -8,31 +8,75 @@ using System.Linq;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace OddsMaster
 {
+    //------------------------------------------------------------------------------------
+    /// <summary>
+    /// Data for a single item in the profit table
+    /// </summary>
+    //------------------------------------------------------------------------------------
     public class ProfitTableItem : BaseModel
     {
-        public string VisibleText => _pivot ? PivotText : NormalText;
-        public string PivotText { get; set; }
-        public string NormalText { get; set; }
-        public Brush VisibleColor => _pivot ? PivotColor : NormalColor;
-        public Brush PivotColor { get; set; }
-        public Brush NormalColor { get; set; }
+        public string VisibleText => _labelText == null ? ProfitValue.ToString(".0") : _labelText;
 
-        private bool _pivot;
-        private bool _isLabel;
+        public double ProfitValue { get; set; }
+        private string _labelText;
 
-        public ProfitTableItem(string label, bool isLabel = false)
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// ctor
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public ProfitTableItem(double profitValue)
         {
-            _isLabel = isLabel;
-            NormalText = label;
-            NormalColor = Brushes.White;
+            SetValue(profitValue);
         }
 
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// ctor
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public ProfitTableItem(string labelText)
+        {
+            SetValue(labelText);
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Change the value for this item
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public void SetValue(string labelText)
+        {
+            _labelText = labelText;
+
+            NotifyAllPropertiesChanged();
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Change the value for this item
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        public void SetValue(double newValue)
+        {
+            ProfitValue = newValue;
+            _labelText = null;
+
+            NotifyAllPropertiesChanged();
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// ToString
+        /// </summary>
+        //------------------------------------------------------------------------------------
         public override string ToString()
         {
-            return NormalText;
+            return VisibleText;
         }
     }
 
@@ -69,13 +113,13 @@ namespace OddsMaster
                 var newRow = new ProfitTableItem[10];
                 for (int j = 1; j < 10; j++)
                 {
-                    newRow[j] = new ProfitTableItem(j.ToString(), false);
+                    newRow[j] = new ProfitTableItem("--");
                 }
                 ProfitRows.Add(newRow);
             }
-            ProfitRows[0][0] = new ProfitTableItem("Weak", true);
-            ProfitRows[1][0] = new ProfitTableItem("Normal", true);
-            ProfitRows[2][0] = new ProfitTableItem("Strong", true);
+            ProfitRows[0][0] = new ProfitTableItem("Weak");
+            ProfitRows[1][0] = new ProfitTableItem("Normal");
+            ProfitRows[2][0] = new ProfitTableItem("Strong");
 
             Calculate();
             NotifyAllPropertiesChanged();
@@ -102,16 +146,15 @@ namespace OddsMaster
             // Run a bunch of hands for each pair of cards we want to test
             Parallel.ForEach<ProfitWorkUnit>(GetGridCalculations(), (unit) =>
             {
-                unit.Odds = OddsCalculator.Calculate(
-                    unit.Deck, 
-                    unit.PlayerHand, 
-                    PlayerCount, 
-                    TimeSpan.FromMilliseconds(0), 
-                    1000, 
-                    unit.BettingProfile);
+            unit.Odds = OddsCalculator.Calculate(
+                unit.Deck,
+                unit.PlayerHand,
+                PlayerCount,
+                TimeSpan.FromMilliseconds(0),
+                1000,
+                unit.BettingProfile);
 
-                unit.TableCell.NormalText = ((double)unit.Odds.TotalBigBlindsWon / unit.Odds.Iterations).ToString(".0") + " BB";
-                unit.TableCell.NotifyAllPropertiesChanged();
+                unit.TableCell.SetValue((double)unit.Odds.TotalBigBlindsWon / unit.Odds.Iterations);
             });
 
             NotifyAllPropertiesChanged();
@@ -150,7 +193,7 @@ namespace OddsMaster
                 for(int remainingOpponentCount = 1; remainingOpponentCount < 10; remainingOpponentCount ++)
                 {
                     var cell = ProfitRows[betStrength][remainingOpponentCount];
-                    cell.NormalText = "--";
+                    cell.SetValue("--");
                     if (remainingOpponentCount > (PlayerCount - 1))
                     {
                         cell.NotifyAllPropertiesChanged();
