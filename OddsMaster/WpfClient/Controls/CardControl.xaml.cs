@@ -10,6 +10,8 @@ namespace OddsMaster
     /// </summary>
     public partial class CardControl : UserControl
     {
+        Card ContextModel => DataContext as Card;
+
         public CardControl()
         {
             InitializeComponent();
@@ -34,6 +36,22 @@ namespace OddsMaster
                 control.CardRankLabel.Foreground = color;
                 control.CardSuitLabel.Foreground = color;
             }
+        }
+
+        private void HandleMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            if (ContextModel == null || !ContextModel.CanDraw)
+            {
+                return;
+            }
+
+            var provider = WpfHelper.FindParentWithInterface(this, typeof(ICardPickerProvider)) as ICardPickerProvider;
+            if (provider == null) return;
+
+            var picker = provider.GetCardPicker();
+
+            picker.PickCardFor(this);
         }
     }
 }

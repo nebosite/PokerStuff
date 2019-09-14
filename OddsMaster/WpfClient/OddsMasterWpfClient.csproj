@@ -73,14 +73,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BoolToVisibilityValueConverter.cs" />
+    <Compile Include="Helpers\BoolToVisibilityValueConverter.cs" />
     <Compile Include="Controls\CardPickerControl.xaml.cs">
       <DependentUpon>CardPickerControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DummyCard.cs" />
+    <Compile Include="Helpers\DummyCard.cs" />
+    <Compile Include="ICardPickerProvider.cs" />
     <Compile Include="SimpleGrid.xaml.cs">
       <DependentUpon>SimpleGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\WpfHelper.cs" />
     <Page Include="Controls\CardPickerControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

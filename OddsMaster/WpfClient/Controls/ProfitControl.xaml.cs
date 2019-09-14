@@ -18,7 +18,7 @@ namespace OddsMaster
     /// <summary>
     /// Interaction logic for ProfitControl.xaml
     /// </summary>
-    public partial class ProfitControl : UserControl
+    public partial class ProfitControl : UserControl, ICardPickerProvider
     {
         ProfitModel ContextModel => DataContext as ProfitModel;
 
@@ -35,6 +35,11 @@ namespace OddsMaster
         private void DealNextClick(object sender, RoutedEventArgs e)
         {
             ContextModel.DealNext();
+        }
+
+        public CardPickerControl GetCardPicker()
+        {
+            return TheCardPicker;
         }
     }
 }

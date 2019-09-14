@@ -24,5 +24,15 @@ namespace OddsMaster
         {
             InitializeComponent();
         }
+
+        internal void PickCardFor(CardControl cardControl)
+        {
+            this.Visibility = Visibility.Visible;
+        }
+
+        private void HandleOutsideMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            this.Visibility = Visibility.Collapsed;
+        }
     }
 }
