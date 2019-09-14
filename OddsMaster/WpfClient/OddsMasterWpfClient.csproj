@@ -73,9 +73,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BoolToVisibilityValueConverter.cs" />
     <Compile Include="Controls\CardPickerControl.xaml.cs">
       <DependentUpon>CardPickerControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DummyCard.cs" />
     <Compile Include="SimpleGrid.xaml.cs">
       <DependentUpon>SimpleGrid.xaml</DependentUpon>
     </Compile>

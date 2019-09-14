@@ -10,14 +10,14 @@
         <Viewbox StretchDirection="Both" Stretch="Uniform">
             <StackPanel Orientation="Horizontal" Height="100" Margin="5">
                 <Label Content="Your Hand:" />
-                <local:CardControl Card="{Binding PocketCard1}" Width="70" Margin="5,0,0,0"/>
-                <local:CardControl Card="{Binding PocketCard2}"  Width="70" Margin="5,0,0,0"/>
+                <local:CardControl DataContext="{Binding PocketCard1}" Width="70" Margin="5,0,0,0"/>
+                <local:CardControl DataContext="{Binding PocketCard2}"  Width="70" Margin="5,0,0,0"/>
                 <Label Content="  Street:" />
-                <local:CardControl Card="{Binding FlopCard1}" Width="70"  Margin="5,0,0,0"/>
-                <local:CardControl Card="{Binding FlopCard2}"  Width="70" Margin="5,0,0,0"/>
-                <local:CardControl Card="{Binding FlopCard3}"  Width="70" Margin="5,0,0,0"/>
-                <local:CardControl Card="{Binding TurnCard}" Width="70" Margin="20,0,0,0" />
-                <local:CardControl Card="{Binding RiverCard}" Width="70" Margin="20,0,0,0" />
+                <local:CardControl DataContext="{Binding FlopCard1}" Width="70"  Margin="5,0,0,0"/>
+                <local:CardControl DataContext="{Binding FlopCard2}"  Width="70" Margin="5,0,0,0"/>
+                <local:CardControl DataContext="{Binding FlopCard3}"  Width="70" Margin="5,0,0,0"/>
+                <local:CardControl DataContext="{Binding TurnCard}" Width="70" Margin="20,0,0,0" />
+                <local:CardControl DataContext="{Binding RiverCard}" Width="70" Margin="20,0,0,0" />
             </StackPanel>
         </Viewbox>
     </Grid>

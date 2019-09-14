@@ -32,11 +32,11 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" Height="100" Margin="5" Visibility="Collapsed">
                 <Label Content="  Street:" />
-                <local:CardControl Card="{Binding FlopCard1}"  Margin="5,0,0,0"/>
-                <local:CardControl Card="{Binding FlopCard2}"  Margin="5,0,0,0"/>
-                <local:CardControl Card="{Binding FlopCard3}"  Margin="5,0,0,0"/>
-                <local:CardControl Card="{Binding TurnCard}" Margin="20,0,0,0" />
-                <local:CardControl Card="{Binding RiverCard}" Margin="20,0,0,0" />
+                <local:CardControl DataContext="{Binding FlopCard1}"  Margin="5,0,0,0"/>
+                <local:CardControl DataContext="{Binding FlopCard2}"  Margin="5,0,0,0"/>
+                <local:CardControl DataContext="{Binding FlopCard3}"  Margin="5,0,0,0"/>
+                <local:CardControl DataContext="{Binding TurnCard}" Margin="20,0,0,0" />
+                <local:CardControl DataContext="{Binding RiverCard}" Margin="20,0,0,0" />
             </StackPanel>
             <TextBox Text="{Binding GenOutput,Mode=TwoWay}" MaxHeight="100" Visibility="Collapsed" />
             <DataGrid x:Name="TheGrid" ItemsSource="{Binding TableItems}" 

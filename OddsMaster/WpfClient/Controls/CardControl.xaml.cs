@@ -10,28 +10,19 @@ namespace OddsMaster
     /// </summary>
     public partial class CardControl : UserControl
     {
-        public Card Card
+        public CardControl()
         {
-            get
-            {
-                return (Card)GetValue(CardProperty);
-            }
-            set
-            {
-                SetValue(CardProperty, value);
-            }
+            InitializeComponent();
+            DataContextChanged += CardControl_DataContextChanged;
         }
 
-        public static readonly DependencyProperty CardProperty =
-            DependencyProperty.Register("Card", typeof(Card), typeof(CardControl),new PropertyMetadata(cardPropertyChanged));
-
-        private static void cardPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {          
-            var control = (CardControl)d;
+        private void CardControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var control = this;
             var color = Brushes.Red;
-            var newCard = (Card)e.NewValue;
+            var card = DataContext as Card;
             
-            if(newCard == null)
+            if(card == null)
             {
                 control.Visibility = Visibility.Hidden;
             }
@@ -39,49 +30,10 @@ namespace OddsMaster
             {
                 control.Visibility = Visibility.Visible;
 
-                if (newCard.Suit == Suit.Clubs || newCard.Suit == Suit.Spades) color = Brushes.Black;
+                if (card.Suit == Suit.Clubs || card.Suit == Suit.Spades) color = Brushes.Black;
                 control.CardRankLabel.Foreground = color;
                 control.CardSuitLabel.Foreground = color;
-
-                string suitText = "";
-                switch(newCard.Suit)
-                {
-                    case Suit.Clubs: suitText = "§"; break;
-                    case Suit.Hearts: suitText = "©"; break;
-                    case Suit.Diamonds: suitText = "¨"; break;
-                    case Suit.Spades: suitText = "ª"; break;
-
-                }
-
-                string rankText = "";
-                switch (newCard.Rank)
-                {
-                    case Rank.Ace: rankText = "A"; break;
-                    case Rank.King: rankText = "K"; break;
-                    case Rank.Queen: rankText = "Q"; break;
-                    case Rank.Jack: rankText = "J"; break;
-                    case Rank._10: rankText = "10"; break;
-                    case Rank._9: rankText = "9"; break;
-                    case Rank._8: rankText = "8"; break;
-                    case Rank._7: rankText = "7"; break;
-                    case Rank._6: rankText = "6"; break;
-                    case Rank._5: rankText = "5"; break;
-                    case Rank._4: rankText = "4"; break;
-                    case Rank._3: rankText = "3"; break;
-                    case Rank._2: rankText = "2"; break;
-                }
-                control.CardSuitLabel.Text = suitText;
-                control.CardRankLabel.Text = rankText;
             }
-
-        }
-
-        public CardControl()
-        {
-            InitializeComponent();
-            Card = null;
-            CardSuitLabel.Text = "";
-            CardRankLabel.Text = "";
         }
     }
 }

@@ -139,7 +139,7 @@ namespace PokerParts
         /// return true if cards are still int the deck
         /// </summary>
         //------------------------------------------------------------------------------------
-        internal bool CanDraw(params Card[] cards)
+        public bool CanDraw(params Card[] cards)
         {
             for(int j = 0; j < cards.Length; j++)
             {

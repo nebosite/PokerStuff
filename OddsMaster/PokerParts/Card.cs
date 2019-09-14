@@ -54,12 +54,60 @@ namespace PokerParts
         public Suit Suit;
         public Rank Rank;
 
+        public string SuitText
+        {
+            get
+            {
+                switch (Suit)
+                {
+                    case Suit.Clubs: return "§"; 
+                    case Suit.Hearts: return "©"; 
+                    case Suit.Diamonds: return "¨"; 
+                    case Suit.Spades: return "ª"; 
+
+                }
+                return "?";
+            }
+        }
+
+        public string RankText
+        {
+            get
+            {
+                switch (Rank)
+                {
+                    case Rank.Ace: return "A";
+                    case Rank.King: return "K";
+                    case Rank.Queen: return "Q";
+                    case Rank.Jack: return "J";
+                    case Rank._10: return "10";
+                    case Rank._9: return "9";
+                    case Rank._8: return "8";
+                    case Rank._7: return "7";
+                    case Rank._6: return "6";
+                    case Rank._5: return "5";
+                    case Rank._4: return "4";
+                    case Rank._3: return "3";
+                    case Rank._2: return "2";
+                }
+                return "?";
+            }
+        }
+
+
         /// <summary>
         /// Unique Id for this card, guaranteed to be a single bit in a 64 bit number
         /// </summary>
         public ulong Bit;
 
         string _originalData;
+
+        public bool CanDraw { get; set; } = true;
+
+        public Card() : this("Ac")
+        {
+            
+        }
 
         //------------------------------------------------------------------------------------
         /// <summary>

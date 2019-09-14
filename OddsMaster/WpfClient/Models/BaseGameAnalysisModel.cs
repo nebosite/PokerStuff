@@ -53,6 +53,8 @@ namespace OddsMaster
 
         public bool CanDealNext => PlayerHand.RiverCard == null;
 
+        public Card[] PickableCards => new Deck().AllCards.Select(c => { c.CanDraw = _deck.CanDraw(c); return c; }).ToArray();
+            
         //------------------------------------------------------------------------------------
         /// <summary>
         /// ctor

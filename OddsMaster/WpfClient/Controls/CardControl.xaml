@@ -4,19 +4,29 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OddsMaster"
+             xmlns:pokerparts="clr-namespace:PokerParts"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance local:DummyCard, IsDesignTimeCreatable=True}"
              d:DesignHeight="40" d:DesignWidth="32">
-    <Border CornerRadius="5" Background="White" BorderThickness="1" BorderBrush="Black" >
-        <Viewbox StretchDirection="Both" Stretch="Uniform">
-            <Grid Width="65" Height="76">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="4*"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <TextBlock x:Name ="CardRankLabel" Text="A" FontSize="50" FontFamily="Times New Roman" FontWeight="Bold" Foreground="Red" Padding="0" Margin="2,25,0,0" TextAlignment="Center" Grid.ColumnSpan="2" />
-                <TextBlock x:Name="CardSuitLabel" Text="©" FontSize="40" FontFamily="Symbol" FontWeight="Bold" Foreground="Red" Padding="0" Margin="4,-9,0,0" Height="43" VerticalAlignment="Top" HorizontalAlignment="Left" Width="33" />
-            </Grid>
-        </Viewbox>
-
-    </Border>
+    <UserControl.Resources>
+        <local:BoolToVisibilityValueConverter x:Key="BoolToVisibilityValueConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Border CornerRadius="5" Background="White" BorderThickness="1" BorderBrush="Black" >
+            <Viewbox StretchDirection="Both" Stretch="Uniform">
+                <Grid>
+                    <Grid Width="65" Height="76">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name ="CardRankLabel" Text="{Binding RankText}" FontSize="50" FontFamily="Times New Roman" FontWeight="Bold" Foreground="Red" Padding="0" Margin="2,25,0,0" TextAlignment="Center" Grid.ColumnSpan="2" />
+                        <TextBlock x:Name="CardSuitLabel" Text="{Binding SuitText}" FontSize="40" FontFamily="Symbol" FontWeight="Bold" Foreground="Red" Padding="0" Margin="4,-9,0,0" Height="43" VerticalAlignment="Top" HorizontalAlignment="Left" Width="33" />
+                    </Grid>
+                </Grid>
+            </Viewbox>
+        </Border>
+        <Border CornerRadius="5" Background="#BB222222" BorderThickness="1" BorderBrush="Black" 
+                Visibility="{Binding CanDraw, Converter={StaticResource BoolToVisibilityValueConverter}}"/>
+    </Grid>
 </UserControl>
