@@ -9,10 +9,9 @@ OddsMaster TODO
 				- Weak 
 				- Normal
 				- Strong
-		[ ] Profitability calculation
-			[ ] Center the text, lower case BB
-			[ ] Add color
-			[ ] Click on cell to see breakdown of the hands
+		[x] Initial Profitability calculation
+			[x] Center the text, lower case BB
+			[x] Add color
 			- Pre-flop Iteration:
 				- Generate a random game
 					- Calculate bets based on pocket strengths
@@ -20,6 +19,8 @@ OddsMaster TODO
 					- Play Flop to River N times to calculate a raw profitability
 					- Add to the grid
 				- Repeat until the grid has at least 10 games per square
+		[ ] Advanced profitability
+			[ ] Click on cell to see breakdown of the hands
 			- Flop iteration:
 				- Generate table of possible pairs, accounting for the street
 				- For each pair, play 20-30 games with the street cards to figure the value of the pair
@@ -32,6 +33,8 @@ OddsMaster TODO
 		[ ] Click on profit grid to see how the hand breaks out
 		[ ] In tablegen, GetAllPairWorkUnits should not consider flop
 NEW
+    [ ] Poker game: "Deal Next"
+        Click deal next as long as the odds are improving
 
 
 SOON
