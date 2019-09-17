@@ -19,4 +19,9 @@ namespace OddsMaster
         public string VisibleText => "-2.2";
         public double ProfitValue => -3;
     }
+    public class DummyOddsItem
+    {
+        public string VisibleText => "AKo";
+        public Brush VisibleColor => Brushes.Yellow;
+    }
 }

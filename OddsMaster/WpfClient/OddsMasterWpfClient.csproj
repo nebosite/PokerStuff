@@ -83,6 +83,9 @@
     <Compile Include="Controls\ProfitCellControl.xaml.cs">
       <DependentUpon>ProfitCellControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\OddsTableCellControl.xaml.cs">
+      <DependentUpon>OddsTableCellControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SimpleGrid.xaml.cs">
       <DependentUpon>SimpleGrid.xaml</DependentUpon>
     </Compile>
@@ -143,6 +146,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ProfitCellControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\OddsTableCellControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
