@@ -51,9 +51,12 @@ namespace PokerParts
         /// Shuffle the undrawn portion of the deck
         /// </summary>
         //------------------------------------------------------------------------------------
-        public void Shuffle()
+        public void Shuffle(int maxToShuffle = 10000)
         {
-            for (int i = DrawSpot; i < _cards.Length - 1; i++)
+            int last = DrawSpot + maxToShuffle;
+            if (last > _cards.Length - 1) last = _cards.Length - 1;
+
+            for (int i = DrawSpot; i < last; i++)
             {
                 var remainingCount = _cards.Length - i - 1;
                 var swapIndex = _random.Next(remainingCount) + i + 1;

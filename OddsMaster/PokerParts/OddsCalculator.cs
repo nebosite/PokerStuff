@@ -203,7 +203,7 @@ namespace PokerParts
                 }
 
                 deck.Reset(deckSpot);
-                deck.Shuffle();
+                deck.Shuffle(playerCount * 2 + 5);
             }
 
             oddsOutput.Iterations = iterations;
@@ -216,10 +216,6 @@ namespace PokerParts
             }
             oddsOutput.WinRatio = (double)winCount / iterations;
 
-            if(computeLimit != TimeSpan.Zero)
-            {
-                Debug.WriteLine($"Calculated {oddsOutput.Iterations} hands");
-            }
             return oddsOutput;
         }
     }

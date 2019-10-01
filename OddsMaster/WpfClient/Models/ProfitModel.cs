@@ -151,7 +151,7 @@ namespace OddsMaster
                 unit.PlayerHand,
                 PlayerCount,
                 TimeSpan.FromMilliseconds(0),
-                1000,
+                10000,
                 unit.BettingProfile);
 
                 unit.TableCell.SetValue((double)unit.Odds.TotalBigBlindsWon / unit.Odds.Iterations);

@@ -146,6 +146,7 @@ namespace OddsMaster
         protected void CalculateOdds()
         {
             Odds = PlayerHand.CalculateOdds(_deck, PlayerCount);
+            Debug.WriteLine($"Calculated {Odds.Iterations} hands");
         }
     }
 }
