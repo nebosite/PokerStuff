@@ -7,7 +7,9 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance local:DummyProfitItem, IsDesignTimeCreatable=True}"
              d:DesignHeight="20" d:DesignWidth="40">
-    <Grid Background="{Binding ProfitValue, Converter={x:Static local:ProfitConverter.ToCellColor}}">
+    <Grid 
+        Background="{Binding ProfitValue, Converter={x:Static local:ProfitConverter.ToCellColor}}"
+        PreviewMouseUp="HandleClick">
         <TextBlock Text="{Binding VisibleText}"  FontSize="18"  Padding="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>    
     </Grid>
 </UserControl>

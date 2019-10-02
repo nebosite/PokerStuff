@@ -178,25 +178,7 @@ namespace OddsMaster
         //------------------------------------------------------------------------------------
         public void ShowExplanation()
         {
-            var output = new StringBuilder();
-            output.AppendLine($"Win percentage: { (Odds.WinRatio * 100.0).ToString(".0")}% ");
-            output.AppendLine("\r\nHands performance:");
-            var villianInfo = Odds.VillianPerformance.Select(p => Tuple.Create(p.Key, p.Value)).OrderByDescending(t => t.Item2).ToArray();
-            var playerInfo = Odds.PlayerPerformance.Select(p => Tuple.Create(p.Key, p.Value)).OrderByDescending(t => t.Item2).ToArray();
-            var formatter = new FixedFormatter();
-            formatter.ColumnWidths.AddRange(new int[] { -8, 25, -8, 25 });
-            output.AppendLine("Your Winning Hands                  Winning Opponent Hands");
-
-            for (int i = 0; i < villianInfo.Length; i++)
-            {
-                output.AppendLine(formatter.Format(
-                    $"{(playerInfo[i].Item2 * 100.0 * Odds.WinRatio).ToString("0.")}%",
-                    playerInfo[i].Item1.ToString(),
-                    $"{(villianInfo[i].Item2 * 100.0).ToString("0.")}%",
-                    villianInfo[i].Item1.ToString()
-                ));
-            }
-            Explanation = output.ToString();
+            Explanation = Odds.GetExplanation(); 
             NotifyPropertyChanged(nameof(Explanation));
         }
 

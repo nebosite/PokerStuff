@@ -73,6 +73,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Extensions.cs" />
     <Compile Include="Helpers\Converters.cs" />
     <Compile Include="Controls\CardPickerControl.xaml.cs">
       <DependentUpon>CardPickerControl.xaml</DependentUpon>

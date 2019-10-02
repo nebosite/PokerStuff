@@ -20,29 +20,33 @@ namespace OddsMaster
     public class ProfitTableItem : BaseModel
     {
         public string VisibleText => _labelText == null ? ProfitValue.ToString(".0") : _labelText;
-
+        public string Explanation => _odds?.GetExplanation();
         public double ProfitValue { get; set; }
         private string _labelText;
+        private ProfitModel _parent;
+        private OddsResults _odds;
 
         //------------------------------------------------------------------------------------
         /// <summary>
         /// ctor
         /// </summary>
         //------------------------------------------------------------------------------------
-        public ProfitTableItem(double profitValue)
+        public ProfitTableItem(string labelText, ProfitModel parent)
         {
-            SetValue(profitValue);
-        }
-
-        //------------------------------------------------------------------------------------
-        /// <summary>
-        /// ctor
-        /// </summary>
-        //------------------------------------------------------------------------------------
-        public ProfitTableItem(string labelText)
-        {
+            _parent = parent;
             SetValue(labelText);
         }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Set the explanation text in the profit model
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        internal void ExplainMe()
+        {
+            _parent.SelectedItem = this;
+        }
+
 
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -61,13 +65,14 @@ namespace OddsMaster
         /// Change the value for this item
         /// </summary>
         //------------------------------------------------------------------------------------
-        public void SetValue(double newValue)
+        internal void SetValue(OddsResults odds)
         {
-            ProfitValue = newValue;
+            _odds = odds;
+            ProfitValue = (double)odds.TotalBigBlindsWon / odds.Iterations;
             _labelText = null;
-
             NotifyAllPropertiesChanged();
         }
+
 
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -78,6 +83,7 @@ namespace OddsMaster
         {
             return VisibleText;
         }
+
     }
 
     //------------------------------------------------------------------------------------
@@ -85,9 +91,24 @@ namespace OddsMaster
     /// Handles examining the profitability of a hand
     /// </summary>
     //------------------------------------------------------------------------------------
-    class ProfitModel : BaseGameAnalysisModel
+    public class ProfitModel : BaseGameAnalysisModel
     {
         public ObservableCollection<ProfitTableItem[]> ProfitRows { get; set; } = new ObservableCollection<ProfitTableItem[]>();
+
+        private ProfitTableItem _selectedItem;
+        public ProfitTableItem SelectedItem
+        {
+            get => _selectedItem;
+            set
+            {
+                _selectedItem = value;
+                NotifyPropertyChanged(nameof(SelectedItem));
+                NotifyPropertyChanged(nameof(Explanation));
+            }
+        }
+
+        public string Explanation => _selectedItem?.Explanation;
+
 
         //------------------------------------------------------------------------------------
         /// <summary>
@@ -113,13 +134,13 @@ namespace OddsMaster
                 var newRow = new ProfitTableItem[10];
                 for (int j = 1; j < 10; j++)
                 {
-                    newRow[j] = new ProfitTableItem("--");
+                    newRow[j] = new ProfitTableItem("--", this);
                 }
                 ProfitRows.Add(newRow);
             }
-            ProfitRows[0][0] = new ProfitTableItem("Weak");
-            ProfitRows[1][0] = new ProfitTableItem("Normal");
-            ProfitRows[2][0] = new ProfitTableItem("Strong");
+            ProfitRows[0][0] = new ProfitTableItem("Weak", this);
+            ProfitRows[1][0] = new ProfitTableItem("Normal", this);
+            ProfitRows[2][0] = new ProfitTableItem("Strong", this);
 
             Calculate();
             NotifyAllPropertiesChanged();
@@ -154,7 +175,7 @@ namespace OddsMaster
                 10000,
                 unit.BettingProfile);
 
-                unit.TableCell.SetValue((double)unit.Odds.TotalBigBlindsWon / unit.Odds.Iterations);
+                unit.TableCell.SetValue(unit.Odds);
             });
 
             NotifyAllPropertiesChanged();

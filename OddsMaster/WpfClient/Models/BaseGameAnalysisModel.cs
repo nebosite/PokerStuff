@@ -14,7 +14,7 @@ namespace OddsMaster
     /// Common functionality for a model that deals with a single hand
     /// </summary>
     //------------------------------------------------------------------------------------
-    abstract class BaseGameAnalysisModel : BaseModel
+    public abstract class BaseGameAnalysisModel : BaseModel
     {
         int _playerCount = 5;
         public int PlayerCount

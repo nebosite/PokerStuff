@@ -35,7 +35,8 @@
                     <DataGridTemplateColumn Header="8" Width="50" > <DataGridTemplateColumn.CellTemplate> <DataTemplate><local:ProfitCellControl DataContext="{Binding [8]}" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="9" Width="50" > <DataGridTemplateColumn.CellTemplate> <DataTemplate><local:ProfitCellControl DataContext="{Binding [9]}" /></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
                 </DataGrid.Columns>
-           </DataGrid>
+            </DataGrid>
+            <TextBlock Text="{Binding Explanation}" FontFamily="Lucida Console" FontSize="14"  Background="LightBlue" />
 
         </StackPanel>
         <local:CardPickerControl x:Name="TheCardPicker" Visibility="Collapsed" />

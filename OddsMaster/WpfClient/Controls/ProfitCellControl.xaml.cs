@@ -20,9 +20,15 @@ namespace OddsMaster
     /// </summary>
     public partial class ProfitCellControl : UserControl
     {
+        ProfitTableItem ContextModel => DataContext as ProfitTableItem;
         public ProfitCellControl()
         {
             InitializeComponent();
+        }
+
+        private void HandleClick(object sender, MouseButtonEventArgs e)
+        {
+            ContextModel.ExplainMe();
         }
     }
 }
