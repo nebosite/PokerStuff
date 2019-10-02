@@ -25,7 +25,7 @@ namespace OddsMaster
         public MainWindow()
         {
             InitializeComponent();
-
+            Style = (Style)FindResource(typeof(Window));
             DataContext = _theApp = new AppModel();
         }
 

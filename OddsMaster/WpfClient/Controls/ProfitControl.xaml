@@ -11,7 +11,8 @@
     <Grid>
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal" Margin="10">
-                <Label Width="100" HorizontalContentAlignment="Right" Content="Starting Players:" />
+                <Label HorizontalContentAlignment="Right" 
+                       Content="Starting Players:" />
                 <wpfTool:IntegerUpDown Value="{Binding PlayerCount}" Minimum="2" Maximum="10" />
                 <Button Content=" Reset " Margin="20,0" Click="ResetClick"/>
                 <Button Content=" Deal Next " Margin="20,0" Click="DealNextClick" IsEnabled="{Binding CanDealNext}"/>
