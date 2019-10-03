@@ -154,7 +154,10 @@ namespace OddsMaster
         public override void DealNext()
         {
             base.DealNext();
-            
+            Calculate();
+            NotifyAllPropertiesChanged();
+
+
         }
 
         //------------------------------------------------------------------------------------
@@ -164,8 +167,15 @@ namespace OddsMaster
         //------------------------------------------------------------------------------------
         public void Calculate()
         {
+            var oddsLookup = AppModel.PocketHandOdds;
+
+            if (this.PlayerHand.FlopCard1 != null)
+            {
+                oddsLookup = GenerateOddsLookup();
+            }
+
             // Run a bunch of hands for each pair of cards we want to test
-            Parallel.ForEach<ProfitWorkUnit>(GetGridCalculations(), (unit) =>
+            Parallel.ForEach<ProfitWorkUnit>(GetGridCalculations(oddsLookup), (unit) =>
             {
             unit.Odds = OddsCalculator.Calculate(
                 unit.Deck,
@@ -199,10 +209,95 @@ namespace OddsMaster
 
         //------------------------------------------------------------------------------------
         /// <summary>
+        /// Generate a new odds table based on the street
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        private Dictionary<int, Dictionary<string, double>> GenerateOddsLookup()
+        {
+            var output = new Dictionary<int, Dictionary<string, double>>();
+            for (int i = 2; i <= PlayerCount; i++)
+            {
+                output.Add(i, GenerateOdds(i));
+            }
+            return output;
+        }
+
+        private Dictionary<string, double> GenerateOdds(int i)
+        {
+            var result = new Dictionary<string, double>();
+            // Run a bunch of hands for each pair of cards we want to test
+            Parallel.ForEach<OddsWorkUnit>(GetAllPairWorkUnits(PlayerHand), (unit) =>
+            {
+                var winRatio = 0.0;
+                if(unit.IsValid)
+                {
+                    unit.Odds = OddsCalculator.Calculate(unit.Deck, unit.PlayerHand, PlayerCount, TimeSpan.FromMilliseconds(0), 200);
+                    winRatio = unit.Odds.WinRatio;
+                }
+                lock (result)
+                {
+                    result.Add(unit.Id, winRatio);
+                }
+            });
+            return result;
+        }
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
+        /// Generate all the pairs in the grid
+        /// </summary>
+        //------------------------------------------------------------------------------------
+        IEnumerable<OddsWorkUnit> GetAllPairWorkUnits(HandModel playerHand)
+        {
+            OddsWorkUnit GetUnit(Rank highRank, Rank lowRank, bool offSuit)
+            {
+                var unit = new OddsWorkUnit();
+                var street = new List<Card>();
+                if (playerHand.FlopCard1 != null)
+                {
+                    street.Add(playerHand.FlopCard1.Card);
+                    street.Add(playerHand.FlopCard2.Card);
+                    street.Add(playerHand.FlopCard3.Card);
+                }
+                if (playerHand.TurnCard != null)
+                {
+                    street.Add(playerHand.TurnCard.Card);
+                }
+                if (playerHand.RiverCard != null)
+                {
+                    street.Add(playerHand.RiverCard.Card);
+                }
+
+                foreach (var card in street) unit.Deck.Draw(card);
+                unit.PickPlayerCards(highRank, lowRank, offSuit);
+                foreach (var card in street) unit.PlayerHand.AddCard(card);
+
+                return unit;
+            }
+
+            foreach (Rank highRank in Enum.GetValues(typeof(Rank)))
+            {
+                if (highRank == Rank.None) continue;
+                foreach (Rank lowRank in Enum.GetValues(typeof(Rank)))
+                {
+                    if (lowRank == Rank.None || lowRank > highRank) continue;
+                    yield return GetUnit(highRank, lowRank, offSuit: true);
+                    if (lowRank != highRank)
+                    {
+                        yield return GetUnit(highRank, lowRank, offSuit: false);
+                    }
+                }
+            }
+        }
+
+
+
+        //------------------------------------------------------------------------------------
+        /// <summary>
         /// Perform the calculations to fill the grid
         /// </summary>
         //------------------------------------------------------------------------------------
-        public IEnumerable<ProfitWorkUnit> GetGridCalculations()
+        public IEnumerable<ProfitWorkUnit> GetGridCalculations(Dictionary<int, Dictionary<string, double>> oddsLookup)
         {
             var betThreshold = 1.0 / PlayerCount;
             var weakThreshhold = betThreshold / 1.3;
@@ -239,7 +334,7 @@ namespace OddsMaster
                             break;
                     }
 
-                    var oddsTable = AppModel.PocketHandOdds[PlayerCount];
+                    var oddsTable = oddsLookup[PlayerCount];
                     foreach (var pair in availablePairs)
                     {
                         var id = Deck.GetPairType(pair);
@@ -252,7 +347,7 @@ namespace OddsMaster
                                 case 2: bettingProfile.StrongPairs.Add(pair); break;
                             }
                         }
-                        else
+                        else if(oddsTable[id] > 0.0)
                         {
                             bettingProfile.FoldablePairs.Add(pair);
                         }

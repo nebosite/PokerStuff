@@ -315,37 +315,6 @@ namespace OddsMaster
             NotifyAllPropertiesChanged();
         }
 
-
-        class CardOddsData
-        {
-            string _cardType;
-            double _oddsTotal;
-            int _count = 0;
-
-            public CardOddsData(string typeName)
-            {
-                _cardType = typeName;
-            }
-
-            public void AddOdds(double newOdds)
-            {
-                if (_count != 0 && Math.Abs(_oddsTotal / _count - newOdds) > 3)
-                {
-                    throw new Exception($"Odds look bad... Old:{_oddsTotal / _count}  New:{newOdds}");
-                }
-
-                _oddsTotal += newOdds;
-                _count++;
-            }
-
-            public override string ToString()
-            {
-                return _cardType;
-            }
-        }
-
-
-
         //------------------------------------------------------------------------------------
         /// <summary>
         /// Generate some data
